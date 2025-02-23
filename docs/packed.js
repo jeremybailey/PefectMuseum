@@ -5708,9 +5708,9 @@ var __webpack_exports__ = {};
 "use strict";
 
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/environment.json
-const environment_namespaceObject = JSON.parse('{"l":"0.9.0-alpha.1"}');
+const environment_namespaceObject = JSON.parse('{"l":"0.12.0-alpha.1"}');
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/lensCoreWasmVersions.json
-const lensCoreWasmVersions_namespaceObject = JSON.parse('{"i8":"209","c$":"8","FH":"https://cf-st.sc-cdn.net/d/MkroAjRWoH1TVgTCn9VZV?go=IgsKCTIBBEgBUFxgAQ%3D%3D&uc=92"}');
+const lensCoreWasmVersions_namespaceObject = JSON.parse('{"i8":"225","c$":"64","FH":"https://cf-st.sc-cdn.net/d/JigrWXPgfeH1cbTxyo1FM?go=IgsKCTIBBEgBUFxgAQ%3D%3D&uc=92"}');
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/common/copyDefinedProperties.js
 /**
  * Copy only those properties of an object which are not undefined.
@@ -5805,6 +5805,7 @@ const defaultConfiguration = {
     logger: "noop",
     logLevel: "info",
     shouldUseWorker: true,
+    apiHostname: "camera-kit-api.snapar.com",
 };
 /** @internal */
 const configurationToken = "configuration";
@@ -6124,332 +6125,32 @@ function __classPrivateFieldIn(state, receiver) {
 ;// CONCATENATED MODULE: ./node_modules/wasm-feature-detect/dist/esm/index.js
 const bigInt=()=>(async e=>{try{return(await WebAssembly.instantiate(e)).instance.exports.b(BigInt(0))===BigInt(0)}catch(e){return!1}})(new Uint8Array([0,97,115,109,1,0,0,0,1,6,1,96,1,126,1,126,3,2,1,0,7,5,1,1,98,0,0,10,6,1,4,0,32,0,11])),bulkMemory=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,0,0,1,4,1,96,0,0,3,2,1,0,5,3,1,0,1,10,14,1,12,0,65,0,65,0,65,0,252,10,0,0,11])),exceptions=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,0,0,1,4,1,96,0,0,3,2,1,0,10,8,1,6,0,6,64,25,11,11])),multiValue=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,0,0,1,6,1,96,0,2,127,127,3,2,1,0,10,8,1,6,0,65,0,65,0,11])),mutableGlobals=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,0,0,2,8,1,1,97,1,98,3,127,1,6,6,1,127,1,65,0,11,7,5,1,1,97,3,1])),referenceTypes=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,0,0,1,4,1,96,0,0,3,2,1,0,10,7,1,5,0,208,112,26,11])),saturatedFloatToInt=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,0,0,1,4,1,96,0,0,3,2,1,0,10,12,1,10,0,67,0,0,0,0,252,0,26,11])),signExtensions=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,0,0,1,4,1,96,0,0,3,2,1,0,10,8,1,6,0,65,0,192,26,11])),simd=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,0,0,1,5,1,96,0,1,123,3,2,1,0,10,10,1,8,0,65,0,253,15,253,98,11])),tailCall=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,0,0,1,4,1,96,0,0,3,2,1,0,10,6,1,4,0,18,0,11])),threads=()=>(async e=>{try{return"undefined"!=typeof MessageChannel&&(new MessageChannel).port1.postMessage(new SharedArrayBuffer(1)),WebAssembly.validate(e)}catch(e){return!1}})(new Uint8Array([0,97,115,109,1,0,0,0,1,4,1,96,0,0,3,2,1,0,5,4,1,3,1,1,10,11,1,9,0,65,0,254,16,2,0,26,11]));
 
-;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/common/loadScript.js
-function loadScript(scriptUri) {
-    return new Promise((resolve, reject) => {
-        const scriptElement = document.createElement("script");
-        scriptElement.src = scriptUri;
-        scriptElement.async = true;
-        scriptElement.addEventListener("load", () => resolve(), { once: true });
-        scriptElement.addEventListener("error", (event) => reject(event), { once: true });
-        document.body.appendChild(scriptElement);
-    });
-}
-//# sourceMappingURL=loadScript.js.map
-;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/common/typeguards.js
-function isString(value) {
-    return typeof value === "string";
-}
-/**
- * Ensures given value is a safe string.
- *
- * Safe strings allow to prevent CRLF attacks. We use encoding approach inspired by:
- * https://community.veracode.com/s/question/0D53n00007hJJV5CAO/is-cwe-id-117-intended-for-consolelog
- */
-function isSafeString(value) {
-    return isString(value) && encodeURIComponent(value) === value;
-}
-function isNumber(value) {
-    return typeof value === "number";
-}
-function isNotNull(value) {
-    return value !== null;
-}
-function isArrayOfType(elementTypeGuard, value) {
-    return Array.isArray(value) && value.every((id) => elementTypeGuard(id));
-}
-function isStringArray(value) {
-    return isArrayOfType(isString, value);
-}
-function isSafeStringArray(value) {
-    return isArrayOfType(isSafeString, value);
-}
-/**
- * Guards given value is instance of ArrayBuffer.
- */
-function isArrayBuffer(value) {
-    return value instanceof ArrayBuffer;
-}
-/**
- * Guards given value is a typed array.
- */
-function isTypedArray(value) {
-    return value instanceof Object.getPrototypeOf(Uint8Array);
-}
-/**
- * Guards given object is not undefined.
- */
-function isUndefined(value) {
-    return typeof value === "undefined";
-}
-/**
- * Narrow an unknown type to a Record (i.e. a non-null JS object). This holds true for class instances, not just
- * plain objects.
- */
-function isRecord(value) {
-    return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-/**
- * Check if the value is an arbitrary function
- */
-function isFunction(value) {
-    return typeof value === "function";
-}
-/**
- * Apply a given type predicate asserting values are of type T to each value in a Record.
- *
- * @param predicate Any unary type predicate
- * @returns A type predicate which takes an UnknownRecord and tests that all its values are of type T
- */
-function predicateRecordValues(predicate) {
-    return (value) => {
-        for (const v of Object.values(value))
-            if (!predicate(v))
-                return false;
-        return true;
-    };
-}
-/**
- * Checks whether given value is undefined or a safe URL string.
- *
- * The function checks whether given string is a valid URL with https: protocol.
- *
- * @param urlString URL string to check.
- * @returns True if URL is valid.
- */
-function isEmptyOrSafeUrl(urlString) {
-    if (!urlString)
-        return true;
-    try {
-        const url = new URL(urlString);
-        return url.protocol === "https:" || url.protocol === "http:";
-    }
-    catch (_a) {
-        return false;
-    }
-}
-//# sourceMappingURL=typeguards.js.map
-;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/handlers/debugHandler.js
-
-
-/**
- * Addes cookies to auth requests to custom LensCore binaries
- * when there are debugging overrides.
- *
- * @returns {@link ChainableHandler}, suitable for use in {@link HandlerChainBuilder.map}
- */
-const createDebugHandler = () => {
-    var _a;
-    const noCustomWasmEndpoint = !((_a = getConfigurationOverrides()) === null || _a === void 0 ? void 0 : _a.wasmEndpointOverride);
-    if (noCustomWasmEndpoint) {
-        return (next) => next;
-    }
-    return (next) => (input, init) => {
-        var _a;
-        const url = isString(input) ? input : (_a = input === null || input === void 0 ? void 0 : input.url) !== null && _a !== void 0 ? _a : "";
-        // if requests are made to internal LensCore binaries site
-        // we have to include cookies for auth purposes
-        // as per https://wiki.sc-corp.net/x/KsnRCg
-        if (url.startsWith("https://lens-core-wasm.sc-corp.net/")) {
-            return next(input, Object.assign(Object.assign({}, init), { credentials: "include" }));
-        }
-        return next(input, init);
-    };
-};
-//# sourceMappingURL=debugHandler.js.map
-;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/handlers/HandlerChainBuilder.js
-/**
- * Creates a Handler chain – a series of functions composed such that each function may call a supplied `next` function
- * which passes execution down the chain. When the final Handler in the chain returns, execution passes back up the
- * chain eventually returning to the caller.
- *
- * Each Handler chain begins with a "raw" Handler – this is a function which takes some request and returns some
- * response. A chain is then created by supplying a series of mapping functions – the ChainableHandler type – which will
- * be called with the `next` Handler in the chain.
- *
- * Ex:
- * ```ts
- * const handler = (request: string, metadata?: RequestMetadata) => Promise.resolve(`Responded to ${request}`)
- * const chainable = (next: Handler<string, string>) => (request: string, metadata?: RequestMetadata) => {
- *   return next(`modified ${request}`, metadata)
- * }
- *
- * const chain = new HandlerChainBuilder(handler)
- *   .map(chainable)
- *   .handler
- *
- * const response = await chain('hello')
- * expect(response).toBe('Responded to modified hello; 0')
- * ```
- * You can largely ignore the `metadata` argument present in the above example. This is the mechanism by which an
- * AbortSignal is passed to each Handler in the chain, but the only real requirement when implementing a Handler is
- * to pass this argument along to the `next` function. In fact, many Handlers will want to be generic over the type
- * of metadata:
- * ```ts
- * const chainable = <Meta>(next: Handler<string, string, Meta>) => (request: string, metadata: Meta) => {
- *   return next(`modified ${request}`, metadata)
- * }
- * ```
- * Actually, it's a very good idea for Handlers to be as generic as possible, since that will allow greater re-use. In
- * the above example, we don't do anything with the response from `next`, so we can let that be generic, too:
- * ```ts
- * const chainable = <Res, Meta>(next: Handler<string, Res, Meta>) => (request: string, metadata: Meta) => {
- *   return next(`modified ${request}`, metadata)
- * }
- * ```
- * Now if some other Handler in the chain decides to return a different response type, our Handler won't require any
- * changes to compile.
- *
- * ---
- *
- * Since execution passes from handler to handler in the chain, and then back, handlers have the opportunity to modify
- * or observe both the request and response. This might be useful for implementing serialization/deserialization, but
- * the simplest example that demonstrates this feature is measuring request latency:
- * ```ts
- * const latencyMeasuringHandler = <Req, Res, Meta>(next: Handler<Req, Res, Meta>) =>
- *   async (req: Req, metadata: Meta) => {
- *     const start = performance.now()
- *     const response = await next(req, metadata)
- *     const latency = performance.now() - start
- *     console.log(`latency for request ${request} was ${latency}`)
- *     return response
- *   }
- * ```
- * Execution is first passed to our measuring handler, which marks the `start` timestamp. Then it passes execution on
- * down the chain. After a response is received (by some handler down the chain), execution passes back up to our
- * handler here, which records the amount of time spent inside `next`.
- *
- * ---
- *
- * Handlers may also abort requests. They can do this in two ways:
- *   1. Create an `AbortController` and add its `AbortSignal` to the `metadata` object when calling `next`.
- *   2. Resolve its returned Promise.
- *
- * The first approach is straightforward, but the second may benefit from an example – the simplest is a handler which
- * will timeout a request:
- * ```ts
- * const timeoutHandler = <Req, Res, Meta>(next: Handler<Req, Res, Meta>) => (req: Req, metadata: Meta) => {
- *   return Promise.race([
- *     next(req, metadata),
- *     sleep(1000),
- *   ])
- * }
- * ```
- * The Promise returned by this handler will resolve either when the `next` handler resolves or 1 second has elapsed,
- * whichever happens first. If the timeout happens first, we want the `next` handler to recieve an abort signal so that
- * it can terminate early (since its result is no longer needed).
- *
- * HandlerChainBuilder makes this happen by observing when each handler completes, and sending an abort signal to all
- * the handlers "downstream" from the aborting handler.
- */
-class HandlerChainBuilder {
-    constructor(inner) {
-        // The TS compiler has the following behavior:
-        //
-        // class Infer<T extends SomeType | undefined> { constructor(f: (t?: T) => void) {} }
-        // const f = (t?: SomeType) => {}
-        // const i = new Infer(f)
-        //
-        // The type of `i` is inferred to be `Infer<SomeType>` instead of `Infer<SomeType | undefined>`, even though the
-        // type of `f`'s argument is `SomeType | undefined`. This seems to be a bug in type inference. Note that making
-        // the constructor argument required gives the expected behavior:
-        //
-        // class Infer<T extends SomeType | undefined> { constructor(f: (t: T) => void) {} }
-        // const f = (t?: SomeType) => {}
-        // const i = new Infer(f)
-        //
-        // Now `i` is inferred to be `Infer<SomeType | undefined>`.
-        //
-        // This has consequences if the inferred type T is used elsewhere in the class.
-        //
-        // In this case, we need to make sure that if the given `inner` function marks the metadata argument as
-        // optional, that HandlerChainBuilder correctly infers that the Meta type includes undefined. So we don't mark
-        // metadata as optional, and so we must cast to `Handler` (which does mark it as optional).
-        //
-        // Safety: We're adding `| undefined` to the metadata type, which may be unsafe – `undefined` may not be
-        // assignable to Meta. But when handling the argument of type Meta, we simply pass it through from handler to
-        // handler – we never call `inner` without passing the metadata argument we've received from some call to an
-        // outer handler. The typing visible to callers remains safe.
-        this.inner = inner;
-    }
-    get handler() {
-        return this.inner;
-    }
-    map(outer) {
-        // To create the next handler in the chain, we compose the "outer" handler with the "inner" handler.
-        //
-        // The outer handler observes its own completion and sends an abort signal to the inner handler when it has
-        // resolved. To prevent unexpected behavior, the inner handler also observes its own completion, setting a flag
-        // when it resolves so that – if it resolves before the outer handler – the outer handler can skip sending the
-        // abort signal (since the inner handler has already completed).
-        const outerHandler = (req, metadata) => {
-            var _a;
-            const abort = new AbortController();
-            const signal = abort.signal;
-            // It's important to not signal an abort to an inner handler which has already completed – it seems like
-            // this would be a non-issue (shouldn't aborting after completion be a no-op?), but specifically for the
-            // browser's implementation of `fetch`, aborting even after the `fetch` Promise resolves can cause an abort
-            // error if e.g. the Fetch Response's body has not yet been read.
-            //
-            // So, for safety, we will only abort inner handlers which are still executing.
-            let innerCompleted = false;
-            const maybeAbort = () => {
-                var _a;
-                // Safety: we never give `abort` to anyone else, so we know if the signal is aborted, this function
-                // has already run, so we can return early without fear of leaking. We also know if inner has completed,
-                // it has already performed cleanup.
-                if (signal.aborted || innerCompleted)
-                    return;
-                // If we've gotten here, the outer handler has either completed, or we heard an abort event while the
-                // inner handler is still executing – so we pass the abort signal down to the inner handler.
-                abort.abort();
-                (_a = metadata === null || metadata === void 0 ? void 0 : metadata.signal) === null || _a === void 0 ? void 0 : _a.removeEventListener("abort", maybeAbort);
-            };
-            (_a = metadata === null || metadata === void 0 ? void 0 : metadata.signal) === null || _a === void 0 ? void 0 : _a.addEventListener("abort", maybeAbort);
-            const innerHandler = new Proxy(this.inner, {
-                apply: (target, thisArg, args) => {
-                    const [req, metadata] = args;
-                    // To help Handler authors out, we'll do some bookkeeping and cleanup for them – if they forget to
-                    // remove an abort event listener, we'll remove it for them when the Promise they return resolves.
-                    // Note: No need to proxy removeEventListener, since removing a non-existent listener just no-ops.
-                    const abortListeners = [];
-                    signal.addEventListener = new Proxy(signal.addEventListener, {
-                        apply: (target, thisArg, args) => {
-                            abortListeners.push(args[1]);
-                            return Reflect.apply(target, thisArg, args);
-                        },
-                    });
-                    const cleanupAndMarkComplete = () => {
-                        var _a;
-                        // The only reason we listen to upstream aborts is to pass them to the inner handler – since the
-                        // inner handler has completed, we no longer need the listener.
-                        (_a = metadata === null || metadata === void 0 ? void 0 : metadata.signal) === null || _a === void 0 ? void 0 : _a.removeEventListener("abort", maybeAbort);
-                        abortListeners.forEach((listener) => signal.removeEventListener("abort", listener));
-                        innerCompleted = true;
-                    };
-                    const innerResponse = Reflect.apply(target, thisArg, [
-                        req,
-                        Object.assign(Object.assign({}, metadata), { signal }),
-                    ]);
-                    // Using `finally` is more idiomatic, but causes trouble in some environments (e.g. some testing
-                    // runtimes which detect uncaught rejected promises).
-                    innerResponse.catch(() => { }).then(cleanupAndMarkComplete);
-                    return innerResponse;
-                },
-            });
-            const outerResponse = outer(innerHandler)(req, metadata);
-            outerResponse.catch(() => { }).then(maybeAbort);
-            return outerResponse;
-        };
-        return new HandlerChainBuilder(outerHandler);
-    }
-}
-//# sourceMappingURL=HandlerChainBuilder.js.map
 ;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/isFunction.js
-function isFunction_isFunction(value) {
+function isFunction(value) {
     return typeof value === 'function';
 }
 //# sourceMappingURL=isFunction.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/lift.js
+
+function hasLift(source) {
+    return isFunction(source === null || source === void 0 ? void 0 : source.lift);
+}
+function operate(init) {
+    return function (source) {
+        if (hasLift(source)) {
+            return source.lift(function (liftedSource) {
+                try {
+                    return init(liftedSource, this);
+                }
+                catch (err) {
+                    this.error(err);
+                }
+            });
+        }
+        throw new TypeError('Unable to lift unknown Observable type');
+    };
+}
+//# sourceMappingURL=lift.js.map
 ;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/createErrorClass.js
 function createErrorClass(createImpl) {
     var _super = function (instance) {
@@ -6523,7 +6224,7 @@ var Subscription = (function () {
                 }
             }
             var initialFinalizer = this.initialTeardown;
-            if (isFunction_isFunction(initialFinalizer)) {
+            if (isFunction(initialFinalizer)) {
                 try {
                     initialFinalizer();
                 }
@@ -6616,10 +6317,10 @@ var Subscription = (function () {
 var EMPTY_SUBSCRIPTION = Subscription.EMPTY;
 function isSubscription(value) {
     return (value instanceof Subscription ||
-        (value && 'closed' in value && isFunction_isFunction(value.remove) && isFunction_isFunction(value.add) && isFunction_isFunction(value.unsubscribe)));
+        (value && 'closed' in value && isFunction(value.remove) && isFunction(value.add) && isFunction(value.unsubscribe)));
 }
 function execFinalizer(finalizer) {
-    if (isFunction_isFunction(finalizer)) {
+    if (isFunction(finalizer)) {
         finalizer();
     }
     else {
@@ -6855,7 +6556,7 @@ var SafeSubscriber = (function (_super) {
     function SafeSubscriber(observerOrNext, error, complete) {
         var _this = _super.call(this) || this;
         var partialObserver;
-        if (isFunction_isFunction(observerOrNext) || !observerOrNext) {
+        if (isFunction(observerOrNext) || !observerOrNext) {
             partialObserver = {
                 next: (observerOrNext !== null && observerOrNext !== void 0 ? observerOrNext : undefined),
                 error: error !== null && error !== void 0 ? error : undefined,
@@ -6905,6 +6606,89 @@ var EMPTY_OBSERVER = {
     complete: noop,
 };
 //# sourceMappingURL=Subscriber.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/OperatorSubscriber.js
+
+
+function createOperatorSubscriber(destination, onNext, onComplete, onError, onFinalize) {
+    return new OperatorSubscriber(destination, onNext, onComplete, onError, onFinalize);
+}
+var OperatorSubscriber = (function (_super) {
+    __extends(OperatorSubscriber, _super);
+    function OperatorSubscriber(destination, onNext, onComplete, onError, onFinalize, shouldUnsubscribe) {
+        var _this = _super.call(this, destination) || this;
+        _this.onFinalize = onFinalize;
+        _this.shouldUnsubscribe = shouldUnsubscribe;
+        _this._next = onNext
+            ? function (value) {
+                try {
+                    onNext(value);
+                }
+                catch (err) {
+                    destination.error(err);
+                }
+            }
+            : _super.prototype._next;
+        _this._error = onError
+            ? function (err) {
+                try {
+                    onError(err);
+                }
+                catch (err) {
+                    destination.error(err);
+                }
+                finally {
+                    this.unsubscribe();
+                }
+            }
+            : _super.prototype._error;
+        _this._complete = onComplete
+            ? function () {
+                try {
+                    onComplete();
+                }
+                catch (err) {
+                    destination.error(err);
+                }
+                finally {
+                    this.unsubscribe();
+                }
+            }
+            : _super.prototype._complete;
+        return _this;
+    }
+    OperatorSubscriber.prototype.unsubscribe = function () {
+        var _a;
+        if (!this.shouldUnsubscribe || this.shouldUnsubscribe()) {
+            var closed_1 = this.closed;
+            _super.prototype.unsubscribe.call(this);
+            !closed_1 && ((_a = this.onFinalize) === null || _a === void 0 ? void 0 : _a.call(this));
+        }
+    };
+    return OperatorSubscriber;
+}(Subscriber));
+
+//# sourceMappingURL=OperatorSubscriber.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/map.js
+
+
+function map(project, thisArg) {
+    return operate(function (source, subscriber) {
+        var index = 0;
+        source.subscribe(createOperatorSubscriber(subscriber, function (value) {
+            subscriber.next(project.call(thisArg, value, index++));
+        }));
+    });
+}
+//# sourceMappingURL=map.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/isArrayLike.js
+var isArrayLike = (function (x) { return x && typeof x.length === 'number' && typeof x !== 'function'; });
+//# sourceMappingURL=isArrayLike.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/isPromise.js
+
+function isPromise(value) {
+    return isFunction(value === null || value === void 0 ? void 0 : value.then);
+}
+//# sourceMappingURL=isPromise.js.map
 ;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/symbol/observable.js
 var observable = (function () { return (typeof Symbol === 'function' && Symbol.observable) || '@@observable'; })();
 //# sourceMappingURL=observable.js.map
@@ -7031,12 +6815,1029 @@ function getPromiseCtor(promiseCtor) {
     return (_a = promiseCtor !== null && promiseCtor !== void 0 ? promiseCtor : config.Promise) !== null && _a !== void 0 ? _a : Promise;
 }
 function isObserver(value) {
-    return value && isFunction_isFunction(value.next) && isFunction_isFunction(value.error) && isFunction_isFunction(value.complete);
+    return value && isFunction(value.next) && isFunction(value.error) && isFunction(value.complete);
 }
 function isSubscriber(value) {
     return (value && value instanceof Subscriber) || (isObserver(value) && isSubscription(value));
 }
 //# sourceMappingURL=Observable.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/isInteropObservable.js
+
+
+function isInteropObservable(input) {
+    return isFunction(input[observable]);
+}
+//# sourceMappingURL=isInteropObservable.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/isAsyncIterable.js
+
+function isAsyncIterable(obj) {
+    return Symbol.asyncIterator && isFunction(obj === null || obj === void 0 ? void 0 : obj[Symbol.asyncIterator]);
+}
+//# sourceMappingURL=isAsyncIterable.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/throwUnobservableError.js
+function createInvalidObservableTypeError(input) {
+    return new TypeError("You provided " + (input !== null && typeof input === 'object' ? 'an invalid object' : "'" + input + "'") + " where a stream was expected. You can provide an Observable, Promise, ReadableStream, Array, AsyncIterable, or Iterable.");
+}
+//# sourceMappingURL=throwUnobservableError.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/symbol/iterator.js
+function getSymbolIterator() {
+    if (typeof Symbol !== 'function' || !Symbol.iterator) {
+        return '@@iterator';
+    }
+    return Symbol.iterator;
+}
+var iterator_iterator = getSymbolIterator();
+//# sourceMappingURL=iterator.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/isIterable.js
+
+
+function isIterable(input) {
+    return isFunction(input === null || input === void 0 ? void 0 : input[iterator_iterator]);
+}
+//# sourceMappingURL=isIterable.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/isReadableStreamLike.js
+
+
+function readableStreamLikeToAsyncGenerator(readableStream) {
+    return __asyncGenerator(this, arguments, function readableStreamLikeToAsyncGenerator_1() {
+        var reader, _a, value, done;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    reader = readableStream.getReader();
+                    _b.label = 1;
+                case 1:
+                    _b.trys.push([1, , 9, 10]);
+                    _b.label = 2;
+                case 2:
+                    if (false) {}
+                    return [4, __await(reader.read())];
+                case 3:
+                    _a = _b.sent(), value = _a.value, done = _a.done;
+                    if (!done) return [3, 5];
+                    return [4, __await(void 0)];
+                case 4: return [2, _b.sent()];
+                case 5: return [4, __await(value)];
+                case 6: return [4, _b.sent()];
+                case 7:
+                    _b.sent();
+                    return [3, 2];
+                case 8: return [3, 10];
+                case 9:
+                    reader.releaseLock();
+                    return [7];
+                case 10: return [2];
+            }
+        });
+    });
+}
+function isReadableStreamLike(obj) {
+    return isFunction(obj === null || obj === void 0 ? void 0 : obj.getReader);
+}
+//# sourceMappingURL=isReadableStreamLike.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/observable/innerFrom.js
+
+
+
+
+
+
+
+
+
+
+
+
+function innerFrom_innerFrom(input) {
+    if (input instanceof Observable_Observable) {
+        return input;
+    }
+    if (input != null) {
+        if (isInteropObservable(input)) {
+            return fromInteropObservable(input);
+        }
+        if (isArrayLike(input)) {
+            return fromArrayLike(input);
+        }
+        if (isPromise(input)) {
+            return fromPromise(input);
+        }
+        if (isAsyncIterable(input)) {
+            return fromAsyncIterable(input);
+        }
+        if (isIterable(input)) {
+            return fromIterable(input);
+        }
+        if (isReadableStreamLike(input)) {
+            return fromReadableStreamLike(input);
+        }
+    }
+    throw createInvalidObservableTypeError(input);
+}
+function fromInteropObservable(obj) {
+    return new Observable_Observable(function (subscriber) {
+        var obs = obj[observable]();
+        if (isFunction(obs.subscribe)) {
+            return obs.subscribe(subscriber);
+        }
+        throw new TypeError('Provided object does not correctly implement Symbol.observable');
+    });
+}
+function fromArrayLike(array) {
+    return new Observable_Observable(function (subscriber) {
+        for (var i = 0; i < array.length && !subscriber.closed; i++) {
+            subscriber.next(array[i]);
+        }
+        subscriber.complete();
+    });
+}
+function fromPromise(promise) {
+    return new Observable_Observable(function (subscriber) {
+        promise
+            .then(function (value) {
+            if (!subscriber.closed) {
+                subscriber.next(value);
+                subscriber.complete();
+            }
+        }, function (err) { return subscriber.error(err); })
+            .then(null, reportUnhandledError);
+    });
+}
+function fromIterable(iterable) {
+    return new Observable_Observable(function (subscriber) {
+        var e_1, _a;
+        try {
+            for (var iterable_1 = __values(iterable), iterable_1_1 = iterable_1.next(); !iterable_1_1.done; iterable_1_1 = iterable_1.next()) {
+                var value = iterable_1_1.value;
+                subscriber.next(value);
+                if (subscriber.closed) {
+                    return;
+                }
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (iterable_1_1 && !iterable_1_1.done && (_a = iterable_1.return)) _a.call(iterable_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        subscriber.complete();
+    });
+}
+function fromAsyncIterable(asyncIterable) {
+    return new Observable_Observable(function (subscriber) {
+        process(asyncIterable, subscriber).catch(function (err) { return subscriber.error(err); });
+    });
+}
+function fromReadableStreamLike(readableStream) {
+    return fromAsyncIterable(readableStreamLikeToAsyncGenerator(readableStream));
+}
+function process(asyncIterable, subscriber) {
+    var asyncIterable_1, asyncIterable_1_1;
+    var e_2, _a;
+    return tslib_es6_awaiter(this, void 0, void 0, function () {
+        var value, e_2_1;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 5, 6, 11]);
+                    asyncIterable_1 = __asyncValues(asyncIterable);
+                    _b.label = 1;
+                case 1: return [4, asyncIterable_1.next()];
+                case 2:
+                    if (!(asyncIterable_1_1 = _b.sent(), !asyncIterable_1_1.done)) return [3, 4];
+                    value = asyncIterable_1_1.value;
+                    subscriber.next(value);
+                    if (subscriber.closed) {
+                        return [2];
+                    }
+                    _b.label = 3;
+                case 3: return [3, 1];
+                case 4: return [3, 11];
+                case 5:
+                    e_2_1 = _b.sent();
+                    e_2 = { error: e_2_1 };
+                    return [3, 11];
+                case 6:
+                    _b.trys.push([6, , 9, 10]);
+                    if (!(asyncIterable_1_1 && !asyncIterable_1_1.done && (_a = asyncIterable_1.return))) return [3, 8];
+                    return [4, _a.call(asyncIterable_1)];
+                case 7:
+                    _b.sent();
+                    _b.label = 8;
+                case 8: return [3, 10];
+                case 9:
+                    if (e_2) throw e_2.error;
+                    return [7];
+                case 10: return [7];
+                case 11:
+                    subscriber.complete();
+                    return [2];
+            }
+        });
+    });
+}
+//# sourceMappingURL=innerFrom.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/executeSchedule.js
+function executeSchedule(parentSubscription, scheduler, work, delay, repeat) {
+    if (delay === void 0) { delay = 0; }
+    if (repeat === void 0) { repeat = false; }
+    var scheduleSubscription = scheduler.schedule(function () {
+        work();
+        if (repeat) {
+            parentSubscription.add(this.schedule(null, delay));
+        }
+        else {
+            this.unsubscribe();
+        }
+    }, delay);
+    parentSubscription.add(scheduleSubscription);
+    if (!repeat) {
+        return scheduleSubscription;
+    }
+}
+//# sourceMappingURL=executeSchedule.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/mergeInternals.js
+
+
+
+function mergeInternals(source, subscriber, project, concurrent, onBeforeNext, expand, innerSubScheduler, additionalFinalizer) {
+    var buffer = [];
+    var active = 0;
+    var index = 0;
+    var isComplete = false;
+    var checkComplete = function () {
+        if (isComplete && !buffer.length && !active) {
+            subscriber.complete();
+        }
+    };
+    var outerNext = function (value) { return (active < concurrent ? doInnerSub(value) : buffer.push(value)); };
+    var doInnerSub = function (value) {
+        expand && subscriber.next(value);
+        active++;
+        var innerComplete = false;
+        innerFrom_innerFrom(project(value, index++)).subscribe(createOperatorSubscriber(subscriber, function (innerValue) {
+            onBeforeNext === null || onBeforeNext === void 0 ? void 0 : onBeforeNext(innerValue);
+            if (expand) {
+                outerNext(innerValue);
+            }
+            else {
+                subscriber.next(innerValue);
+            }
+        }, function () {
+            innerComplete = true;
+        }, undefined, function () {
+            if (innerComplete) {
+                try {
+                    active--;
+                    var _loop_1 = function () {
+                        var bufferedValue = buffer.shift();
+                        if (innerSubScheduler) {
+                            executeSchedule(subscriber, innerSubScheduler, function () { return doInnerSub(bufferedValue); });
+                        }
+                        else {
+                            doInnerSub(bufferedValue);
+                        }
+                    };
+                    while (buffer.length && active < concurrent) {
+                        _loop_1();
+                    }
+                    checkComplete();
+                }
+                catch (err) {
+                    subscriber.error(err);
+                }
+            }
+        }));
+    };
+    source.subscribe(createOperatorSubscriber(subscriber, outerNext, function () {
+        isComplete = true;
+        checkComplete();
+    }));
+    return function () {
+        additionalFinalizer === null || additionalFinalizer === void 0 ? void 0 : additionalFinalizer();
+    };
+}
+//# sourceMappingURL=mergeInternals.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/mergeMap.js
+
+
+
+
+
+function mergeMap(project, resultSelector, concurrent) {
+    if (concurrent === void 0) { concurrent = Infinity; }
+    if (isFunction(resultSelector)) {
+        return mergeMap(function (a, i) { return map(function (b, ii) { return resultSelector(a, b, i, ii); })(innerFrom_innerFrom(project(a, i))); }, concurrent);
+    }
+    else if (typeof resultSelector === 'number') {
+        concurrent = resultSelector;
+    }
+    return operate(function (source, subscriber) { return mergeInternals(source, subscriber, project, concurrent); });
+}
+//# sourceMappingURL=mergeMap.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/mergeAll.js
+
+
+function mergeAll(concurrent) {
+    if (concurrent === void 0) { concurrent = Infinity; }
+    return mergeMap(identity_identity, concurrent);
+}
+//# sourceMappingURL=mergeAll.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/observable/empty.js
+
+var EMPTY = new Observable_Observable(function (subscriber) { return subscriber.complete(); });
+function empty(scheduler) {
+    return scheduler ? emptyScheduled(scheduler) : EMPTY;
+}
+function emptyScheduled(scheduler) {
+    return new Observable(function (subscriber) { return scheduler.schedule(function () { return subscriber.complete(); }); });
+}
+//# sourceMappingURL=empty.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/isScheduler.js
+
+function isScheduler(value) {
+    return value && isFunction(value.schedule);
+}
+//# sourceMappingURL=isScheduler.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/args.js
+
+
+function last(arr) {
+    return arr[arr.length - 1];
+}
+function args_popResultSelector(args) {
+    return isFunction(last(args)) ? args.pop() : undefined;
+}
+function args_popScheduler(args) {
+    return isScheduler(last(args)) ? args.pop() : undefined;
+}
+function popNumber(args, defaultValue) {
+    return typeof last(args) === 'number' ? args.pop() : defaultValue;
+}
+//# sourceMappingURL=args.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/observeOn.js
+
+
+
+function observeOn(scheduler, delay) {
+    if (delay === void 0) { delay = 0; }
+    return operate(function (source, subscriber) {
+        source.subscribe(createOperatorSubscriber(subscriber, function (value) { return executeSchedule(subscriber, scheduler, function () { return subscriber.next(value); }, delay); }, function () { return executeSchedule(subscriber, scheduler, function () { return subscriber.complete(); }, delay); }, function (err) { return executeSchedule(subscriber, scheduler, function () { return subscriber.error(err); }, delay); }));
+    });
+}
+//# sourceMappingURL=observeOn.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/subscribeOn.js
+
+function subscribeOn(scheduler, delay) {
+    if (delay === void 0) { delay = 0; }
+    return operate(function (source, subscriber) {
+        subscriber.add(scheduler.schedule(function () { return source.subscribe(subscriber); }, delay));
+    });
+}
+//# sourceMappingURL=subscribeOn.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/scheduled/scheduleObservable.js
+
+
+
+function scheduleObservable(input, scheduler) {
+    return innerFrom_innerFrom(input).pipe(subscribeOn(scheduler), observeOn(scheduler));
+}
+//# sourceMappingURL=scheduleObservable.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/scheduled/schedulePromise.js
+
+
+
+function schedulePromise(input, scheduler) {
+    return innerFrom_innerFrom(input).pipe(subscribeOn(scheduler), observeOn(scheduler));
+}
+//# sourceMappingURL=schedulePromise.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/scheduled/scheduleArray.js
+
+function scheduleArray(input, scheduler) {
+    return new Observable_Observable(function (subscriber) {
+        var i = 0;
+        return scheduler.schedule(function () {
+            if (i === input.length) {
+                subscriber.complete();
+            }
+            else {
+                subscriber.next(input[i++]);
+                if (!subscriber.closed) {
+                    this.schedule();
+                }
+            }
+        });
+    });
+}
+//# sourceMappingURL=scheduleArray.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/scheduled/scheduleIterable.js
+
+
+
+
+function scheduleIterable(input, scheduler) {
+    return new Observable_Observable(function (subscriber) {
+        var iterator;
+        executeSchedule(subscriber, scheduler, function () {
+            iterator = input[iterator_iterator]();
+            executeSchedule(subscriber, scheduler, function () {
+                var _a;
+                var value;
+                var done;
+                try {
+                    (_a = iterator.next(), value = _a.value, done = _a.done);
+                }
+                catch (err) {
+                    subscriber.error(err);
+                    return;
+                }
+                if (done) {
+                    subscriber.complete();
+                }
+                else {
+                    subscriber.next(value);
+                }
+            }, 0, true);
+        });
+        return function () { return isFunction(iterator === null || iterator === void 0 ? void 0 : iterator.return) && iterator.return(); };
+    });
+}
+//# sourceMappingURL=scheduleIterable.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/scheduled/scheduleAsyncIterable.js
+
+
+function scheduleAsyncIterable(input, scheduler) {
+    if (!input) {
+        throw new Error('Iterable cannot be null');
+    }
+    return new Observable_Observable(function (subscriber) {
+        executeSchedule(subscriber, scheduler, function () {
+            var iterator = input[Symbol.asyncIterator]();
+            executeSchedule(subscriber, scheduler, function () {
+                iterator.next().then(function (result) {
+                    if (result.done) {
+                        subscriber.complete();
+                    }
+                    else {
+                        subscriber.next(result.value);
+                    }
+                });
+            }, 0, true);
+        });
+    });
+}
+//# sourceMappingURL=scheduleAsyncIterable.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/scheduled/scheduleReadableStreamLike.js
+
+
+function scheduleReadableStreamLike(input, scheduler) {
+    return scheduleAsyncIterable(readableStreamLikeToAsyncGenerator(input), scheduler);
+}
+//# sourceMappingURL=scheduleReadableStreamLike.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/scheduled/scheduled.js
+
+
+
+
+
+
+
+
+
+
+
+
+
+function scheduled(input, scheduler) {
+    if (input != null) {
+        if (isInteropObservable(input)) {
+            return scheduleObservable(input, scheduler);
+        }
+        if (isArrayLike(input)) {
+            return scheduleArray(input, scheduler);
+        }
+        if (isPromise(input)) {
+            return schedulePromise(input, scheduler);
+        }
+        if (isAsyncIterable(input)) {
+            return scheduleAsyncIterable(input, scheduler);
+        }
+        if (isIterable(input)) {
+            return scheduleIterable(input, scheduler);
+        }
+        if (isReadableStreamLike(input)) {
+            return scheduleReadableStreamLike(input, scheduler);
+        }
+    }
+    throw createInvalidObservableTypeError(input);
+}
+//# sourceMappingURL=scheduled.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/observable/from.js
+
+
+function from_from(input, scheduler) {
+    return scheduler ? scheduled(input, scheduler) : innerFrom_innerFrom(input);
+}
+//# sourceMappingURL=from.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/observable/merge.js
+
+
+
+
+
+function merge() {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+    var scheduler = args_popScheduler(args);
+    var concurrent = popNumber(args, Infinity);
+    var sources = args;
+    return !sources.length
+        ?
+            EMPTY
+        : sources.length === 1
+            ?
+                innerFrom_innerFrom(sources[0])
+            :
+                mergeAll(concurrent)(from_from(sources, scheduler));
+}
+//# sourceMappingURL=merge.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/mapOneOrManyArgs.js
+
+
+var isArray = Array.isArray;
+function callOrApply(fn, args) {
+    return isArray(args) ? fn.apply(void 0, __spreadArray([], __read(args))) : fn(args);
+}
+function mapOneOrManyArgs_mapOneOrManyArgs(fn) {
+    return map(function (args) { return callOrApply(fn, args); });
+}
+//# sourceMappingURL=mapOneOrManyArgs.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/observable/fromEvent.js
+
+
+
+
+
+
+
+var nodeEventEmitterMethods = ['addListener', 'removeListener'];
+var eventTargetMethods = ['addEventListener', 'removeEventListener'];
+var jqueryMethods = ['on', 'off'];
+function fromEvent(target, eventName, options, resultSelector) {
+    if (isFunction(options)) {
+        resultSelector = options;
+        options = undefined;
+    }
+    if (resultSelector) {
+        return fromEvent(target, eventName, options).pipe(mapOneOrManyArgs_mapOneOrManyArgs(resultSelector));
+    }
+    var _a = __read(isEventTarget(target)
+        ? eventTargetMethods.map(function (methodName) { return function (handler) { return target[methodName](eventName, handler, options); }; })
+        :
+            isNodeStyleEventEmitter(target)
+                ? nodeEventEmitterMethods.map(toCommonHandlerRegistry(target, eventName))
+                : isJQueryStyleEventEmitter(target)
+                    ? jqueryMethods.map(toCommonHandlerRegistry(target, eventName))
+                    : [], 2), add = _a[0], remove = _a[1];
+    if (!add) {
+        if (isArrayLike(target)) {
+            return mergeMap(function (subTarget) { return fromEvent(subTarget, eventName, options); })(innerFrom_innerFrom(target));
+        }
+    }
+    if (!add) {
+        throw new TypeError('Invalid event target');
+    }
+    return new Observable_Observable(function (subscriber) {
+        var handler = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            return subscriber.next(1 < args.length ? args : args[0]);
+        };
+        add(handler);
+        return function () { return remove(handler); };
+    });
+}
+function toCommonHandlerRegistry(target, eventName) {
+    return function (methodName) { return function (handler) { return target[methodName](eventName, handler); }; };
+}
+function isNodeStyleEventEmitter(target) {
+    return isFunction(target.addListener) && isFunction(target.removeListener);
+}
+function isJQueryStyleEventEmitter(target) {
+    return isFunction(target.on) && isFunction(target.off);
+}
+function isEventTarget(target) {
+    return isFunction(target.addEventListener) && isFunction(target.removeEventListener);
+}
+//# sourceMappingURL=fromEvent.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/tap.js
+
+
+
+
+function tap(observerOrNext, error, complete) {
+    var tapObserver = isFunction(observerOrNext) || error || complete
+        ?
+            { next: observerOrNext, error: error, complete: complete }
+        : observerOrNext;
+    return tapObserver
+        ? operate(function (source, subscriber) {
+            var _a;
+            (_a = tapObserver.subscribe) === null || _a === void 0 ? void 0 : _a.call(tapObserver);
+            var isUnsub = true;
+            source.subscribe(createOperatorSubscriber(subscriber, function (value) {
+                var _a;
+                (_a = tapObserver.next) === null || _a === void 0 ? void 0 : _a.call(tapObserver, value);
+                subscriber.next(value);
+            }, function () {
+                var _a;
+                isUnsub = false;
+                (_a = tapObserver.complete) === null || _a === void 0 ? void 0 : _a.call(tapObserver);
+                subscriber.complete();
+            }, function (err) {
+                var _a;
+                isUnsub = false;
+                (_a = tapObserver.error) === null || _a === void 0 ? void 0 : _a.call(tapObserver, err);
+                subscriber.error(err);
+            }, function () {
+                var _a, _b;
+                if (isUnsub) {
+                    (_a = tapObserver.unsubscribe) === null || _a === void 0 ? void 0 : _a.call(tapObserver);
+                }
+                (_b = tapObserver.finalize) === null || _b === void 0 ? void 0 : _b.call(tapObserver);
+            }));
+        })
+        :
+            identity_identity;
+}
+//# sourceMappingURL=tap.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/take.js
+
+
+
+function take(count) {
+    return count <= 0
+        ?
+            function () { return EMPTY; }
+        : operate(function (source, subscriber) {
+            var seen = 0;
+            source.subscribe(createOperatorSubscriber(subscriber, function (value) {
+                if (++seen <= count) {
+                    subscriber.next(value);
+                    if (count <= seen) {
+                        subscriber.complete();
+                    }
+                }
+            }));
+        });
+}
+//# sourceMappingURL=take.js.map
+;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/common/loadScript.js
+
+/**
+ * Adds script element to document body and starts downloading provided script URL.
+ * @param scriptUri Script URL.
+ * @returns Script element added.
+ */
+function loadScript(scriptUri) {
+    return new Promise((resolve, reject) => {
+        const scriptElement = document.createElement("script");
+        scriptElement.src = scriptUri;
+        scriptElement.async = true;
+        merge(fromEvent(scriptElement, "load").pipe(tap(() => resolve(scriptElement))), fromEvent(scriptElement, "error").pipe(tap((e) => reject(e))))
+            .pipe(take(1))
+            .subscribe();
+        document.body.appendChild(scriptElement);
+    });
+}
+//# sourceMappingURL=loadScript.js.map
+;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/common/typeguards.js
+function isString(value) {
+    return typeof value === "string";
+}
+/**
+ * Ensures given value is a safe string.
+ *
+ * Safe strings allow to prevent CRLF attacks. We use encoding approach inspired by:
+ * https://community.veracode.com/s/question/0D53n00007hJJV5CAO/is-cwe-id-117-intended-for-consolelog
+ */
+function isSafeString(value) {
+    return isString(value) && encodeURIComponent(value) === value;
+}
+function isNumber(value) {
+    return typeof value === "number";
+}
+function isNotNull(value) {
+    return value !== null;
+}
+function isArrayOfType(elementTypeGuard, value) {
+    return Array.isArray(value) && value.every((id) => elementTypeGuard(id));
+}
+function isStringArray(value) {
+    return isArrayOfType(isString, value);
+}
+function isSafeStringArray(value) {
+    return isArrayOfType(isSafeString, value);
+}
+/**
+ * Guards given value is instance of ArrayBuffer.
+ */
+function isArrayBuffer(value) {
+    return value instanceof ArrayBuffer;
+}
+/**
+ * Guards given value is a typed array.
+ */
+function isTypedArray(value) {
+    return value instanceof Object.getPrototypeOf(Uint8Array);
+}
+/**
+ * Guards given object is not undefined.
+ */
+function isUndefined(value) {
+    return typeof value === "undefined";
+}
+/**
+ * Narrow an unknown type to a Record (i.e. a non-null JS object). This holds true for class instances, not just
+ * plain objects.
+ */
+function isRecord(value) {
+    return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+/**
+ * Check if the value is an arbitrary function
+ */
+function typeguards_isFunction(value) {
+    return typeof value === "function";
+}
+/**
+ * Apply a given type predicate asserting values are of type T to each value in a Record.
+ *
+ * @param predicate Any unary type predicate
+ * @returns A type predicate which takes an UnknownRecord and tests that all its values are of type T
+ */
+function predicateRecordValues(predicate) {
+    return (value) => {
+        for (const v of Object.values(value))
+            if (!predicate(v))
+                return false;
+        return true;
+    };
+}
+/**
+ * Checks whether given value is undefined or a safe URL string.
+ *
+ * The function checks whether given string is a valid URL with https: protocol.
+ *
+ * @param urlString URL string to check.
+ * @returns True if URL is valid.
+ */
+function isEmptyOrSafeUrl(urlString) {
+    if (!urlString)
+        return true;
+    try {
+        const url = new URL(urlString);
+        return url.protocol === "https:" || url.protocol === "http:";
+    }
+    catch (_a) {
+        return false;
+    }
+}
+//# sourceMappingURL=typeguards.js.map
+;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/handlers/debugHandler.js
+
+
+/**
+ * Addes cookies to auth requests to custom LensCore binaries
+ * when there are debugging overrides.
+ *
+ * @returns {@link ChainableHandler}, suitable for use in {@link HandlerChainBuilder.map}
+ */
+const createDebugHandler = () => {
+    var _a;
+    const noCustomWasmEndpoint = !((_a = getConfigurationOverrides()) === null || _a === void 0 ? void 0 : _a.wasmEndpointOverride);
+    if (noCustomWasmEndpoint) {
+        return (next) => next;
+    }
+    return (next) => (input, init) => {
+        var _a;
+        const url = isString(input) ? input : (_a = input === null || input === void 0 ? void 0 : input.url) !== null && _a !== void 0 ? _a : "";
+        // if requests are made to internal LensCore binaries site
+        // we have to include cookies for auth purposes
+        // as per https://wiki.sc-corp.net/x/KsnRCg
+        if (url.startsWith("https://lens-core-wasm.sc-corp.net/")) {
+            return next(input, Object.assign(Object.assign({}, init), { credentials: "include" }));
+        }
+        return next(input, init);
+    };
+};
+//# sourceMappingURL=debugHandler.js.map
+;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/handlers/HandlerChainBuilder.js
+/**
+ * Creates a Handler chain – a series of functions composed such that each function may call a supplied `next` function
+ * which passes execution down the chain. When the final Handler in the chain returns, execution passes back up the
+ * chain eventually returning to the caller.
+ *
+ * Each Handler chain begins with a "raw" Handler – this is a function which takes some request and returns some
+ * response. A chain is then created by supplying a series of mapping functions – the ChainableHandler type – which will
+ * be called with the `next` Handler in the chain.
+ *
+ * Ex:
+ * ```ts
+ * const handler = (request: string, metadata?: RequestMetadata) => Promise.resolve(`Responded to ${request}`)
+ * const chainable = (next: Handler<string, string>) => (request: string, metadata?: RequestMetadata) => {
+ *   return next(`modified ${request}`, metadata)
+ * }
+ *
+ * const chain = new HandlerChainBuilder(handler)
+ *   .map(chainable)
+ *   .handler
+ *
+ * const response = await chain('hello')
+ * expect(response).toBe('Responded to modified hello; 0')
+ * ```
+ * You can largely ignore the `metadata` argument present in the above example. This is the mechanism by which an
+ * AbortSignal is passed to each Handler in the chain, but the only real requirement when implementing a Handler is
+ * to pass this argument along to the `next` function. In fact, many Handlers will want to be generic over the type
+ * of metadata:
+ * ```ts
+ * const chainable = <Meta>(next: Handler<string, string, Meta>) => (request: string, metadata: Meta) => {
+ *   return next(`modified ${request}`, metadata)
+ * }
+ * ```
+ * Actually, it's a very good idea for Handlers to be as generic as possible, since that will allow greater re-use. In
+ * the above example, we don't do anything with the response from `next`, so we can let that be generic, too:
+ * ```ts
+ * const chainable = <Res, Meta>(next: Handler<string, Res, Meta>) => (request: string, metadata: Meta) => {
+ *   return next(`modified ${request}`, metadata)
+ * }
+ * ```
+ * Now if some other Handler in the chain decides to return a different response type, our Handler won't require any
+ * changes to compile.
+ *
+ * ---
+ *
+ * Since execution passes from handler to handler in the chain, and then back, handlers have the opportunity to modify
+ * or observe both the request and response. This might be useful for implementing serialization/deserialization, but
+ * the simplest example that demonstrates this feature is measuring request latency:
+ * ```ts
+ * const latencyMeasuringHandler = <Req, Res, Meta>(next: Handler<Req, Res, Meta>) =>
+ *   async (req: Req, metadata: Meta) => {
+ *     const start = performance.now()
+ *     const response = await next(req, metadata)
+ *     const latency = performance.now() - start
+ *     console.log(`latency for request ${request} was ${latency}`)
+ *     return response
+ *   }
+ * ```
+ * Execution is first passed to our measuring handler, which marks the `start` timestamp. Then it passes execution on
+ * down the chain. After a response is received (by some handler down the chain), execution passes back up to our
+ * handler here, which records the amount of time spent inside `next`.
+ *
+ * ---
+ *
+ * Handlers may also abort requests. They can do this in two ways:
+ *   1. Create an `AbortController` and add its `AbortSignal` to the `metadata` object when calling `next`.
+ *   2. Resolve its returned Promise.
+ *
+ * The first approach is straightforward, but the second may benefit from an example – the simplest is a handler which
+ * will timeout a request:
+ * ```ts
+ * const timeoutHandler = <Req, Res, Meta>(next: Handler<Req, Res, Meta>) => (req: Req, metadata: Meta) => {
+ *   return Promise.race([
+ *     next(req, metadata),
+ *     sleep(1000),
+ *   ])
+ * }
+ * ```
+ * The Promise returned by this handler will resolve either when the `next` handler resolves or 1 second has elapsed,
+ * whichever happens first. If the timeout happens first, we want the `next` handler to recieve an abort signal so that
+ * it can terminate early (since its result is no longer needed).
+ *
+ * HandlerChainBuilder makes this happen by observing when each handler completes, and sending an abort signal to all
+ * the handlers "downstream" from the aborting handler.
+ */
+class HandlerChainBuilder {
+    constructor(inner) {
+        // The TS compiler has the following behavior:
+        //
+        // class Infer<T extends SomeType | undefined> { constructor(f: (t?: T) => void) {} }
+        // const f = (t?: SomeType) => {}
+        // const i = new Infer(f)
+        //
+        // The type of `i` is inferred to be `Infer<SomeType>` instead of `Infer<SomeType | undefined>`, even though the
+        // type of `f`'s argument is `SomeType | undefined`. This seems to be a bug in type inference. Note that making
+        // the constructor argument required gives the expected behavior:
+        //
+        // class Infer<T extends SomeType | undefined> { constructor(f: (t: T) => void) {} }
+        // const f = (t?: SomeType) => {}
+        // const i = new Infer(f)
+        //
+        // Now `i` is inferred to be `Infer<SomeType | undefined>`.
+        //
+        // This has consequences if the inferred type T is used elsewhere in the class.
+        //
+        // In this case, we need to make sure that if the given `inner` function marks the metadata argument as
+        // optional, that HandlerChainBuilder correctly infers that the Meta type includes undefined. So we don't mark
+        // metadata as optional, and so we must cast to `Handler` (which does mark it as optional).
+        //
+        // Safety: We're adding `| undefined` to the metadata type, which may be unsafe – `undefined` may not be
+        // assignable to Meta. But when handling the argument of type Meta, we simply pass it through from handler to
+        // handler – we never call `inner` without passing the metadata argument we've received from some call to an
+        // outer handler. The typing visible to callers remains safe.
+        this.inner = inner;
+    }
+    get handler() {
+        return this.inner;
+    }
+    map(outer) {
+        // To create the next handler in the chain, we compose the "outer" handler with the "inner" handler.
+        //
+        // The outer handler observes its own completion and sends an abort signal to the inner handler when it has
+        // resolved. To prevent unexpected behavior, the inner handler also observes its own completion, setting a flag
+        // when it resolves so that – if it resolves before the outer handler – the outer handler can skip sending the
+        // abort signal (since the inner handler has already completed).
+        const outerHandler = (req, metadata) => {
+            var _a;
+            const abort = new AbortController();
+            const signal = abort.signal;
+            // It's important to not signal an abort to an inner handler which has already completed – it seems like
+            // this would be a non-issue (shouldn't aborting after completion be a no-op?), but specifically for the
+            // browser's implementation of `fetch`, aborting even after the `fetch` Promise resolves can cause an abort
+            // error if e.g. the Fetch Response's body has not yet been read.
+            //
+            // So, for safety, we will only abort inner handlers which are still executing.
+            let innerCompleted = false;
+            const maybeAbort = () => {
+                var _a;
+                // Safety: we never give `abort` to anyone else, so we know if the signal is aborted, this function
+                // has already run, so we can return early without fear of leaking. We also know if inner has completed,
+                // it has already performed cleanup.
+                if (signal.aborted || innerCompleted)
+                    return;
+                // If we've gotten here, the outer handler has either completed, or we heard an abort event while the
+                // inner handler is still executing – so we pass the abort signal down to the inner handler.
+                abort.abort();
+                (_a = metadata === null || metadata === void 0 ? void 0 : metadata.signal) === null || _a === void 0 ? void 0 : _a.removeEventListener("abort", maybeAbort);
+            };
+            (_a = metadata === null || metadata === void 0 ? void 0 : metadata.signal) === null || _a === void 0 ? void 0 : _a.addEventListener("abort", maybeAbort);
+            const innerHandler = new Proxy(this.inner, {
+                apply: (target, thisArg, args) => {
+                    const [req, metadata] = args;
+                    // When calling the inner handler, we may not care about the result and don't want the handler's
+                    // operation to be interrupted by an abort signal. For example, we might be calling the inner
+                    // handler as a side-effect which we want to continue after the outer handler has completed.
+                    //
+                    // In this cases, we'll treat the inner handler as having completed immediately -- as far as the
+                    // outer handler is concerned, the inner handler is a no-op. This means that when the outer handler
+                    // completes, `maybeAbort` will not send an abort signal to the inner handler.
+                    //
+                    // A concrete example: returning a value from cache immediately, but then calling the inner handler
+                    // as a side-effect to refresh the cache "in the background."
+                    if (metadata === null || metadata === void 0 ? void 0 : metadata.isSideEffect)
+                        innerCompleted = true;
+                    // To help Handler authors out, we'll do some bookkeeping and cleanup for them – if they forget to
+                    // remove an abort event listener, we'll remove it for them when the Promise they return resolves.
+                    // Note: No need to proxy removeEventListener, since removing a non-existent listener just no-ops.
+                    const abortListeners = [];
+                    signal.addEventListener = new Proxy(signal.addEventListener, {
+                        apply: (target, thisArg, args) => {
+                            abortListeners.push(args[1]);
+                            return Reflect.apply(target, thisArg, args);
+                        },
+                    });
+                    const cleanupAndMarkComplete = () => {
+                        var _a;
+                        // The only reason we listen to upstream aborts is to pass them to the inner handler – since the
+                        // inner handler has completed, we no longer need the listener.
+                        (_a = metadata === null || metadata === void 0 ? void 0 : metadata.signal) === null || _a === void 0 ? void 0 : _a.removeEventListener("abort", maybeAbort);
+                        abortListeners.forEach((listener) => signal.removeEventListener("abort", listener));
+                        innerCompleted = true;
+                    };
+                    const innerResponse = Reflect.apply(target, thisArg, [
+                        req,
+                        Object.assign(Object.assign({}, metadata), { isSideEffect: false, signal }),
+                    ]);
+                    // Using `finally` is more idiomatic, but causes trouble in some environments (e.g. some testing
+                    // runtimes which detect uncaught rejected promises).
+                    innerResponse.catch(() => { }).then(cleanupAndMarkComplete);
+                    return innerResponse;
+                },
+            });
+            const outerResponse = outer(innerHandler)(req, metadata);
+            outerResponse.catch(() => { }).then(maybeAbort);
+            return outerResponse;
+        };
+        return new HandlerChainBuilder(outerHandler);
+    }
+}
+//# sourceMappingURL=HandlerChainBuilder.js.map
 ;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/ObjectUnsubscribedError.js
 
 var ObjectUnsubscribedError = createErrorClass(function (_super) {
@@ -7218,8 +8019,8 @@ const entries = (o) => Object.entries(o);
 
 
 /**
- * The subsject is created and overrdien in initLogger().
- * The function has to be called each time new instance of CameraKit is bootstrapped.
+ * A reference to the recently created log messages subject.
+ * The subject is overridden in resetLogger() method, which is called during CameraKit bootstrapping.
  */
 let logEntriesSubject = new Subject();
 /**
@@ -7235,10 +8036,15 @@ const logLevelMap = {
     debug: 0,
 };
 /**
- * Initializes new logger subject.
+ * Initializes a new logger subject.
+ *
+ * Note: currently only one `CameraKit` instance is allowed to listen to log messages at a time, therefore that is
+ * necessary to avoid sharing the same subject between multiple `CameraKit` instances by calling`resetLogger()`.
+ * Also, `resetLogger()` should be called when there is no interest in logged messages.
+ * This allows the previous logEntriesSubject to be GCec.
  * @internal
  */
-function initLogger() {
+function resetLogger() {
     return (logEntriesSubject = new Subject());
 }
 /**
@@ -7277,6 +8083,7 @@ const defaultOptions = {
     backoffMultiple: 3,
     baseSleep: 500,
     maxSleep: 5 * 1000,
+    maxRetries: 10,
     // The Response type is very common, so our default predicate special-cases to retry all failed Responses.
     retryPredicate: (responseOrError) => (responseOrError instanceof Response ? !responseOrError.ok : true),
 };
@@ -7302,7 +8109,8 @@ function ensureClonedRequest(input) {
  */
 const createRetryingHandler = (options = {}) => {
     const definedOptions = copyDefinedProperties(options);
-    const { backoffMultiple, baseSleep, maxSleep, retryPredicate } = Object.assign(Object.assign({}, defaultOptions), definedOptions);
+    const { backoffMultiple, baseSleep, maxSleep, maxRetries, retryPredicate } = Object.assign(Object.assign({}, defaultOptions), definedOptions);
+    let retryCount = -1;
     const jitterSleep = (priorSleep) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
         const nextSleep = Math.min(maxSleep, randomInRange(baseSleep, priorSleep * backoffMultiple));
         yield sleep(nextSleep);
@@ -7310,9 +8118,10 @@ const createRetryingHandler = (options = {}) => {
     });
     const makeRequestAttempt = (next, priorSleep = baseSleep) => (req, metadata) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
         var _a, _b;
+        retryCount++;
         try {
             const response = yield next(ensureClonedRequest(req), metadata);
-            if (retryPredicate(response)) {
+            if (retryCount < maxRetries && retryPredicate(response, retryCount)) {
                 const nextSleep = yield jitterSleep(priorSleep);
                 // The request may have been aborted while we were sleeping. In that case, we'll resolve
                 // with the failed response. In many cases this will be ignored, because an AbortError has already
@@ -7333,14 +8142,15 @@ const createRetryingHandler = (options = {}) => {
             // If the request fails because it was aborted, we assume this was done intentionally and we can stop.
             if (error.name === "AbortError")
                 throw error;
+            if (retryCount < maxRetries && retryPredicate(error, retryCount)) {
+                const nextSleep = yield jitterSleep(priorSleep);
+                if ((_b = metadata === null || metadata === void 0 ? void 0 : metadata.signal) === null || _b === void 0 ? void 0 : _b.aborted)
+                    throw error;
+                logRetry(error, nextSleep);
+                return makeRequestAttempt(next, nextSleep)(req, metadata);
+            }
             // If no retry is to be attempted, return the error to the caller.
-            if (!retryPredicate(error))
-                throw error;
-            const nextSleep = yield jitterSleep(priorSleep);
-            if ((_b = metadata === null || metadata === void 0 ? void 0 : metadata.signal) === null || _b === void 0 ? void 0 : _b.aborted)
-                throw error;
-            logRetry(error, nextSleep);
-            return makeRequestAttempt(next, nextSleep)(req, metadata);
+            throw error;
         }
     });
     return (next) => makeRequestAttempt(next);
@@ -7519,6 +8329,20 @@ const fullLocale = navigator.languages
 
 
 
+
+/**
+ * Some user agents may not properly implement the NavigatorUAData interface, so we have to do our own validation here
+ * to make sure we're dealing with a well-formed value.
+ */
+function isNavigatorUAData(value) {
+    return (isRecord(value) &&
+        Array.isArray(value["brands"]) &&
+        value["brands"].every((brand) => {
+            return isRecord(brand) && typeof brand["brand"] === "string" && typeof brand["version"] === "string";
+        }) &&
+        typeof value["mobile"] === "boolean" &&
+        typeof value["platform"] === "string");
+}
 /**
  * Parse the platform (i.e. OS) version.
  *
@@ -7687,11 +8511,12 @@ function parseApplicationOrigin() {
     return origin;
 }
 function getCameraKitUserAgent() {
-    const userAgent = navigator.userAgent;
+    var _a;
+    const userAgent = (_a = navigator.userAgent) !== null && _a !== void 0 ? _a : "";
     // [NavigatorUAData](https://developer.mozilla.org/en-US/docs/Web/API/NavigatorUAData) is currently only
     // available on Chromium-based browsers – it's nice because it gives us clear, well-documented information. But
     // we'll have to fallback to parsing the userAgent string when it's not available.
-    const userAgentData = navigator.userAgentData !== undefined
+    const userAgentData = isNavigatorUAData(navigator.userAgentData)
         ? normalizeUserAgentData(navigator.userAgentData)
         : parseUserAgentData(userAgent);
     const platformVersion = parsePlatformVersion(userAgent);
@@ -7818,14 +8643,14 @@ const lensCoreFactory = Injectable("lensCore", [defaultFetchHandlerFactory.token
         lensCoreWASM = (_b = findMatch(/\.wasm/, assetURLs)) !== null && _b !== void 0 ? _b : "";
         if (!lensCoreJS || !lensCoreWASM) {
             throw new Error(`Cannot fetch required LensCore assets. Either the JS or WASM filename is missing from ` +
-                `this list: ${assetURLs}`);
+                `this list: ${assetURLs}.`);
         }
         // Fetching here and creating an Object URL lets LensCore optimized loading itself in a WebWorker,
         // otherwise the glue script would need to be downloaded again.
         const glueScript = yield handler(lensCoreJS).then((r) => r.blob());
         lensCoreJS = URL.createObjectURL(glueScript);
     }
-    yield loadScript(lensCoreJS);
+    const scriptElement = yield loadScript(lensCoreJS);
     const lensCore = yield new Promise((resolve, reject) => {
         let initialModule;
         // will trigger WASM initialization and data loading,
@@ -7849,6 +8674,8 @@ const lensCoreFactory = Injectable("lensCore", [defaultFetchHandlerFactory.token
             },
         }));
     });
+    // now when we have LensCore WASM in memory we can release the script element
+    scriptElement.remove();
     // print warning if loaded version differs from hardcoded one
     if (lensCoreWasmVersions_namespaceObject.i8 != `${lensCore.getCoreVersion()}`) {
         lensCoreFactory_logger.warn(`Loaded LensCore version (${lensCore.getCoreVersion()}) differs from expected one (${lensCoreWasmVersions_namespaceObject.i8})`);
@@ -7931,7 +8758,7 @@ function webglUtils_createProgram(gl, vertexSource, fragmentSource) {
     if (!success) {
         const message = gl.getProgramInfoLog(program);
         gl.deleteProgram(program);
-        throw webGLError(`WebGLProgram linking failed with status: ${message}`);
+        throw webGLError(`WebGLProgram linking failed with status: ${message}.`);
     }
     return program;
 }
@@ -7945,7 +8772,7 @@ function createShader(gl, source, type) {
     if (!success) {
         const message = gl.getShaderInfoLog(shader);
         gl.deleteShader(shader);
-        throw webGLError(`WebGLShader (type ${type}) compilation failed with status: ${message}`);
+        throw webGLError(`WebGLShader (type ${type}) compilation failed with status: ${message}.`);
     }
     return shader;
 }
@@ -8238,8 +9065,8 @@ function validate_validate(target, key, descriptor) {
             }
             if (!isValueOfType(arg, type)) {
                 const { methodPath, argPosition, argTypeName } = getArgumentInfo(target, key, i, arg);
-                throw new Error(`The ${argPosition} argument to '${methodPath}' method is of type ` +
-                    `'${argTypeName}', which is not assignable to parameter of type '${type.name}'.`);
+                throw new Error(`The ${argPosition} argument to ${methodPath} method is of type ` +
+                    `${argTypeName}, which is not assignable to parameter of type ${type.name}.`);
             }
         }
         return method.apply(this, arguments);
@@ -8345,15 +9172,6 @@ const cameraKitServiceFetchHandlerFactory = Injectable("cameraKitServiceFetchHan
  */
 class LensSources {
     /**
-     * Creates an instance of Lens sources.
-     * @param fallbackSources A fallback sources if given {@link LensSource} doesn't claim a group ownership.
-     * @param source Lens source.
-     */
-    constructor(fallbackSources, source) {
-        this.fallbackSources = fallbackSources;
-        this.source = source;
-    }
-    /**
      * Returns empty LensSources instance.
      * @internal
      */
@@ -8362,6 +9180,15 @@ class LensSources {
         // but internally we don't need them for the base case
         // @ts-expect-error
         return new LensSources();
+    }
+    /**
+     * Creates an instance of Lens sources.
+     * @param fallbackSources A fallback sources if given {@link LensSource} doesn't claim a group ownership.
+     * @param source Lens source.
+     */
+    constructor(fallbackSources, source) {
+        this.fallbackSources = fallbackSources;
+        this.source = source;
     }
     /**
      * Returns envelopes of lens/groups taking into account group ownership.
@@ -8488,6 +9315,7 @@ class TypedEventTarget {
 
 
 
+
 let requestId = 0;
 const safeParseInt = (str) => {
     if (str == null)
@@ -8495,36 +9323,39 @@ const safeParseInt = (str) => {
     const maybeInt = parseInt(str);
     return isNaN(maybeInt) ? 0 : maybeInt;
 };
-const requestStateEventTarget = new TypedEventTarget();
-const dispatchRequestStarted = (data) => {
+const dispatchRequestStarted = (requestStateEventTarget, data) => {
     const started = Object.assign(Object.assign({}, data), { requestId: requestId++, timeMs: getTimeMs() });
     requestStateEventTarget.dispatchEvent(new TypedCustomEvent("started", started));
     return started;
 };
-const dispatchRequestCompleted = (data) => {
+const dispatchRequestCompleted = (requestStateEventTarget, data) => {
     const completed = Object.assign(Object.assign({}, data), { timeMs: getTimeMs() });
     requestStateEventTarget.dispatchEvent(new TypedCustomEvent("completed", completed));
     return completed;
 };
-const dispatchRequestErrored = (data) => {
+const dispatchRequestErrored = (requestStateEventTarget, data) => {
     const errored = Object.assign(Object.assign({}, data), { timeMs: getTimeMs() });
     requestStateEventTarget.dispatchEvent(new TypedCustomEvent("errored", errored));
     return errored;
 };
-const createRequestStateEmittingHandler = () => (next) => ([request, dimensions], metadata) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
-    const { requestId } = dispatchRequestStarted({ dimensions });
+const createRequestStateEmittingHandler = (requestStateEventTarget) => (next) => ([request, dimensions], metadata) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
+    const { requestId } = dispatchRequestStarted(requestStateEventTarget, { dimensions });
     try {
         const response = yield next(request, metadata);
         const status = response.status;
         const sizeByte = safeParseInt(response.headers.get("content-length"));
-        dispatchRequestCompleted({ requestId, dimensions, status, sizeByte });
+        dispatchRequestCompleted(requestStateEventTarget, { requestId, dimensions, status, sizeByte });
         return response;
     }
     catch (error) {
-        dispatchRequestErrored({ requestId, dimensions, error: errorHelpers_ensureError(error) });
+        dispatchRequestErrored(requestStateEventTarget, { requestId, dimensions, error: errorHelpers_ensureError(error) });
         throw error;
     }
 });
+/**
+ * @internal
+ */
+const requestStateEventTargetFactory = Injectable("requestStateEventTarget", () => new TypedEventTarget());
 //# sourceMappingURL=requestStateEmittingHandler.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/handlers/arrayBufferParsingHandler.js
 
@@ -8552,7 +9383,6 @@ var long_default = /*#__PURE__*/__webpack_require__.n(src_long);
 var minimal = __webpack_require__(100);
 var minimal_default = /*#__PURE__*/__webpack_require__.n(minimal);
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/google/protobuf/any.js
-/* eslint-disable */
 
 
 const protobufPackage = "google.protobuf";
@@ -8647,19 +9477,14 @@ function isSet(value) {
 }
 //# sourceMappingURL=any.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/camera_kit/v3/lens.js
-/* eslint-disable */
 
 
 
 const lens_protobufPackage = "com.snap.camerakit.v3";
-/** CameraFacing enum. */
 var Lens_CameraFacing;
 (function (Lens_CameraFacing) {
-    /** CAMERA_FACING_UNSET - unspecified value. */
     Lens_CameraFacing["CAMERA_FACING_UNSET"] = "CAMERA_FACING_UNSET";
-    /** CAMERA_FACING_FRONT - camera facing front */
     Lens_CameraFacing["CAMERA_FACING_FRONT"] = "CAMERA_FACING_FRONT";
-    /** CAMERA_FACING_BACK - camera facing back */
     Lens_CameraFacing["CAMERA_FACING_BACK"] = "CAMERA_FACING_BACK";
     Lens_CameraFacing["UNRECOGNIZED"] = "UNRECOGNIZED";
 })(Lens_CameraFacing || (Lens_CameraFacing = {}));
@@ -8704,12 +9529,9 @@ function lens_CameraFacingToNumber(object) {
             return 0;
     }
 }
-/** Manifest type */
 var LensAssetManifestItem_Type;
 (function (LensAssetManifestItem_Type) {
-    /** DEVICE_DEPENDENT_ASSET_UNSET - Device dependent asset */
     LensAssetManifestItem_Type["DEVICE_DEPENDENT_ASSET_UNSET"] = "DEVICE_DEPENDENT_ASSET_UNSET";
-    /** ASSET - Device independent asset */
     LensAssetManifestItem_Type["ASSET"] = "ASSET";
     LensAssetManifestItem_Type["UNRECOGNIZED"] = "UNRECOGNIZED";
 })(LensAssetManifestItem_Type || (LensAssetManifestItem_Type = {}));
@@ -8747,14 +9569,10 @@ function lensAssetManifestItem_TypeToNumber(object) {
             return 0;
     }
 }
-/** Manifest request timing */
 var LensAssetManifestItem_RequestTiming;
 (function (LensAssetManifestItem_RequestTiming) {
-    /** PRELOAD_UNSET - Preload request timing */
     LensAssetManifestItem_RequestTiming["PRELOAD_UNSET"] = "PRELOAD_UNSET";
-    /** ON_DEMAND - On demand request timing */
     LensAssetManifestItem_RequestTiming["ON_DEMAND"] = "ON_DEMAND";
-    /** REQUIRED - Required request timing */
     LensAssetManifestItem_RequestTiming["REQUIRED"] = "REQUIRED";
     LensAssetManifestItem_RequestTiming["UNRECOGNIZED"] = "UNRECOGNIZED";
 })(LensAssetManifestItem_RequestTiming || (LensAssetManifestItem_RequestTiming = {}));
@@ -8809,6 +9627,7 @@ function createBaseLens() {
         cameraFacingPreference: Lens_CameraFacing.CAMERA_FACING_UNSET,
         featureMetadata: [],
         lensCreator: undefined,
+        scannable: undefined,
     };
 }
 const Lens = {
@@ -8846,6 +9665,9 @@ const Lens = {
                 case 8:
                     message.lensCreator = LensCreator.decode(reader, reader.uint32());
                     break;
+                case 9:
+                    message.scannable = Scannable.decode(reader, reader.uint32());
+                    break;
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -8872,6 +9694,7 @@ const Lens = {
                 ? object.featureMetadata.map((e) => Any.fromJSON(e))
                 : [],
             lensCreator: lens_isSet(object.lensCreator) ? LensCreator.fromJSON(object.lensCreator) : undefined,
+            scannable: lens_isSet(object.scannable) ? Scannable.fromJSON(object.scannable) : undefined,
         };
     },
     toJSON(message) {
@@ -8896,6 +9719,8 @@ const Lens = {
         }
         message.lensCreator !== undefined &&
             (obj.lensCreator = message.lensCreator ? LensCreator.toJSON(message.lensCreator) : undefined);
+        message.scannable !== undefined &&
+            (obj.scannable = message.scannable ? Scannable.toJSON(message.scannable) : undefined);
         return obj;
     },
     fromPartial(object) {
@@ -8918,6 +9743,8 @@ const Lens = {
             object.lensCreator !== undefined && object.lensCreator !== null
                 ? LensCreator.fromPartial(object.lensCreator)
                 : undefined;
+        message.scannable =
+            object.scannable !== undefined && object.scannable !== null ? Scannable.fromPartial(object.scannable) : undefined;
         return message;
     },
 };
@@ -9205,7 +10032,7 @@ const LensAssetManifestItem = {
     },
 };
 function createBasePreview() {
-    return { imageUrl: "" };
+    return { imageUrl: "", imageSequenceSize: 0, imageSequenceWebpUrlPattern: "" };
 }
 const Preview = {
     decode(input, length) {
@@ -9218,6 +10045,12 @@ const Preview = {
                 case 1:
                     message.imageUrl = reader.string();
                     break;
+                case 2:
+                    message.imageSequenceSize = reader.int32();
+                    break;
+                case 3:
+                    message.imageSequenceWebpUrlPattern = reader.string();
+                    break;
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -9228,17 +10061,26 @@ const Preview = {
     fromJSON(object) {
         return {
             imageUrl: lens_isSet(object.imageUrl) ? String(object.imageUrl) : "",
+            imageSequenceSize: lens_isSet(object.imageSequenceSize) ? Number(object.imageSequenceSize) : 0,
+            imageSequenceWebpUrlPattern: lens_isSet(object.imageSequenceWebpUrlPattern)
+                ? String(object.imageSequenceWebpUrlPattern)
+                : "",
         };
     },
     toJSON(message) {
         const obj = {};
         message.imageUrl !== undefined && (obj.imageUrl = message.imageUrl);
+        message.imageSequenceSize !== undefined && (obj.imageSequenceSize = Math.round(message.imageSequenceSize));
+        message.imageSequenceWebpUrlPattern !== undefined &&
+            (obj.imageSequenceWebpUrlPattern = message.imageSequenceWebpUrlPattern);
         return obj;
     },
     fromPartial(object) {
-        var _a;
+        var _a, _b, _c;
         const message = createBasePreview();
         message.imageUrl = (_a = object.imageUrl) !== null && _a !== void 0 ? _a : "";
+        message.imageSequenceSize = (_b = object.imageSequenceSize) !== null && _b !== void 0 ? _b : 0;
+        message.imageSequenceWebpUrlPattern = (_c = object.imageSequenceWebpUrlPattern) !== null && _c !== void 0 ? _c : "";
         return message;
     },
 };
@@ -9277,6 +10119,50 @@ const LensCreator = {
         var _a;
         const message = createBaseLensCreator();
         message.displayName = (_a = object.displayName) !== null && _a !== void 0 ? _a : "";
+        return message;
+    },
+};
+function createBaseScannable() {
+    return { snapcodeImageUrl: "", snapcodeDeeplink: "" };
+}
+const Scannable = {
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseScannable();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.snapcodeImageUrl = reader.string();
+                    break;
+                case 2:
+                    message.snapcodeDeeplink = reader.string();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return {
+            snapcodeImageUrl: lens_isSet(object.snapcodeImageUrl) ? String(object.snapcodeImageUrl) : "",
+            snapcodeDeeplink: lens_isSet(object.snapcodeDeeplink) ? String(object.snapcodeDeeplink) : "",
+        };
+    },
+    toJSON(message) {
+        const obj = {};
+        message.snapcodeImageUrl !== undefined && (obj.snapcodeImageUrl = message.snapcodeImageUrl);
+        message.snapcodeDeeplink !== undefined && (obj.snapcodeDeeplink = message.snapcodeDeeplink);
+        return obj;
+    },
+    fromPartial(object) {
+        var _a, _b;
+        const message = createBaseScannable();
+        message.snapcodeImageUrl = (_a = object.snapcodeImageUrl) !== null && _a !== void 0 ? _a : "";
+        message.snapcodeDeeplink = (_b = object.snapcodeDeeplink) !== null && _b !== void 0 ? _b : "";
         return message;
     },
 };
@@ -9379,7 +10265,8 @@ function isLens(value) {
         predicateRecordValues(isString)(value.vendorData) &&
         isString(value.cameraFacingPreference) &&
         (isUndefined(value.preview) || isPreview(value.preview)) &&
-        (isUndefined(value.lensCreator) || isLensCreator(value.lensCreator)));
+        (isUndefined(value.lensCreator) || isLensCreator(value.lensCreator)) &&
+        (isUndefined(value.snapcode) || isSnapcode(value.snapcode)));
 }
 function isLensProto(value) {
     return (isRecord(value) &&
@@ -9394,6 +10281,9 @@ function isPreview(value) {
 }
 function isLensCreator(value) {
     return isRecord(value) && isString(value.displayName);
+}
+function isSnapcode(value) {
+    return isRecord(value) && isString(value.imageUrl) && isString(value.deepLink);
 }
 function isLensContent(value) {
     return (isRecord(value) &&
@@ -9413,7 +10303,7 @@ function isGetGroupResponse(value) {
  *
  * @internal
  */
-function toPublicLens({ id, name, content, vendorData, cameraFacingPreference, lensCreator }) {
+function toPublicLens({ id, name, content, vendorData, cameraFacingPreference, lensCreator, scannable, }) {
     var _a;
     assert(isEmptyOrSafeUrl(content === null || content === void 0 ? void 0 : content.iconUrlBolt), "Unsafe icon URL");
     assert(isEmptyOrSafeUrl((_a = content === null || content === void 0 ? void 0 : content.preview) === null || _a === void 0 ? void 0 : _a.imageUrl), "Unsafe preview URL");
@@ -9421,23 +10311,26 @@ function toPublicLens({ id, name, content, vendorData, cameraFacingPreference, l
         id,
         name,
         iconUrl: content === null || content === void 0 ? void 0 : content.iconUrlBolt,
-        preview: content === null || content === void 0 ? void 0 : content.preview,
+        preview: (content === null || content === void 0 ? void 0 : content.preview) ? { imageUrl: content.preview.imageUrl } : undefined,
         vendorData,
         cameraFacingPreference,
         lensCreator,
+        snapcode: scannable
+            ? { imageUrl: scannable.snapcodeImageUrl, deepLink: scannable.snapcodeDeeplink }
+            : undefined,
     };
 }
 //# sourceMappingURL=Lens.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/lens/lensHttpUtil.js
 
 
-const BASE_PATH = "https://api-kit.snapchat.com/com.snap.camerakit.v3.Lenses";
+const relativePath = "/com.snap.camerakit.v3.Lenses";
 function getRequestId(res) {
     return res.headers.get("x-request-id");
 }
-function retrieveCameraKitLens(httpClient, lensId, groupId) {
+function retrieveCameraKitLens(httpClient, lensId, groupId, apiHostname) {
     return tslib_es6_awaiter(this, void 0, void 0, function* () {
-        const url = [BASE_PATH, "groups", groupId, "lenses", lensId].join("/");
+        const url = `https://${apiHostname}${relativePath}/groups/${groupId}/lenses/${lensId}`;
         const response = yield httpClient(url, { credentials: "include" });
         const body = yield response.json();
         const lens = body.lens;
@@ -9447,9 +10340,9 @@ function retrieveCameraKitLens(httpClient, lensId, groupId) {
         return lens;
     });
 }
-function retrieveCameraKitLensGroup(httpClient, groupId) {
+function retrieveCameraKitLensGroup(httpClient, groupId, apiHostname) {
     return tslib_es6_awaiter(this, void 0, void 0, function* () {
-        const url = [BASE_PATH, "groups", groupId].join("/");
+        const url = `https://${apiHostname}${relativePath}/groups/${groupId}`;
         const response = yield httpClient(url, { credentials: "include" });
         const body = yield response.json();
         if (!isGetGroupResponse(body)) {
@@ -9460,17 +10353,13 @@ function retrieveCameraKitLensGroup(httpClient, groupId) {
 }
 //# sourceMappingURL=lensHttpUtil.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/camera_kit/v3/export.js
-/* eslint-disable */
 
 
 
 const export_protobufPackage = "com.snap.camerakit.v3";
-/** Extension enum specifies list of supported extensions */
 var ExportLensesByIdRequest_Context_Extension_Name;
 (function (ExportLensesByIdRequest_Context_Extension_Name) {
-    /** UNSET - UNSET value */
     ExportLensesByIdRequest_Context_Extension_Name["UNSET"] = "UNSET";
-    /** SHOP_KIT - Shopkit */
     ExportLensesByIdRequest_Context_Extension_Name["SHOP_KIT"] = "SHOP_KIT";
     ExportLensesByIdRequest_Context_Extension_Name["UNRECOGNIZED"] = "UNRECOGNIZED";
 })(ExportLensesByIdRequest_Context_Extension_Name || (ExportLensesByIdRequest_Context_Extension_Name = {}));
@@ -9500,17 +10389,11 @@ function exportLensesByIdRequest_Context_Extension_NameToNumber(object) {
 }
 var ExportLensesByIdResponse_ExcludedLens_Code;
 (function (ExportLensesByIdResponse_ExcludedLens_Code) {
-    /** UNSET - for linter */
     ExportLensesByIdResponse_ExcludedLens_Code["UNSET"] = "UNSET";
-    /** UNKNOWN - reason unknown */
     ExportLensesByIdResponse_ExcludedLens_Code["UNKNOWN"] = "UNKNOWN";
-    /** NOT_FOUND - lens not found */
     ExportLensesByIdResponse_ExcludedLens_Code["NOT_FOUND"] = "NOT_FOUND";
-    /** INCOMPATIBLE_LENS_CORE_VERSION - client has core version less than  core version of the lens */
     ExportLensesByIdResponse_ExcludedLens_Code["INCOMPATIBLE_LENS_CORE_VERSION"] = "INCOMPATIBLE_LENS_CORE_VERSION";
-    /** ARCHIVED_OR_INVISIBLE - Lens archived or excluded due to visibility */
     ExportLensesByIdResponse_ExcludedLens_Code["ARCHIVED_OR_INVISIBLE"] = "ARCHIVED_OR_INVISIBLE";
-    /** CONTAINS_MUSIC - lens contains music and cannot be provided by CameraKit */
     ExportLensesByIdResponse_ExcludedLens_Code["CONTAINS_MUSIC"] = "CONTAINS_MUSIC";
     ExportLensesByIdResponse_ExcludedLens_Code["UNRECOGNIZED"] = "UNRECOGNIZED";
 })(ExportLensesByIdResponse_ExcludedLens_Code || (ExportLensesByIdResponse_ExcludedLens_Code = {}));
@@ -9899,7 +10782,7 @@ function decodeEnvelope(envelope) {
         return Envelope.decode(new Uint8Array(envelope)).lenses;
     }
     catch (_a) {
-        throw new Error("Invalid lens envelope");
+        throw new Error("Invalid lens envelope.");
     }
 }
 /**
@@ -9961,316 +10844,6 @@ function firstValueFrom(source, config) {
     });
 }
 //# sourceMappingURL=firstValueFrom.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/isArrayLike.js
-var isArrayLike = (function (x) { return x && typeof x.length === 'number' && typeof x !== 'function'; });
-//# sourceMappingURL=isArrayLike.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/isPromise.js
-
-function isPromise(value) {
-    return isFunction_isFunction(value === null || value === void 0 ? void 0 : value.then);
-}
-//# sourceMappingURL=isPromise.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/isInteropObservable.js
-
-
-function isInteropObservable(input) {
-    return isFunction_isFunction(input[observable]);
-}
-//# sourceMappingURL=isInteropObservable.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/isAsyncIterable.js
-
-function isAsyncIterable(obj) {
-    return Symbol.asyncIterator && isFunction_isFunction(obj === null || obj === void 0 ? void 0 : obj[Symbol.asyncIterator]);
-}
-//# sourceMappingURL=isAsyncIterable.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/throwUnobservableError.js
-function createInvalidObservableTypeError(input) {
-    return new TypeError("You provided " + (input !== null && typeof input === 'object' ? 'an invalid object' : "'" + input + "'") + " where a stream was expected. You can provide an Observable, Promise, ReadableStream, Array, AsyncIterable, or Iterable.");
-}
-//# sourceMappingURL=throwUnobservableError.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/symbol/iterator.js
-function getSymbolIterator() {
-    if (typeof Symbol !== 'function' || !Symbol.iterator) {
-        return '@@iterator';
-    }
-    return Symbol.iterator;
-}
-var iterator_iterator = getSymbolIterator();
-//# sourceMappingURL=iterator.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/isIterable.js
-
-
-function isIterable(input) {
-    return isFunction_isFunction(input === null || input === void 0 ? void 0 : input[iterator_iterator]);
-}
-//# sourceMappingURL=isIterable.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/isReadableStreamLike.js
-
-
-function readableStreamLikeToAsyncGenerator(readableStream) {
-    return __asyncGenerator(this, arguments, function readableStreamLikeToAsyncGenerator_1() {
-        var reader, _a, value, done;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    reader = readableStream.getReader();
-                    _b.label = 1;
-                case 1:
-                    _b.trys.push([1, , 9, 10]);
-                    _b.label = 2;
-                case 2:
-                    if (false) {}
-                    return [4, __await(reader.read())];
-                case 3:
-                    _a = _b.sent(), value = _a.value, done = _a.done;
-                    if (!done) return [3, 5];
-                    return [4, __await(void 0)];
-                case 4: return [2, _b.sent()];
-                case 5: return [4, __await(value)];
-                case 6: return [4, _b.sent()];
-                case 7:
-                    _b.sent();
-                    return [3, 2];
-                case 8: return [3, 10];
-                case 9:
-                    reader.releaseLock();
-                    return [7];
-                case 10: return [2];
-            }
-        });
-    });
-}
-function isReadableStreamLike(obj) {
-    return isFunction_isFunction(obj === null || obj === void 0 ? void 0 : obj.getReader);
-}
-//# sourceMappingURL=isReadableStreamLike.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/observable/innerFrom.js
-
-
-
-
-
-
-
-
-
-
-
-
-function innerFrom_innerFrom(input) {
-    if (input instanceof Observable_Observable) {
-        return input;
-    }
-    if (input != null) {
-        if (isInteropObservable(input)) {
-            return fromInteropObservable(input);
-        }
-        if (isArrayLike(input)) {
-            return fromArrayLike(input);
-        }
-        if (isPromise(input)) {
-            return fromPromise(input);
-        }
-        if (isAsyncIterable(input)) {
-            return fromAsyncIterable(input);
-        }
-        if (isIterable(input)) {
-            return fromIterable(input);
-        }
-        if (isReadableStreamLike(input)) {
-            return fromReadableStreamLike(input);
-        }
-    }
-    throw createInvalidObservableTypeError(input);
-}
-function fromInteropObservable(obj) {
-    return new Observable_Observable(function (subscriber) {
-        var obs = obj[observable]();
-        if (isFunction_isFunction(obs.subscribe)) {
-            return obs.subscribe(subscriber);
-        }
-        throw new TypeError('Provided object does not correctly implement Symbol.observable');
-    });
-}
-function fromArrayLike(array) {
-    return new Observable_Observable(function (subscriber) {
-        for (var i = 0; i < array.length && !subscriber.closed; i++) {
-            subscriber.next(array[i]);
-        }
-        subscriber.complete();
-    });
-}
-function fromPromise(promise) {
-    return new Observable_Observable(function (subscriber) {
-        promise
-            .then(function (value) {
-            if (!subscriber.closed) {
-                subscriber.next(value);
-                subscriber.complete();
-            }
-        }, function (err) { return subscriber.error(err); })
-            .then(null, reportUnhandledError);
-    });
-}
-function fromIterable(iterable) {
-    return new Observable_Observable(function (subscriber) {
-        var e_1, _a;
-        try {
-            for (var iterable_1 = __values(iterable), iterable_1_1 = iterable_1.next(); !iterable_1_1.done; iterable_1_1 = iterable_1.next()) {
-                var value = iterable_1_1.value;
-                subscriber.next(value);
-                if (subscriber.closed) {
-                    return;
-                }
-            }
-        }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
-        finally {
-            try {
-                if (iterable_1_1 && !iterable_1_1.done && (_a = iterable_1.return)) _a.call(iterable_1);
-            }
-            finally { if (e_1) throw e_1.error; }
-        }
-        subscriber.complete();
-    });
-}
-function fromAsyncIterable(asyncIterable) {
-    return new Observable_Observable(function (subscriber) {
-        process(asyncIterable, subscriber).catch(function (err) { return subscriber.error(err); });
-    });
-}
-function fromReadableStreamLike(readableStream) {
-    return fromAsyncIterable(readableStreamLikeToAsyncGenerator(readableStream));
-}
-function process(asyncIterable, subscriber) {
-    var asyncIterable_1, asyncIterable_1_1;
-    var e_2, _a;
-    return tslib_es6_awaiter(this, void 0, void 0, function () {
-        var value, e_2_1;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    _b.trys.push([0, 5, 6, 11]);
-                    asyncIterable_1 = __asyncValues(asyncIterable);
-                    _b.label = 1;
-                case 1: return [4, asyncIterable_1.next()];
-                case 2:
-                    if (!(asyncIterable_1_1 = _b.sent(), !asyncIterable_1_1.done)) return [3, 4];
-                    value = asyncIterable_1_1.value;
-                    subscriber.next(value);
-                    if (subscriber.closed) {
-                        return [2];
-                    }
-                    _b.label = 3;
-                case 3: return [3, 1];
-                case 4: return [3, 11];
-                case 5:
-                    e_2_1 = _b.sent();
-                    e_2 = { error: e_2_1 };
-                    return [3, 11];
-                case 6:
-                    _b.trys.push([6, , 9, 10]);
-                    if (!(asyncIterable_1_1 && !asyncIterable_1_1.done && (_a = asyncIterable_1.return))) return [3, 8];
-                    return [4, _a.call(asyncIterable_1)];
-                case 7:
-                    _b.sent();
-                    _b.label = 8;
-                case 8: return [3, 10];
-                case 9:
-                    if (e_2) throw e_2.error;
-                    return [7];
-                case 10: return [7];
-                case 11:
-                    subscriber.complete();
-                    return [2];
-            }
-        });
-    });
-}
-//# sourceMappingURL=innerFrom.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/OperatorSubscriber.js
-
-
-function createOperatorSubscriber(destination, onNext, onComplete, onError, onFinalize) {
-    return new OperatorSubscriber(destination, onNext, onComplete, onError, onFinalize);
-}
-var OperatorSubscriber = (function (_super) {
-    __extends(OperatorSubscriber, _super);
-    function OperatorSubscriber(destination, onNext, onComplete, onError, onFinalize, shouldUnsubscribe) {
-        var _this = _super.call(this, destination) || this;
-        _this.onFinalize = onFinalize;
-        _this.shouldUnsubscribe = shouldUnsubscribe;
-        _this._next = onNext
-            ? function (value) {
-                try {
-                    onNext(value);
-                }
-                catch (err) {
-                    destination.error(err);
-                }
-            }
-            : _super.prototype._next;
-        _this._error = onError
-            ? function (err) {
-                try {
-                    onError(err);
-                }
-                catch (err) {
-                    destination.error(err);
-                }
-                finally {
-                    this.unsubscribe();
-                }
-            }
-            : _super.prototype._error;
-        _this._complete = onComplete
-            ? function () {
-                try {
-                    onComplete();
-                }
-                catch (err) {
-                    destination.error(err);
-                }
-                finally {
-                    this.unsubscribe();
-                }
-            }
-            : _super.prototype._complete;
-        return _this;
-    }
-    OperatorSubscriber.prototype.unsubscribe = function () {
-        var _a;
-        if (!this.shouldUnsubscribe || this.shouldUnsubscribe()) {
-            var closed_1 = this.closed;
-            _super.prototype.unsubscribe.call(this);
-            !closed_1 && ((_a = this.onFinalize) === null || _a === void 0 ? void 0 : _a.call(this));
-        }
-    };
-    return OperatorSubscriber;
-}(Subscriber));
-
-//# sourceMappingURL=OperatorSubscriber.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/lift.js
-
-function hasLift(source) {
-    return isFunction_isFunction(source === null || source === void 0 ? void 0 : source.lift);
-}
-function operate(init) {
-    return function (source) {
-        if (hasLift(source)) {
-            return source.lift(function (liftedSource) {
-                try {
-                    return init(liftedSource, this);
-                }
-                catch (err) {
-                    this.error(err);
-                }
-            });
-        }
-        throw new TypeError('Unable to lift unknown Observable type');
-    };
-}
-//# sourceMappingURL=lift.js.map
 ;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/catchError.js
 
 
@@ -10299,280 +10872,6 @@ function catchError(selector) {
     });
 }
 //# sourceMappingURL=catchError.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/map.js
-
-
-function map(project, thisArg) {
-    return operate(function (source, subscriber) {
-        var index = 0;
-        source.subscribe(createOperatorSubscriber(subscriber, function (value) {
-            subscriber.next(project.call(thisArg, value, index++));
-        }));
-    });
-}
-//# sourceMappingURL=map.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/executeSchedule.js
-function executeSchedule(parentSubscription, scheduler, work, delay, repeat) {
-    if (delay === void 0) { delay = 0; }
-    if (repeat === void 0) { repeat = false; }
-    var scheduleSubscription = scheduler.schedule(function () {
-        work();
-        if (repeat) {
-            parentSubscription.add(this.schedule(null, delay));
-        }
-        else {
-            this.unsubscribe();
-        }
-    }, delay);
-    parentSubscription.add(scheduleSubscription);
-    if (!repeat) {
-        return scheduleSubscription;
-    }
-}
-//# sourceMappingURL=executeSchedule.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/mergeInternals.js
-
-
-
-function mergeInternals(source, subscriber, project, concurrent, onBeforeNext, expand, innerSubScheduler, additionalFinalizer) {
-    var buffer = [];
-    var active = 0;
-    var index = 0;
-    var isComplete = false;
-    var checkComplete = function () {
-        if (isComplete && !buffer.length && !active) {
-            subscriber.complete();
-        }
-    };
-    var outerNext = function (value) { return (active < concurrent ? doInnerSub(value) : buffer.push(value)); };
-    var doInnerSub = function (value) {
-        expand && subscriber.next(value);
-        active++;
-        var innerComplete = false;
-        innerFrom_innerFrom(project(value, index++)).subscribe(createOperatorSubscriber(subscriber, function (innerValue) {
-            onBeforeNext === null || onBeforeNext === void 0 ? void 0 : onBeforeNext(innerValue);
-            if (expand) {
-                outerNext(innerValue);
-            }
-            else {
-                subscriber.next(innerValue);
-            }
-        }, function () {
-            innerComplete = true;
-        }, undefined, function () {
-            if (innerComplete) {
-                try {
-                    active--;
-                    var _loop_1 = function () {
-                        var bufferedValue = buffer.shift();
-                        if (innerSubScheduler) {
-                            executeSchedule(subscriber, innerSubScheduler, function () { return doInnerSub(bufferedValue); });
-                        }
-                        else {
-                            doInnerSub(bufferedValue);
-                        }
-                    };
-                    while (buffer.length && active < concurrent) {
-                        _loop_1();
-                    }
-                    checkComplete();
-                }
-                catch (err) {
-                    subscriber.error(err);
-                }
-            }
-        }));
-    };
-    source.subscribe(createOperatorSubscriber(subscriber, outerNext, function () {
-        isComplete = true;
-        checkComplete();
-    }));
-    return function () {
-        additionalFinalizer === null || additionalFinalizer === void 0 ? void 0 : additionalFinalizer();
-    };
-}
-//# sourceMappingURL=mergeInternals.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/mergeMap.js
-
-
-
-
-
-function mergeMap(project, resultSelector, concurrent) {
-    if (concurrent === void 0) { concurrent = Infinity; }
-    if (isFunction_isFunction(resultSelector)) {
-        return mergeMap(function (a, i) { return map(function (b, ii) { return resultSelector(a, b, i, ii); })(innerFrom_innerFrom(project(a, i))); }, concurrent);
-    }
-    else if (typeof resultSelector === 'number') {
-        concurrent = resultSelector;
-    }
-    return operate(function (source, subscriber) { return mergeInternals(source, subscriber, project, concurrent); });
-}
-//# sourceMappingURL=mergeMap.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/observeOn.js
-
-
-
-function observeOn(scheduler, delay) {
-    if (delay === void 0) { delay = 0; }
-    return operate(function (source, subscriber) {
-        source.subscribe(createOperatorSubscriber(subscriber, function (value) { return executeSchedule(subscriber, scheduler, function () { return subscriber.next(value); }, delay); }, function () { return executeSchedule(subscriber, scheduler, function () { return subscriber.complete(); }, delay); }, function (err) { return executeSchedule(subscriber, scheduler, function () { return subscriber.error(err); }, delay); }));
-    });
-}
-//# sourceMappingURL=observeOn.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/subscribeOn.js
-
-function subscribeOn(scheduler, delay) {
-    if (delay === void 0) { delay = 0; }
-    return operate(function (source, subscriber) {
-        subscriber.add(scheduler.schedule(function () { return source.subscribe(subscriber); }, delay));
-    });
-}
-//# sourceMappingURL=subscribeOn.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/scheduled/scheduleObservable.js
-
-
-
-function scheduleObservable(input, scheduler) {
-    return innerFrom_innerFrom(input).pipe(subscribeOn(scheduler), observeOn(scheduler));
-}
-//# sourceMappingURL=scheduleObservable.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/scheduled/schedulePromise.js
-
-
-
-function schedulePromise(input, scheduler) {
-    return innerFrom_innerFrom(input).pipe(subscribeOn(scheduler), observeOn(scheduler));
-}
-//# sourceMappingURL=schedulePromise.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/scheduled/scheduleArray.js
-
-function scheduleArray(input, scheduler) {
-    return new Observable_Observable(function (subscriber) {
-        var i = 0;
-        return scheduler.schedule(function () {
-            if (i === input.length) {
-                subscriber.complete();
-            }
-            else {
-                subscriber.next(input[i++]);
-                if (!subscriber.closed) {
-                    this.schedule();
-                }
-            }
-        });
-    });
-}
-//# sourceMappingURL=scheduleArray.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/scheduled/scheduleIterable.js
-
-
-
-
-function scheduleIterable(input, scheduler) {
-    return new Observable_Observable(function (subscriber) {
-        var iterator;
-        executeSchedule(subscriber, scheduler, function () {
-            iterator = input[iterator_iterator]();
-            executeSchedule(subscriber, scheduler, function () {
-                var _a;
-                var value;
-                var done;
-                try {
-                    (_a = iterator.next(), value = _a.value, done = _a.done);
-                }
-                catch (err) {
-                    subscriber.error(err);
-                    return;
-                }
-                if (done) {
-                    subscriber.complete();
-                }
-                else {
-                    subscriber.next(value);
-                }
-            }, 0, true);
-        });
-        return function () { return isFunction_isFunction(iterator === null || iterator === void 0 ? void 0 : iterator.return) && iterator.return(); };
-    });
-}
-//# sourceMappingURL=scheduleIterable.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/scheduled/scheduleAsyncIterable.js
-
-
-function scheduleAsyncIterable(input, scheduler) {
-    if (!input) {
-        throw new Error('Iterable cannot be null');
-    }
-    return new Observable_Observable(function (subscriber) {
-        executeSchedule(subscriber, scheduler, function () {
-            var iterator = input[Symbol.asyncIterator]();
-            executeSchedule(subscriber, scheduler, function () {
-                iterator.next().then(function (result) {
-                    if (result.done) {
-                        subscriber.complete();
-                    }
-                    else {
-                        subscriber.next(result.value);
-                    }
-                });
-            }, 0, true);
-        });
-    });
-}
-//# sourceMappingURL=scheduleAsyncIterable.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/scheduled/scheduleReadableStreamLike.js
-
-
-function scheduleReadableStreamLike(input, scheduler) {
-    return scheduleAsyncIterable(readableStreamLikeToAsyncGenerator(input), scheduler);
-}
-//# sourceMappingURL=scheduleReadableStreamLike.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/scheduled/scheduled.js
-
-
-
-
-
-
-
-
-
-
-
-
-
-function scheduled(input, scheduler) {
-    if (input != null) {
-        if (isInteropObservable(input)) {
-            return scheduleObservable(input, scheduler);
-        }
-        if (isArrayLike(input)) {
-            return scheduleArray(input, scheduler);
-        }
-        if (isPromise(input)) {
-            return schedulePromise(input, scheduler);
-        }
-        if (isAsyncIterable(input)) {
-            return scheduleAsyncIterable(input, scheduler);
-        }
-        if (isIterable(input)) {
-            return scheduleIterable(input, scheduler);
-        }
-        if (isReadableStreamLike(input)) {
-            return scheduleReadableStreamLike(input, scheduler);
-        }
-    }
-    throw createInvalidObservableTypeError(input);
-}
-//# sourceMappingURL=scheduled.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/observable/from.js
-
-
-function from_from(input, scheduler) {
-    return scheduler ? scheduled(input, scheduler) : innerFrom_innerFrom(input);
-}
-//# sourceMappingURL=from.js.map
 ;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/scheduler/dateTimestampProvider.js
 var dateTimestampProvider = {
     now: function () {
@@ -10747,43 +11046,10 @@ function shareReplay(configOrBufferSize, windowTime, scheduler) {
     });
 }
 //# sourceMappingURL=shareReplay.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/observable/empty.js
-
-var EMPTY = new Observable_Observable(function (subscriber) { return subscriber.complete(); });
-function empty(scheduler) {
-    return scheduler ? emptyScheduled(scheduler) : EMPTY;
-}
-function emptyScheduled(scheduler) {
-    return new Observable(function (subscriber) { return scheduler.schedule(function () { return subscriber.complete(); }); });
-}
-//# sourceMappingURL=empty.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/take.js
-
-
-
-function take(count) {
-    return count <= 0
-        ?
-            function () { return EMPTY; }
-        : operate(function (source, subscriber) {
-            var seen = 0;
-            source.subscribe(createOperatorSubscriber(subscriber, function (value) {
-                if (++seen <= count) {
-                    subscriber.next(value);
-                    if (count <= seen) {
-                        subscriber.complete();
-                    }
-                }
-            }));
-        });
-}
-//# sourceMappingURL=take.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/cdp/cof/namespace.js
-/* eslint-disable */
 
 
 const namespace_protobufPackage = "snapchat.cdp.cof";
-/** Namespace for grouping COF entities. */
 var Namespace;
 (function (Namespace) {
     Namespace[Namespace["DEFAULT"] = 0] = "DEFAULT";
@@ -10796,12 +11062,15 @@ if ((minimal_default()).util.Long !== (long_default())) {
     minimal_default().configure();
 }
 //# sourceMappingURL=namespace.js.map
+;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/handlers/index.js
+
+
+//# sourceMappingURL=index.js.map
 // EXTERNAL MODULE: ./node_modules/browser-headers/dist/browser-headers.umd.js
 var browser_headers_umd = __webpack_require__(84);
 // EXTERNAL MODULE: ./node_modules/@improbable-eng/grpc-web/dist/grpc-web-client.umd.js
 var grpc_web_client_umd = __webpack_require__(37);
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/google/protobuf/timestamp.js
-/* eslint-disable */
 
 
 const timestamp_protobufPackage = "google.protobuf";
@@ -10884,7 +11153,6 @@ function timestamp_isSet(value) {
 }
 //# sourceMappingURL=timestamp.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/cdp/cof/benchmark.js
-/* eslint-disable */
 
 
 
@@ -11070,47 +11338,29 @@ if ((minimal_default()).util.Long !== (long_default())) {
 }
 //# sourceMappingURL=benchmark.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/common/ruid.js
-/* eslint-disable */
 
 
 const ruid_protobufPackage = "snapchat.common";
-/** Randomization units supported for allocation */
 var Ruid_Type;
 (function (Ruid_Type) {
-    /** UNSET - Unknown type */
     Ruid_Type[Ruid_Type["UNSET"] = 0] = "UNSET";
-    /** USER - Snapchat user ID */
     Ruid_Type[Ruid_Type["USER"] = 1] = "USER";
-    /** DEVICE - Config device ID */
     Ruid_Type[Ruid_Type["DEVICE"] = 2] = "DEVICE";
-    /** WEB_CLIENT - Web client ID */
     Ruid_Type[Ruid_Type["WEB_CLIENT"] = 3] = "WEB_CLIENT";
-    /** AD_ACCOUNT - Ad account ID */
     Ruid_Type[Ruid_Type["AD_ACCOUNT"] = 4] = "AD_ACCOUNT";
-    /** USERNAME - Snapchat username (legacy only) */
     Ruid_Type[Ruid_Type["USERNAME"] = 5] = "USERNAME";
-    /** AD_MODERATION_AD - Ad Id used by Ad Moderation backend. */
     Ruid_Type[Ruid_Type["AD_MODERATION_AD"] = 6] = "AD_MODERATION_AD";
-    /** WEB_SNAPCHAT_USER - Snapchat user id used on web. */
     Ruid_Type[Ruid_Type["WEB_SNAPCHAT_USER"] = 7] = "WEB_SNAPCHAT_USER";
-    /** INTERNAL - Internal test RUID, internal use only and no analysis. */
     Ruid_Type[Ruid_Type["INTERNAL"] = 8] = "INTERNAL";
-    /** AM_ORGANIZATION - Ads Manager organization ID */
     Ruid_Type[Ruid_Type["AM_ORGANIZATION"] = 9] = "AM_ORGANIZATION";
-    /** AM_MEMBER - Ads Manager member ID */
     Ruid_Type[Ruid_Type["AM_MEMBER"] = 10] = "AM_MEMBER";
-    /** AM_SESSION - Ads Manager session ID */
     Ruid_Type[Ruid_Type["AM_SESSION"] = 11] = "AM_SESSION";
-    /** AM_PROFILE - Ads Manager profile ID */
     Ruid_Type[Ruid_Type["AM_PROFILE"] = 12] = "AM_PROFILE";
-    /** AM_SNAPCHAT_USER - Snapchat user ID on Ads Manager */
     Ruid_Type[Ruid_Type["AM_SNAPCHAT_USER"] = 13] = "AM_SNAPCHAT_USER";
-    /** SNAPCHAT_ADVERTISING - Snapchat Advertising ID for Budget A/B */
     Ruid_Type[Ruid_Type["SNAPCHAT_ADVERTISING"] = 14] = "SNAPCHAT_ADVERTISING";
-    /** AM_CLIENT - Ads Manager client ID */
     Ruid_Type[Ruid_Type["AM_CLIENT"] = 15] = "AM_CLIENT";
-    /** MISCHIEF - Mischief id for group chat */
     Ruid_Type[Ruid_Type["MISCHIEF"] = 16] = "MISCHIEF";
+    Ruid_Type[Ruid_Type["ARES_VISITOR"] = 17] = "ARES_VISITOR";
     Ruid_Type[Ruid_Type["UNRECOGNIZED"] = -1] = "UNRECOGNIZED";
 })(Ruid_Type || (Ruid_Type = {}));
 function createBaseRuid() {
@@ -11167,7 +11417,6 @@ if ((minimal_default()).util.Long !== (long_default())) {
 }
 //# sourceMappingURL=ruid.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/google/protobuf/wrappers.js
-/* eslint-disable */
 
 
 const wrappers_protobufPackage = "google.protobuf";
@@ -11500,62 +11749,38 @@ if ((minimal_default()).util.Long !== (long_default())) {
 }
 //# sourceMappingURL=wrappers.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/cdp/cof/config_request.js
-/* eslint-disable */
 
 
 
 
 
 const config_request_protobufPackage = "snapchat.cdp.cof";
-/** Indicates what was the state of the app when the config sync was triggered */
 var ConfigTargetingTriggerEventType;
 (function (ConfigTargetingTriggerEventType) {
-    /** UNKNOWN_EVENT_TYPE - Unknown */
     ConfigTargetingTriggerEventType[ConfigTargetingTriggerEventType["UNKNOWN_EVENT_TYPE"] = 0] = "UNKNOWN_EVENT_TYPE";
-    /** COLD_START - Deprecated because of simplification to FG/BG */
     ConfigTargetingTriggerEventType[ConfigTargetingTriggerEventType["COLD_START"] = 1] = "COLD_START";
-    /** WARM_START - Deprecated because of simplification to FG/BG */
     ConfigTargetingTriggerEventType[ConfigTargetingTriggerEventType["WARM_START"] = 2] = "WARM_START";
-    /** FOREGROUND_TRIGGER - Triggered when application is in the foreground */
     ConfigTargetingTriggerEventType[ConfigTargetingTriggerEventType["FOREGROUND_TRIGGER"] = 3] = "FOREGROUND_TRIGGER";
-    /** BACKGROUND_TRIGGER - Triggered when application is backgrounded */
     ConfigTargetingTriggerEventType[ConfigTargetingTriggerEventType["BACKGROUND_TRIGGER"] = 4] = "BACKGROUND_TRIGGER";
     ConfigTargetingTriggerEventType[ConfigTargetingTriggerEventType["UNRECOGNIZED"] = -1] = "UNRECOGNIZED";
 })(ConfigTargetingTriggerEventType || (ConfigTargetingTriggerEventType = {}));
-/**
- * Indicates what was the state of the app when the config sync happens
- * The enum is also used as a dynamic client property to populate feature signals
- */
 var ConfigTargetingAppState;
 (function (ConfigTargetingAppState) {
-    /** UNKNOWN_APP_STATE - Unknown */
     ConfigTargetingAppState[ConfigTargetingAppState["UNKNOWN_APP_STATE"] = 0] = "UNKNOWN_APP_STATE";
-    /** FOREGROUND - Foreground */
     ConfigTargetingAppState[ConfigTargetingAppState["FOREGROUND"] = 1] = "FOREGROUND";
-    /** BACKGROUND - Background */
     ConfigTargetingAppState[ConfigTargetingAppState["BACKGROUND"] = 2] = "BACKGROUND";
     ConfigTargetingAppState[ConfigTargetingAppState["UNRECOGNIZED"] = -1] = "UNRECOGNIZED";
 })(ConfigTargetingAppState || (ConfigTargetingAppState = {}));
-/**
- * We expect this enum to be updated whenever there is a new sync instrumentation: This will help us isolate new changes on
- * server side to avoid post mortems like https://snapchat.quip.com/xGnVAcsBrOeC
- */
 var ConfigTargetingInstrumentation;
 (function (ConfigTargetingInstrumentation) {
-    /** DEFAULT_INSTRUMENTATION - Default */
     ConfigTargetingInstrumentation[ConfigTargetingInstrumentation["DEFAULT_INSTRUMENTATION"] = 0] = "DEFAULT_INSTRUMENTATION";
-    /** USER_AUTHENTICATION - User logged in */
     ConfigTargetingInstrumentation[ConfigTargetingInstrumentation["USER_AUTHENTICATION"] = 1] = "USER_AUTHENTICATION";
     ConfigTargetingInstrumentation[ConfigTargetingInstrumentation["UNRECOGNIZED"] = -1] = "UNRECOGNIZED";
 })(ConfigTargetingInstrumentation || (ConfigTargetingInstrumentation = {}));
-/** NetworkType */
 var Connectivity_NetworkType;
 (function (Connectivity_NetworkType) {
-    /** UNKNOWN_NETWORK_TYPE - Unknown */
     Connectivity_NetworkType[Connectivity_NetworkType["UNKNOWN_NETWORK_TYPE"] = 0] = "UNKNOWN_NETWORK_TYPE";
-    /** CELLULAR - Cellular */
     Connectivity_NetworkType[Connectivity_NetworkType["CELLULAR"] = 1] = "CELLULAR";
-    /** WIFI - Wifi */
     Connectivity_NetworkType[Connectivity_NetworkType["WIFI"] = 2] = "WIFI";
     Connectivity_NetworkType[Connectivity_NetworkType["UNRECOGNIZED"] = -1] = "UNRECOGNIZED";
 })(Connectivity_NetworkType || (Connectivity_NetworkType = {}));
@@ -12026,7 +12251,6 @@ if ((minimal_default()).util.Long !== (long_default())) {
 }
 //# sourceMappingURL=config_request.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/common/value.js
-/* eslint-disable */
 
 
 
@@ -12106,6 +12330,40 @@ const MapRecords = {
         return message;
     },
 };
+function createBaseStringArray() {
+    return { value: [] };
+}
+const StringArray = {
+    encode(message, writer = minimal_default().Writer.create()) {
+        for (const v of message.value) {
+            writer.uint32(10).string(v);
+        }
+        return writer;
+    },
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseStringArray();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.value.push(reader.string());
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromPartial(object) {
+        var _a;
+        const message = createBaseStringArray();
+        message.value = ((_a = object.value) === null || _a === void 0 ? void 0 : _a.map((e) => e)) || [];
+        return message;
+    },
+};
 function createBaseValue() {
     return {
         intValue: undefined,
@@ -12117,6 +12375,7 @@ function createBaseValue() {
         anyValue: undefined,
         mapValue: undefined,
         intPairValue: undefined,
+        stringArrayValue: undefined,
     };
 }
 const Value = {
@@ -12147,6 +12406,9 @@ const Value = {
         }
         if (message.intPairValue !== undefined) {
             writer.uint32(65).fixed64(message.intPairValue);
+        }
+        if (message.stringArrayValue !== undefined) {
+            StringArray.encode(message.stringArrayValue, writer.uint32(82).fork()).ldelim();
         }
         return writer;
     },
@@ -12184,6 +12446,9 @@ const Value = {
                 case 8:
                     message.intPairValue = value_longToNumber(reader.fixed64());
                     break;
+                case 10:
+                    message.stringArrayValue = StringArray.decode(reader, reader.uint32());
+                    break;
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -12205,6 +12470,10 @@ const Value = {
         message.mapValue =
             object.mapValue !== undefined && object.mapValue !== null ? MapRecords.fromPartial(object.mapValue) : undefined;
         message.intPairValue = (_g = object.intPairValue) !== null && _g !== void 0 ? _g : undefined;
+        message.stringArrayValue =
+            object.stringArrayValue !== undefined && object.stringArrayValue !== null
+                ? StringArray.fromPartial(object.stringArrayValue)
+                : undefined;
         return message;
     },
 };
@@ -12231,12 +12500,10 @@ if ((minimal_default()).util.Long !== (long_default())) {
 }
 //# sourceMappingURL=value.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/cdp/cof/config_result.js
-/* eslint-disable */
 
 
 
 const config_result_protobufPackage = "snapchat.cdp.cof";
-/** The suffix of "_PLATFORM" is appended, due to C++ declared enums with global scope, which causes issues in Snapchat/client */
 var ConfigResult_ServePlatform;
 (function (ConfigResult_ServePlatform) {
     ConfigResult_ServePlatform[ConfigResult_ServePlatform["UNKNOWN_CONTEXT_PLATFORM"] = 0] = "UNKNOWN_CONTEXT_PLATFORM";
@@ -12264,626 +12531,279 @@ var ClientTargetingExpression_PredicateOperator;
 var ClientTargetingExpression_Property;
 (function (ClientTargetingExpression_Property) {
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["UNKNOWN_PROPERTY"] = 0] = "UNKNOWN_PROPERTY";
-    /**
-     * BATTERY_LEVEL - A enum ordinal indicating the battery level is LOW/MID/HIGH.
-     * The ordinals are defined in snapchat.cdp.cof.battery_level.proto
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BATTERY_LEVEL"] = 1] = "BATTERY_LEVEL";
-    /** IS_OFFLINE - A boolean indicating whether the device is offline. */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["IS_OFFLINE"] = 2] = "IS_OFFLINE";
-    /** IS_CHARGING - A boolean indicating whether the device is charging. */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["IS_CHARGING"] = 3] = "IS_CHARGING";
-    /** BANDWIDTH - An integer representing the download bandwidth in bps. */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BANDWIDTH"] = 4] = "BANDWIDTH";
-    /** DISK_SIZE - Disk size in mb */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DISK_SIZE"] = 5] = "DISK_SIZE";
-    /** DISK_AVAILABLE - Disk space available in mb */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DISK_AVAILABLE"] = 6] = "DISK_AVAILABLE";
-    /**
-     * MEDIA_TYPE_DEPRECATED - An enum ordinal indicating the type of media being processed.
-     * The ordinals are defined in snapchat.snapdoc.MediaMetadata.MediaType.
-     *
-     * @deprecated
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["MEDIA_TYPE_DEPRECATED"] = 7] = "MEDIA_TYPE_DEPRECATED";
-    /** IS_PUBLIC_STORY - A boolean indicating whether the story is shared publicly. */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["IS_PUBLIC_STORY"] = 8] = "IS_PUBLIC_STORY";
-    /** IS_OFFICIAL_STORY - A boolean indicating whether the story is posted from offcial account and is public. */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["IS_OFFICIAL_STORY"] = 9] = "IS_OFFICIAL_STORY";
-    /** CAMERA_DIRECTION - An enum for camera direction */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["CAMERA_DIRECTION"] = 10] = "CAMERA_DIRECTION";
-    /** CAMERA_CONTEXT - An enum for camera context */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["CAMERA_CONTEXT"] = 11] = "CAMERA_CONTEXT";
-    /** CAMERA_API - An enum for camera API */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["CAMERA_API"] = 12] = "CAMERA_API";
-    /** CAMERA_FLASH_STATE - An enum for camera flash state */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["CAMERA_FLASH_STATE"] = 13] = "CAMERA_FLASH_STATE";
-    /** SNAP_SOURCE - An enum for where the snap orginates */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SNAP_SOURCE"] = 14] = "SNAP_SOURCE";
-    /** LEGACY_MUSHROOM_CONTENT_TYPE - An enum for what content type is being used */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["LEGACY_MUSHROOM_CONTENT_TYPE"] = 15] = "LEGACY_MUSHROOM_CONTENT_TYPE";
-    /** UPLOAD_BANDWIDTH - An integer representing the upload bandwidth in bps. */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["UPLOAD_BANDWIDTH"] = 16] = "UPLOAD_BANDWIDTH";
-    /** CAMERA2_LEVEL - An enum for camera2 hardware support level. */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["CAMERA2_LEVEL"] = 17] = "CAMERA2_LEVEL";
-    /** CAMERA_NIGHT_MODE_STATE - An enum for Camera night model state. */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["CAMERA_NIGHT_MODE_STATE"] = 18] = "CAMERA_NIGHT_MODE_STATE";
-    /** USER_LANGUAGE - The language user chooses the app to display */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["USER_LANGUAGE"] = 19] = "USER_LANGUAGE";
-    /** VIDEO_DURATION - The video duration in ms. */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["VIDEO_DURATION"] = 20] = "VIDEO_DURATION";
-    /** REALTIME_MOBILE_NETWORK_GENERATION - Mobile network generation(3G, 4G, etc) defined in snapchat.cdp.cof.mobile_network_generation.proto */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["REALTIME_MOBILE_NETWORK_GENERATION"] = 21] = "REALTIME_MOBILE_NETWORK_GENERATION";
-    /** REALTIME_NETWORK_TYPE - Mobile networktype defined via Connectivity.NetworkType in snapchat.cdp.cof.circumstance_engine.proto */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["REALTIME_NETWORK_TYPE"] = 22] = "REALTIME_NETWORK_TYPE";
-    /** REALTIME_NETWORK_IS_METERED - A boolean for if the current network is metered. */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["REALTIME_NETWORK_IS_METERED"] = 23] = "REALTIME_NETWORK_IS_METERED";
-    /** REALTIME_NETWORK_IS_ROAMING - A boolean for if the current network is roaming. */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["REALTIME_NETWORK_IS_ROAMING"] = 24] = "REALTIME_NETWORK_IS_ROAMING";
-    /** CAMERA_IS_FIRST_CAPTURE - A boolean indicating whether this is the first capture after app cold start */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["CAMERA_IS_FIRST_CAPTURE"] = 25] = "CAMERA_IS_FIRST_CAPTURE";
-    /** PICTURE_MODE - A enum indicating which type of image capture this was [GPU or JPEG] */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["PICTURE_MODE"] = 26] = "PICTURE_MODE";
-    /** BOLT_USE_CASE - An integer representing what BOLT usecase the caller is using. */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BOLT_USE_CASE"] = 27] = "BOLT_USE_CASE";
-    /** BOLT_CDN_EXPERIMENTATION_ID - An integer representing what BOLT cdn should be experimented with */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BOLT_CDN_EXPERIMENTATION_ID"] = 28] = "BOLT_CDN_EXPERIMENTATION_ID";
-    /** MINS_SINCE_LAST_LENS_ACTIVATION - Num of mins since a user last activates the Lens. */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["MINS_SINCE_LAST_LENS_ACTIVATION"] = 29] = "MINS_SINCE_LAST_LENS_ACTIVATION";
-    /** MINS_SINCE_LAST_SNAPPABLE_LENS_ACTIVATION - Num of mins since user activated snappable lens for the last time. */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["MINS_SINCE_LAST_SNAPPABLE_LENS_ACTIVATION"] = 30] = "MINS_SINCE_LAST_SNAPPABLE_LENS_ACTIVATION";
-    /** DAYS_SINCE_LAST_LOGIN_OR_OPEN - Integer between 0 .. N which is the number of days since the user logged in or opened the app */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DAYS_SINCE_LAST_LOGIN_OR_OPEN"] = 31] = "DAYS_SINCE_LAST_LOGIN_OR_OPEN";
-    /** SPECTACLES_VERSION - An enum for Spectacles version */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SPECTACLES_VERSION"] = 32] = "SPECTACLES_VERSION";
-    /** STICKY_MAX_CONNECTION_TYPE - A client side property for evaluating the highest tier connection a client has recently used. */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["STICKY_MAX_CONNECTION_TYPE"] = 33] = "STICKY_MAX_CONNECTION_TYPE";
-    /** WITH_ANIMATED_OVERLAY - A boolean indicating whether there is animated overlay with video snap. */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["WITH_ANIMATED_OVERLAY"] = 34] = "WITH_ANIMATED_OVERLAY";
-    /** ESTIMATED_DURATION_FOR_EVENT_MS - Estimated duration for a config-specific event */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["ESTIMATED_DURATION_FOR_EVENT_MS"] = 35] = "ESTIMATED_DURATION_FOR_EVENT_MS";
-    /** URL - A URL */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["URL"] = 36] = "URL";
-    /** MEDIA_SOURCE - content’s origin prior to being injected into the MDP stack */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["MEDIA_SOURCE"] = 37] = "MEDIA_SOURCE";
-    /** ASSET_TYPE - how to compose an individual asset into one larger logical asset */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["ASSET_TYPE"] = 38] = "ASSET_TYPE";
-    /** BOLT_IS_CONTENT_POPULAR - A boolean representing whether the content being resolved is popular or not. */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BOLT_IS_CONTENT_POPULAR"] = 39] = "BOLT_IS_CONTENT_POPULAR";
-    /** CAPTURE_MODE - A enum indicating which mode of capture this was [Timeline or Unknown] */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["CAPTURE_MODE"] = 40] = "CAPTURE_MODE";
-    /** VP9_SOFTWARE_DECODING_SUPPORTED - A boolean representing if VP9 software decoding is supported */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["VP9_SOFTWARE_DECODING_SUPPORTED"] = 41] = "VP9_SOFTWARE_DECODING_SUPPORTED";
-    /** AV1_SOFTWARE_DECODING_SUPPORTED - A boolean representing if AV1 software decoding is supported */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["AV1_SOFTWARE_DECODING_SUPPORTED"] = 42] = "AV1_SOFTWARE_DECODING_SUPPORTED";
-    /** WITH_MUSIC - A boolean to indicate whether there is music edits (e.g. music sticker). */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["WITH_MUSIC"] = 43] = "WITH_MUSIC";
-    /**
-     * FEATURE_PROVIDED_SIZE - A client provided integer representing size. The units is decided by the caller.
-     * This will be evaluated using FeatureProvidedSignals.size
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["FEATURE_PROVIDED_SIZE"] = 44] = "FEATURE_PROVIDED_SIZE";
-    /**
-     * MEDIA_TYPE - An enum ordinal indicating the type of media being processed.
-     * The ordinals are defined in snapchat.cdp.cof.media_provided_signals.proto
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["MEDIA_TYPE"] = 45] = "MEDIA_TYPE";
-    /** SCANNED_CATEGORY_IDS - The ids of the categories that are currently being scanned for (e.g. Amazon, Photomath, etc) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SCANNED_CATEGORY_IDS"] = 46] = "SCANNED_CATEGORY_IDS";
-    /**
-     * CONTENT_VIEW_SOURCE - Numerical value of ContentViewSource (Blizzard enum) which identified Opera session
-     * On the client the value is provided via FeatureProvidedSignals.OperaSignals
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["CONTENT_VIEW_SOURCE"] = 47] = "CONTENT_VIEW_SOURCE";
-    /** RECIPIENTS_SUPPORT_HEVC - A boolean indicating whether a group of recipients support High Efficiency Video Encoding (HEVC) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["RECIPIENTS_SUPPORT_HEVC"] = 48] = "RECIPIENTS_SUPPORT_HEVC";
-    /** COGNAC_APP_ID - A Cognac game/mini id that a user is playing */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["COGNAC_APP_ID"] = 49] = "COGNAC_APP_ID";
-    /** EMAIL_VERIFIED - Whether user's email has verified */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["EMAIL_VERIFIED"] = 50] = "EMAIL_VERIFIED";
-    /** PHONE_VERIFIED - Whether user's phone number has verified */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["PHONE_VERIFIED"] = 51] = "PHONE_VERIFIED";
-    /** NOTIFICATION_PERM_GRANTED - Whether notification permission has granted */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["NOTIFICATION_PERM_GRANTED"] = 52] = "NOTIFICATION_PERM_GRANTED";
-    /** CONTACT_PERM_GRANTED - Whether contact permission has granted */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["CONTACT_PERM_GRANTED"] = 53] = "CONTACT_PERM_GRANTED";
-    /** MUTUAL_FRIENDS_COUNT - Mutual friends count */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["MUTUAL_FRIENDS_COUNT"] = 54] = "MUTUAL_FRIENDS_COUNT";
-    /** GROUPS_COUNT - Groups count */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["GROUPS_COUNT"] = 55] = "GROUPS_COUNT";
-    /** HAS_NON_TEAM_SNAPCHAT_CONVERSATIONS - Whether user has non-team snapchat conversations */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["HAS_NON_TEAM_SNAPCHAT_CONVERSATIONS"] = 56] = "HAS_NON_TEAM_SNAPCHAT_CONVERSATIONS";
-    /**
-     * PLAYBACK_ITEM_TYPE - Numerical value of PlaybackItemType (Blizzard enum) which identifies an Opera playback item type
-     * On the client the value is provided via PlaybackItemType
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["PLAYBACK_ITEM_TYPE"] = 57] = "PLAYBACK_ITEM_TYPE";
-    /**
-     * SUP_BOOLEAN_PROPERTY - To get the corresponding SUP property values, check on property_metadata.sup_item_id.item_id
-     * Sup boolean property
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SUP_BOOLEAN_PROPERTY"] = 58] = "SUP_BOOLEAN_PROPERTY";
-    /** SUP_INTEGER_PROPERTY - Sup integer property */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SUP_INTEGER_PROPERTY"] = 59] = "SUP_INTEGER_PROPERTY";
-    /** SUP_LONG_PROPERTY - Sup long property */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SUP_LONG_PROPERTY"] = 60] = "SUP_LONG_PROPERTY";
-    /** SUP_STRING_PROPERTY - Sup string property */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SUP_STRING_PROPERTY"] = 61] = "SUP_STRING_PROPERTY";
-    /** SUP_DOUBLE_PROPERTY - Sup double property */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SUP_DOUBLE_PROPERTY"] = 62] = "SUP_DOUBLE_PROPERTY";
-    /** SUP_MILLIS_PROPERTY_TO_NOW - Sup long property as timestamp in millis to get time elapsed */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SUP_MILLIS_PROPERTY_TO_NOW"] = 63] = "SUP_MILLIS_PROPERTY_TO_NOW";
-    /** HAS_USED_SPECTACLES - Whether the user has used Spectacles (incl. Cheerios) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["HAS_USED_SPECTACLES"] = 64] = "HAS_USED_SPECTACLES";
-    /**
-     * SUP_SECS_PROPERTY_TO_NOW - To get the corresponding SUP property values, check on property_metadata.sup_item_id.item_id
-     * Sup long property as timestamp in seconds to get time elapsed
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SUP_SECS_PROPERTY_TO_NOW"] = 65] = "SUP_SECS_PROPERTY_TO_NOW";
-    /** BOLT_CLIENT_APP_STATE - Enum indicating client App State (Used by BOLT to create targeted network rules) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BOLT_CLIENT_APP_STATE"] = 66] = "BOLT_CLIENT_APP_STATE";
-    /** EMAIL_SET - Whether user's email has been set (might or might not be verified) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["EMAIL_SET"] = 67] = "EMAIL_SET";
-    /** BITMOJI_SET - Whether user's bitmoji has been set */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BITMOJI_SET"] = 68] = "BITMOJI_SET";
-    /** QUICK_TAP_CAMERA_SUPPORTED_ENABLED - Quick tap on camera is supported and enabled */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["QUICK_TAP_CAMERA_SUPPORTED_ENABLED"] = 69] = "QUICK_TAP_CAMERA_SUPPORTED_ENABLED";
-    /** HAS_ADD_FRIENDS_REQUEST - Whether user has add friends request */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["HAS_ADD_FRIENDS_REQUEST"] = 70] = "HAS_ADD_FRIENDS_REQUEST";
-    /** APP_LAUNCH_FROM_PUSH - App launched from push notification */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["APP_LAUNCH_FROM_PUSH"] = 71] = "APP_LAUNCH_FROM_PUSH";
-    /** APP_LAUNCH_TYPE - App launch type: cold start, warm start, registration and login */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["APP_LAUNCH_TYPE"] = 72] = "APP_LAUNCH_TYPE";
-    /** BILLBOARD_CAMPAIGN_LOCAL_IMPRESSION_COUNT - Billboard locally tracked impression count */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_CAMPAIGN_LOCAL_IMPRESSION_COUNT"] = 73] = "BILLBOARD_CAMPAIGN_LOCAL_IMPRESSION_COUNT";
-    /** BILLBOARD_CAMPAIGN_LOCAL_LAST_IMPRESSION_TIME_SECS_TO_NOW - Billboard locally tracked last impression time in secs to now */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_CAMPAIGN_LOCAL_LAST_IMPRESSION_TIME_SECS_TO_NOW"] = 74] = "BILLBOARD_CAMPAIGN_LOCAL_LAST_IMPRESSION_TIME_SECS_TO_NOW";
-    /** BILLBOARD_CAMPAIGN_LOCAL_CONTINUOUS_DISMISS_COUNT - Billboard locally tracked continuous dismiss count */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_CAMPAIGN_LOCAL_CONTINUOUS_DISMISS_COUNT"] = 75] = "BILLBOARD_CAMPAIGN_LOCAL_CONTINUOUS_DISMISS_COUNT";
-    /** FST_NUM_IN_APP_WARNINGS - FST number of in app warnings to show */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["FST_NUM_IN_APP_WARNINGS"] = 76] = "FST_NUM_IN_APP_WARNINGS";
-    /** FST_SHOULD_CHANGE_PASSWORD - FST user should change password */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["FST_SHOULD_CHANGE_PASSWORD"] = 77] = "FST_SHOULD_CHANGE_PASSWORD";
-    /** FST_IS_BACKGROUND_CHECK - Whether it's a background check or foreground check. Android specific */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["FST_IS_BACKGROUND_CHECK"] = 78] = "FST_IS_BACKGROUND_CHECK";
-    /** AUDIO_RECORD_PERM_GRANTED - Whether audio record permission has granted */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["AUDIO_RECORD_PERM_GRANTED"] = 79] = "AUDIO_RECORD_PERM_GRANTED";
-    /** MUTUAL_FRIENDS_WITH_BIRTHDAY_COUNT - Mutual Friends with birthday count */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["MUTUAL_FRIENDS_WITH_BIRTHDAY_COUNT"] = 80] = "MUTUAL_FRIENDS_WITH_BIRTHDAY_COUNT";
-    /** BILLBOARD_CAMPAIGN_LOCAL_DISMISS_COUNT - Billboard locally tracked dismiss count */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_CAMPAIGN_LOCAL_DISMISS_COUNT"] = 81] = "BILLBOARD_CAMPAIGN_LOCAL_DISMISS_COUNT";
-    /** USE_VERTICAL_NAVIGATION - A boolean to indicate whether Opera uses vertical navigation or not. */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["USE_VERTICAL_NAVIGATION"] = 82] = "USE_VERTICAL_NAVIGATION";
-    /**
-     * FREEABLE_DISK_AVAILABLE - Freeable disk space available in mb. This included Content Manager freeable
-     * bytes + DISK_AVAILABLE
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["FREEABLE_DISK_AVAILABLE"] = 83] = "FREEABLE_DISK_AVAILABLE";
-    /** MEMORIES_COUNT - Num of memories snaps user has */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["MEMORIES_COUNT"] = 84] = "MEMORIES_COUNT";
-    /** DEVICE_MODEL - DEVICE_MODEL (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DEVICE_MODEL"] = 85] = "DEVICE_MODEL";
-    /** COUNTRY - COUNTRY (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["COUNTRY"] = 86] = "COUNTRY";
-    /** OS - OS (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["OS"] = 87] = "OS";
-    /** OS_VERSION - OS_VERSION (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["OS_VERSION"] = 88] = "OS_VERSION";
-    /** APP_VERSION - APP_VERSION (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["APP_VERSION"] = 89] = "APP_VERSION";
-    /** BUILD_FLAVOR - BUILD_FLAVOR (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BUILD_FLAVOR"] = 90] = "BUILD_FLAVOR";
-    /** USER_ID - USER_ID (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["USER_ID"] = 91] = "USER_ID";
-    /** LOCALE - LOCALE (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["LOCALE"] = 92] = "LOCALE";
-    /** DEVICE_CLUSTER - DEVICE_CLUSTER (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DEVICE_CLUSTER"] = 93] = "DEVICE_CLUSTER";
-    /** DEVICE_BRAND - DEVICE_BRAND (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DEVICE_BRAND"] = 94] = "DEVICE_BRAND";
-    /** IS_EMPLOYEE - IS_EMPLOYEE (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["IS_EMPLOYEE"] = 95] = "IS_EMPLOYEE";
-    /** USERNAME - USERNAME (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["USERNAME"] = 96] = "USERNAME";
-    /** IS_TEST_USER - IS_TEST_USER (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["IS_TEST_USER"] = 97] = "IS_TEST_USER";
-    /** USER_PROFILE - USER_PROFILE (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["USER_PROFILE"] = 98] = "USER_PROFILE";
-    /** SCREEN_WIDTH - SCREEN_WIDTH (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SCREEN_WIDTH"] = 99] = "SCREEN_WIDTH";
-    /** SCREEN_HEIGHT - SCREEN_HEIGHT (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SCREEN_HEIGHT"] = 100] = "SCREEN_HEIGHT";
-    /** HEVC_SUPPORT - HEVC_SUPPORT (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["HEVC_SUPPORT"] = 101] = "HEVC_SUPPORT";
-    /** NETWORK_TYPE - NETWORK_TYPE (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["NETWORK_TYPE"] = 102] = "NETWORK_TYPE";
-    /** MAX_VIDEO_WIDTH - MAX_VIDEO_WIDTH (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["MAX_VIDEO_WIDTH"] = 103] = "MAX_VIDEO_WIDTH";
-    /** MAX_VIDEO_HEIGHT - MAX_VIDEO_HEIGHT (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["MAX_VIDEO_HEIGHT"] = 104] = "MAX_VIDEO_HEIGHT";
-    /** IS_NETWORK_METERED - IS_NETWORK_METERED (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["IS_NETWORK_METERED"] = 105] = "IS_NETWORK_METERED";
-    /** IS_ROAMING - IS_ROAMING (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["IS_ROAMING"] = 106] = "IS_ROAMING";
-    /** APP_ENGAGEMENT_LEVEL - APP_ENGAGEMENT_LEVEL (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["APP_ENGAGEMENT_LEVEL"] = 107] = "APP_ENGAGEMENT_LEVEL";
-    /** COMMUNICATION_ENGAGEMENT_LEVEL - COMMUNICATION_ENGAGEMENT_LEVEL (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["COMMUNICATION_ENGAGEMENT_LEVEL"] = 108] = "COMMUNICATION_ENGAGEMENT_LEVEL";
-    /** FRIEND_STORY_ENGAGEMENT_LEVEL - FRIEND_STORY_ENGAGEMENT_LEVEL (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["FRIEND_STORY_ENGAGEMENT_LEVEL"] = 109] = "FRIEND_STORY_ENGAGEMENT_LEVEL";
-    /** PUBLIC_USER_STORY_ENGAGEMENT_LEVEL - PUBLIC_USER_STORY_ENGAGEMENT_LEVEL (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["PUBLIC_USER_STORY_ENGAGEMENT_LEVEL"] = 110] = "PUBLIC_USER_STORY_ENGAGEMENT_LEVEL";
-    /** PUBLISHER_STORY_ENGAGEMENT_LEVEL - PUBLISHER_STORY_ENGAGEMENT_LEVEL (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["PUBLISHER_STORY_ENGAGEMENT_LEVEL"] = 111] = "PUBLISHER_STORY_ENGAGEMENT_LEVEL";
-    /** LENS_ENGAGEMENT_LEVEL - LENS_ENGAGEMENT_LEVEL (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["LENS_ENGAGEMENT_LEVEL"] = 112] = "LENS_ENGAGEMENT_LEVEL";
-    /** NON_FRIEND_STORY_ENGAGEMENT_LEVEL - NON_FRIEND_STORY_ENGAGEMENT_LEVEL (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["NON_FRIEND_STORY_ENGAGEMENT_LEVEL"] = 113] = "NON_FRIEND_STORY_ENGAGEMENT_LEVEL";
-    /** FOLLOWER_SIZE_LEVEL - FOLLOWER_SIZE_LEVEL (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["FOLLOWER_SIZE_LEVEL"] = 114] = "FOLLOWER_SIZE_LEVEL";
-    /** DAYS_SINCE_CREATION - DAYS_SINCE_CREATION (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DAYS_SINCE_CREATION"] = 115] = "DAYS_SINCE_CREATION";
-    /** USER_PERSONA - USER_PERSONA (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["USER_PERSONA"] = 116] = "USER_PERSONA";
-    /** USER_CREATION_TIME - USER_CREATION_TIME (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["USER_CREATION_TIME"] = 117] = "USER_CREATION_TIME";
-    /** MOBILE_NETWORK_TYPE - MOBILE_NETWORK_TYPE (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["MOBILE_NETWORK_TYPE"] = 118] = "MOBILE_NETWORK_TYPE";
-    /** AGGREGATED_USER_BANDWIDTH - AGGREGATED_USER_BANDWIDTH (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["AGGREGATED_USER_BANDWIDTH"] = 119] = "AGGREGATED_USER_BANDWIDTH";
-    /** LENS_CLUSTER_BIASED - LENS_CLUSTER_BIASED (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["LENS_CLUSTER_BIASED"] = 120] = "LENS_CLUSTER_BIASED";
-    /** LENS_CLUSTER_LOG - LENS_CLUSTER_LOG (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["LENS_CLUSTER_LOG"] = 121] = "LENS_CLUSTER_LOG";
-    /** LENS_CLUSTER_ORIG - LENS_CLUSTER_ORIG (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["LENS_CLUSTER_ORIG"] = 122] = "LENS_CLUSTER_ORIG";
-    /** LENS_CLUSTER_ORIG_4 - LENS_CLUSTER_ORIG_4 (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["LENS_CLUSTER_ORIG_4"] = 123] = "LENS_CLUSTER_ORIG_4";
-    /** LENS_CLUSTER_BIASED_LOG - LENS_CLUSTER_BIASED_LOG (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["LENS_CLUSTER_BIASED_LOG"] = 124] = "LENS_CLUSTER_BIASED_LOG";
-    /** APP_LOCALE - APP_LOCALE (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["APP_LOCALE"] = 125] = "APP_LOCALE";
-    /** DEVICE_COMMON_NAME - DEVICE_COMMON_NAME (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DEVICE_COMMON_NAME"] = 126] = "DEVICE_COMMON_NAME";
-    /** USER_FRIEND_COUNT - USER_FRIEND_COUNT (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["USER_FRIEND_COUNT"] = 127] = "USER_FRIEND_COUNT";
-    /** L90_COUNTRY - L90_COUNTRY (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["L90_COUNTRY"] = 128] = "L90_COUNTRY";
-    /** STUB - STUB (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["STUB"] = 129] = "STUB";
-    /** IS_TRUE - IS_TRUE (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["IS_TRUE"] = 130] = "IS_TRUE";
-    /** STORY_POST_RATIO - STORY_POST_RATIO (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["STORY_POST_RATIO"] = 131] = "STORY_POST_RATIO";
-    /** GENDER - GENDER (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["GENDER"] = 132] = "GENDER";
-    /** INFERRED_AGE_BUCKET - INFERRED_AGE_BUCKET (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["INFERRED_AGE_BUCKET"] = 133] = "INFERRED_AGE_BUCKET";
-    /** STORIES - STORIES (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["STORIES"] = 134] = "STORIES";
-    /** SENDS - SENDS (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SENDS"] = 135] = "SENDS";
-    /** SNAP_CREATE_L7 - SNAP_CREATE_L7 (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SNAP_CREATE_L7"] = 136] = "SNAP_CREATE_L7";
-    /** STORY_POST_L7 - STORY_POST_L7 (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["STORY_POST_L7"] = 137] = "STORY_POST_L7";
-    /** COMMUNICATION_L7 - COMMUNICATION_L7 (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["COMMUNICATION_L7"] = 138] = "COMMUNICATION_L7";
-    /** DF_L7 - DF_L7 (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DF_L7"] = 139] = "DF_L7";
-    /** APP_L7 - APP_L7 (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["APP_L7"] = 140] = "APP_L7";
-    /** DAYS_SINCE_CREATION_BUCKET - DAYS_SINCE_CREATION_BUCKET (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DAYS_SINCE_CREATION_BUCKET"] = 141] = "DAYS_SINCE_CREATION_BUCKET";
-    /** BIDIRECTIONAL_FRIEND_STATUS - BIDIRECTIONAL_FRIEND_STATUS (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BIDIRECTIONAL_FRIEND_STATUS"] = 142] = "BIDIRECTIONAL_FRIEND_STATUS";
-    /** STORY_POST_PREDICTION - STORY_POST_PREDICTION (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["STORY_POST_PREDICTION"] = 143] = "STORY_POST_PREDICTION";
-    /** APP_OPENS - APP_OPENS (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["APP_OPENS"] = 144] = "APP_OPENS";
-    /** LENS_SWIPES - LENS_SWIPES (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["LENS_SWIPES"] = 145] = "LENS_SWIPES";
-    /** LENS_SNAPS - LENS_SNAPS (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["LENS_SNAPS"] = 146] = "LENS_SNAPS";
-    /** LENS_OPS - LENS_OPS (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["LENS_OPS"] = 147] = "LENS_OPS";
-    /** W1_APP_OPENS - W1_APP_OPENS (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["W1_APP_OPENS"] = 148] = "W1_APP_OPENS";
-    /** W1_LENS_SWIPES - W1_LENS_SWIPES (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["W1_LENS_SWIPES"] = 149] = "W1_LENS_SWIPES";
-    /** W1_LENS_SNAPS - W1_LENS_SNAPS (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["W1_LENS_SNAPS"] = 150] = "W1_LENS_SNAPS";
-    /** W1_LENS_OPS - W1_LENS_OPS (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["W1_LENS_OPS"] = 151] = "W1_LENS_OPS";
-    /** W2_APP_OPENS - W2_APP_OPENS (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["W2_APP_OPENS"] = 152] = "W2_APP_OPENS";
-    /** W2_LENS_SWIPES - W2_LENS_SWIPES (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["W2_LENS_SWIPES"] = 153] = "W2_LENS_SWIPES";
-    /** W2_LENS_SNAPS - W2_LENS_SNAPS (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["W2_LENS_SNAPS"] = 154] = "W2_LENS_SNAPS";
-    /** W2_LENS_OPS - W2_LENS_OPS (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["W2_LENS_OPS"] = 155] = "W2_LENS_OPS";
-    /** W34_APP_OPENS - W34_APP_OPENS (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["W34_APP_OPENS"] = 156] = "W34_APP_OPENS";
-    /** W34_LENS_SWIPES - W34_LENS_SWIPES (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["W34_LENS_SWIPES"] = 157] = "W34_LENS_SWIPES";
-    /** W34_LENS_SNAPS - W34_LENS_SNAPS (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["W34_LENS_SNAPS"] = 158] = "W34_LENS_SNAPS";
-    /** W34_LENS_OPS - W34_LENS_OPS (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["W34_LENS_OPS"] = 159] = "W34_LENS_OPS";
-    /** LENS_SWIPES_PREDICTION - LENS_SWIPES_PREDICTION (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["LENS_SWIPES_PREDICTION"] = 160] = "LENS_SWIPES_PREDICTION";
-    /** REGISTRATION_COUNTRY - REGISTRATION_COUNTRY (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["REGISTRATION_COUNTRY"] = 161] = "REGISTRATION_COUNTRY";
-    /** IP_ASN - IP_ASN (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["IP_ASN"] = 162] = "IP_ASN";
-    /** IP_REGION - IP_REGION (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["IP_REGION"] = 163] = "IP_REGION";
-    /** IP_CITY - IP_CITY (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["IP_CITY"] = 164] = "IP_CITY";
-    /** HAS_USER_ID - HAS_USER_ID (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["HAS_USER_ID"] = 165] = "HAS_USER_ID";
-    /** HAS_BITMOJI - HAS_BITMOJI (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["HAS_BITMOJI"] = 166] = "HAS_BITMOJI";
-    /** NUM_APP_OPENS_LAST_8_DAYS - NUM_APP_OPENS_LAST_8_DAYS (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["NUM_APP_OPENS_LAST_8_DAYS"] = 167] = "NUM_APP_OPENS_LAST_8_DAYS";
-    /** NUM_FEATURE_STORY_VIEW_DAYS_L7 - NUM_FEATURE_STORY_VIEW_DAYS_L7 (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["NUM_FEATURE_STORY_VIEW_DAYS_L7"] = 168] = "NUM_FEATURE_STORY_VIEW_DAYS_L7";
-    /** NUM_FEATURE_STORY_SYNC_DAYS_L7 - NUM_FEATURE_STORY_SYNC_DAYS_L7 (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["NUM_FEATURE_STORY_SYNC_DAYS_L7"] = 169] = "NUM_FEATURE_STORY_SYNC_DAYS_L7";
-    /** HEXAGON_NN_SUPPORTED_VERSION - HEXAGON_NN_SUPPORTED_VERSION (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["HEXAGON_NN_SUPPORTED_VERSION"] = 170] = "HEXAGON_NN_SUPPORTED_VERSION";
-    /** NETWORK_QUALITY - NETWORK_QUALITY (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["NETWORK_QUALITY"] = 171] = "NETWORK_QUALITY";
-    /** DEVICE_MEMORY_MB - DEVICE_MEMORY_MB (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DEVICE_MEMORY_MB"] = 172] = "DEVICE_MEMORY_MB";
-    /** DEVICE_GL_VERSION - DEVICE_GL_VERSION (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DEVICE_GL_VERSION"] = 173] = "DEVICE_GL_VERSION";
-    /** SNAP_PRO_STATUS - SNAP_PRO_STATUS (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SNAP_PRO_STATUS"] = 174] = "SNAP_PRO_STATUS";
-    /** DEVICE_VP9_DECODING_SUPPORT - DEVICE_VP9_DECODING_SUPPORT (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DEVICE_VP9_DECODING_SUPPORT"] = 175] = "DEVICE_VP9_DECODING_SUPPORT";
-    /** AVG_FRIEND_STORY_VIEW_COUNT_L7 - AVG_FRIEND_STORY_VIEW_COUNT_L7 (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["AVG_FRIEND_STORY_VIEW_COUNT_L7"] = 176] = "AVG_FRIEND_STORY_VIEW_COUNT_L7";
-    /** GAME_JOIN_TIME - GAME_JOIN_TIME (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["GAME_JOIN_TIME"] = 177] = "GAME_JOIN_TIME";
-    /** GAME_LAST_ACTIVE_TIME - GAME_LAST_ACTIVE_TIME (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["GAME_LAST_ACTIVE_TIME"] = 178] = "GAME_LAST_ACTIVE_TIME";
-    /** DAYS_SINCE_FIRST_GAME_ACTIVITY - DAYS_SINCE_FIRST_GAME_ACTIVITY (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DAYS_SINCE_FIRST_GAME_ACTIVITY"] = 179] = "DAYS_SINCE_FIRST_GAME_ACTIVITY";
-    /** DAYS_SINCE_LAST_GAME_ACTIVITY - DAYS_SINCE_LAST_GAME_ACTIVITY (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DAYS_SINCE_LAST_GAME_ACTIVITY"] = 180] = "DAYS_SINCE_LAST_GAME_ACTIVITY";
-    /** PF_PAGE_SESSIONS_WITH_LONG_IMP - PF_PAGE_SESSIONS_WITH_LONG_IMP (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["PF_PAGE_SESSIONS_WITH_LONG_IMP"] = 181] = "PF_PAGE_SESSIONS_WITH_LONG_IMP";
-    /** WIRELESS_CARRIER - WIRELESS_CARRIER (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["WIRELESS_CARRIER"] = 182] = "WIRELESS_CARRIER";
-    /** MINIS_JOIN_TIME - MINIS_JOIN_TIME (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["MINIS_JOIN_TIME"] = 183] = "MINIS_JOIN_TIME";
-    /** MINIS_LAST_ACTIVE_TIME - MINIS_LAST_ACTIVE_TIME (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["MINIS_LAST_ACTIVE_TIME"] = 184] = "MINIS_LAST_ACTIVE_TIME";
-    /** DAYS_SINCE_FIRST_MINIS_ACTIVITY - DAYS_SINCE_FIRST_MINIS_ACTIVITY (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DAYS_SINCE_FIRST_MINIS_ACTIVITY"] = 185] = "DAYS_SINCE_FIRST_MINIS_ACTIVITY";
-    /** DAYS_SINCE_LAST_MINIS_ACTIVITY - DAYS_SINCE_LAST_MINIS_ACTIVITY (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DAYS_SINCE_LAST_MINIS_ACTIVITY"] = 186] = "DAYS_SINCE_LAST_MINIS_ACTIVITY";
-    /** DEVICE_AV1_DECODING_SUPPORT - DEVICE_AV1_DECODING_SUPPORT (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DEVICE_AV1_DECODING_SUPPORT"] = 187] = "DEVICE_AV1_DECODING_SUPPORT";
-    /** APP_PACKAGE_INSTALLER - APP_PACKAGE_INSTALLER (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["APP_PACKAGE_INSTALLER"] = 188] = "APP_PACKAGE_INSTALLER";
-    /** STORY_VIEWS_5TH_TAB_ENGAGEMENT_LEVEL - STORY_VIEWS_5TH_TAB_ENGAGEMENT_LEVEL (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["STORY_VIEWS_5TH_TAB_ENGAGEMENT_LEVEL"] = 189] = "STORY_VIEWS_5TH_TAB_ENGAGEMENT_LEVEL";
-    /** REPORTED_AGE - REPORTED_AGE (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["REPORTED_AGE"] = 190] = "REPORTED_AGE";
-    /** ANDROID_MOBILE_SERVICES_PROVIDER - ANDROID_MOBILE_SERVICES_PROVIDER (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["ANDROID_MOBILE_SERVICES_PROVIDER"] = 191] = "ANDROID_MOBILE_SERVICES_PROVIDER";
-    /** IS_ACQUIRED_USER - IS_ACQUIRED_USER (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["IS_ACQUIRED_USER"] = 192] = "IS_ACQUIRED_USER";
-    /** YDPI - YDPI (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["YDPI"] = 193] = "YDPI";
-    /** BIDIRECTIONAL_FRIEND_STATUS_VELLUM - BIDIRECTIONAL_FRIEND_STATUS_VELLUM (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BIDIRECTIONAL_FRIEND_STATUS_VELLUM"] = 194] = "BIDIRECTIONAL_FRIEND_STATUS_VELLUM";
-    /** ORIGIN - ORIGIN (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["ORIGIN"] = 195] = "ORIGIN";
-    /** LENSCORE_VERSION - LENSCORE_VERSION (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["LENSCORE_VERSION"] = 196] = "LENSCORE_VERSION";
-    /** SNAPKIT_APP_ID - SNAPKIT_APP_ID (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SNAPKIT_APP_ID"] = 197] = "SNAPKIT_APP_ID";
-    /** GPU - GPU (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["GPU"] = 198] = "GPU";
-    /** CHIPSET_NAME - CHIPSET_NAME (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["CHIPSET_NAME"] = 199] = "CHIPSET_NAME";
-    /** CHIPSET_VERSION - CHIPSET_VERSION (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["CHIPSET_VERSION"] = 200] = "CHIPSET_VERSION";
-    /** HAS_ZERO_IDFA - HAS_ZERO_IDFA (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["HAS_ZERO_IDFA"] = 201] = "HAS_ZERO_IDFA";
-    /** LIMIT_AD_TRACKING - LIMIT_AD_TRACKING (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["LIMIT_AD_TRACKING"] = 202] = "LIMIT_AD_TRACKING";
-    /** ATT_AUTH_STATUS - ATT_AUTH_STATUS (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["ATT_AUTH_STATUS"] = 203] = "ATT_AUTH_STATUS";
-    /** CAMERA2_FRONT_SS_GAIN_OVER_TPA - CAMERA2_FRONT_SS_GAIN_OVER_TPA (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["CAMERA2_FRONT_SS_GAIN_OVER_TPA"] = 204] = "CAMERA2_FRONT_SS_GAIN_OVER_TPA";
-    /** ATTACHMENT_TOOL_V2 - ATTACHMENT_TOOL_V2 (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["ATTACHMENT_TOOL_V2"] = 205] = "ATTACHMENT_TOOL_V2";
-    /** USER_PERSONA_V3 - USER_PERSONA_V3 (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["USER_PERSONA_V3"] = 206] = "USER_PERSONA_V3";
-    /** SNAPS_SEND_WITH_HEVC - SNAPS_SEND_WITH_HEVC (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SNAPS_SEND_WITH_HEVC"] = 207] = "SNAPS_SEND_WITH_HEVC";
-    /** SNAPS_SEND_WITHOUT_HEVC - SNAPS_SEND_WITHOUT_HEVC (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SNAPS_SEND_WITHOUT_HEVC"] = 208] = "SNAPS_SEND_WITHOUT_HEVC";
-    /** CAMERA2_NATIVE_CRASH_OVER_CAMERA1 - CAMERA2_NATIVE_CRASH_OVER_CAMERA1 (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["CAMERA2_NATIVE_CRASH_OVER_CAMERA1"] = 209] = "CAMERA2_NATIVE_CRASH_OVER_CAMERA1";
-    /** CAMERA2_G2S_LATENCY_OVER_CAMERA1 - CAMERA2_G2S_LATENCY_OVER_CAMERA1 (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["CAMERA2_G2S_LATENCY_OVER_CAMERA1"] = 210] = "CAMERA2_G2S_LATENCY_OVER_CAMERA1";
-    /** IS_INTERNAL - IS_INTERNAL (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["IS_INTERNAL"] = 211] = "IS_INTERNAL";
-    /** IS_WEB - IS_WEB (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["IS_WEB"] = 212] = "IS_WEB";
-    /** APP_OPEN_TO_MAP - APP_OPEN_TO_MAP (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["APP_OPEN_TO_MAP"] = 213] = "APP_OPEN_TO_MAP";
-    /** APP_OPEN_TO_FRIENDSFEED - APP_OPEN_TO_FRIENDSFEED (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["APP_OPEN_TO_FRIENDSFEED"] = 214] = "APP_OPEN_TO_FRIENDSFEED";
-    /** APP_OPEN_TO_LENSES - APP_OPEN_TO_LENSES (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["APP_OPEN_TO_LENSES"] = 215] = "APP_OPEN_TO_LENSES";
-    /** APP_OPEN_TO_MEMORIES - APP_OPEN_TO_MEMORIES (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["APP_OPEN_TO_MEMORIES"] = 216] = "APP_OPEN_TO_MEMORIES";
-    /** APP_OPEN_TO_COMMUNITY - APP_OPEN_TO_COMMUNITY (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["APP_OPEN_TO_COMMUNITY"] = 217] = "APP_OPEN_TO_COMMUNITY";
-    /** APP_OPEN_TO_SPOTLIGHT - APP_OPEN_TO_SPOTLIGHT (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["APP_OPEN_TO_SPOTLIGHT"] = 218] = "APP_OPEN_TO_SPOTLIGHT";
-    /** IS_IMPACTED_BY_PINC_893 - IS_IMPACTED_BY_PINC_893 (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["IS_IMPACTED_BY_PINC_893"] = 219] = "IS_IMPACTED_BY_PINC_893";
-    /** DAYS_BEFORE_BIRTHDAY - DAYS_BEFORE_BIRTHDAY (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DAYS_BEFORE_BIRTHDAY"] = 220] = "DAYS_BEFORE_BIRTHDAY";
-    /** HAS_BIPA - HAS_BIPA (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["HAS_BIPA"] = 221] = "HAS_BIPA";
-    /** SPOTLIGHT_STORY_ENGAGEMENT_STATUS - SPOTLIGHT_STORY_ENGAGEMENT_STATUS (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SPOTLIGHT_STORY_ENGAGEMENT_STATUS"] = 222] = "SPOTLIGHT_STORY_ENGAGEMENT_STATUS";
-    /** INCLUSION_PANEL_MEMBER - INCLUSION_PANEL_MEMBER (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["INCLUSION_PANEL_MEMBER"] = 223] = "INCLUSION_PANEL_MEMBER";
-    /** HEVC_HW_DECODER - HEVC_HW_DECODER (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["HEVC_HW_DECODER"] = 224] = "HEVC_HW_DECODER";
-    /** HEVC_SW_DECODER - HEVC_SW_DECODER (variant copied from TargetingProperty.Property) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["HEVC_SW_DECODER"] = 225] = "HEVC_SW_DECODER";
-    /**
-     * HASH_MURMUR3_128_MOD_100 - Value of a Murmur3 hash of one of the hash_signals fields modulo 100
-     * PropertyMetadata.signal_to_hash determines which field should be hashed
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["HASH_MURMUR3_128_MOD_100"] = 226] = "HASH_MURMUR3_128_MOD_100";
-    /** HAS_ACTIVE_SNAPCHAT_PLUS - Whether user has active Snapchat+ subscription in Atlas's UserData plus_subscription_info property */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["HAS_ACTIVE_SNAPCHAT_PLUS"] = 227] = "HAS_ACTIVE_SNAPCHAT_PLUS";
-    /** SNAP_KIT_OAUTH_ID - OAuth Client ID identifying the source third party application for Snap Kit content */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SNAP_KIT_OAUTH_ID"] = 228] = "SNAP_KIT_OAUTH_ID";
-    /** ORGANIZATION_TYPE - Organization type of advertiser purchasing ads */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["ORGANIZATION_TYPE"] = 229] = "ORGANIZATION_TYPE";
-    /**
-     * CHUNK_UPLOAD_SUPPORT_REQUIRED - Client provided boolean that represent whether the config
-     * needs to support uploading in a chunked/streaming manner
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["CHUNK_UPLOAD_SUPPORT_REQUIRED"] = 230] = "CHUNK_UPLOAD_SUPPORT_REQUIRED";
-    /** CLOUDFRONT_POP - The last known CloudFront Point of Presence used */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["CLOUDFRONT_POP"] = 231] = "CLOUDFRONT_POP";
-    /** BILLBOARD_CAMPAIGN_LOCAL_FIRST_IMPRESSION_TIME_SECS_TO_NOW - Billboard locally tracked first impresstion time to now */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_CAMPAIGN_LOCAL_FIRST_IMPRESSION_TIME_SECS_TO_NOW"] = 232] = "BILLBOARD_CAMPAIGN_LOCAL_FIRST_IMPRESSION_TIME_SECS_TO_NOW";
-    /** BILLBOARD_CAMPAIGN_LOCAL_CLICK_COUNT - Billboard locally tracked click count */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_CAMPAIGN_LOCAL_CLICK_COUNT"] = 233] = "BILLBOARD_CAMPAIGN_LOCAL_CLICK_COUNT";
-    /** BILLBOARD_CAMPAIGN_LOCAL_INTERACTION_COUNT - Billboard locally tracked interaction count */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_CAMPAIGN_LOCAL_INTERACTION_COUNT"] = 234] = "BILLBOARD_CAMPAIGN_LOCAL_INTERACTION_COUNT";
-    /** BILLBOARD_CAMPAIGN_LOCAL_LAST_INTERACTION_TIME_SECS_TO_NOW - Billboard locally tracked last interaction time to now */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_CAMPAIGN_LOCAL_LAST_INTERACTION_TIME_SECS_TO_NOW"] = 235] = "BILLBOARD_CAMPAIGN_LOCAL_LAST_INTERACTION_TIME_SECS_TO_NOW";
-    /** FST_LOCK_SCREEN_WIDGET_BILLBOARD_LAUNCHED_FROM_PUSH - Lock screen widgets billboard - app open via push notification */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["FST_LOCK_SCREEN_WIDGET_BILLBOARD_LAUNCHED_FROM_PUSH"] = 236] = "FST_LOCK_SCREEN_WIDGET_BILLBOARD_LAUNCHED_FROM_PUSH";
-    /** WEB_SCREEN_WIDTH - Web browser screen width in CSS pixels */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["WEB_SCREEN_WIDTH"] = 237] = "WEB_SCREEN_WIDTH";
-    /** WEB_SCREEN_HEIGHT - Web browser screen height in CSS pixels */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["WEB_SCREEN_HEIGHT"] = 238] = "WEB_SCREEN_HEIGHT";
-    /** SUP_IOS_LOCK_SCREEN_WIDGET_ENABLED - iOS 16 lock screen widgets enabled */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SUP_IOS_LOCK_SCREEN_WIDGET_ENABLED"] = 239] = "SUP_IOS_LOCK_SCREEN_WIDGET_ENABLED";
-    /** SNAP_PRIVACY - Atlas enum property that indicates a user's snap privacy settings (Friends vs. Everyone) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SNAP_PRIVACY"] = 240] = "SNAP_PRIVACY";
-    /** ADS_INTERFACES_IS_NEW_ORGANIZATION - Is a new organization in ads interfaces UI */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["ADS_INTERFACES_IS_NEW_ORGANIZATION"] = 241] = "ADS_INTERFACES_IS_NEW_ORGANIZATION";
-    /** SERVER_ONLY - if true only server callers can get the config */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SERVER_ONLY"] = 242] = "SERVER_ONLY";
-    /** GHE_ORGANIZATION - The Github Enterprise organization */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["GHE_ORGANIZATION"] = 243] = "GHE_ORGANIZATION";
-    /** GHE_REPOSITORY - The Github Enterprise Repository, which is contained by a GHE organization */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["GHE_REPOSITORY"] = 244] = "GHE_REPOSITORY";
-    /** GHE_USER_EMAIL - In the context of Machamp, the user identifier (email) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["GHE_USER_EMAIL"] = 245] = "GHE_USER_EMAIL";
-    /** BUILD_DEFINITION_ID - In the context of Machamp, the build definition identifier is a UUID hash of the GHE organization and and repository. */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BUILD_DEFINITION_ID"] = 246] = "BUILD_DEFINITION_ID";
-    /** BUILD_DEFINITION_NAME - In the context of Machamp, the build definition name is name of the build from the build.yaml */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BUILD_DEFINITION_NAME"] = 247] = "BUILD_DEFINITION_NAME";
-    /** LCA_PRINCIPAL - LCA Principal of the service calling Circumstance Engine */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["LCA_PRINCIPAL"] = 248] = "LCA_PRINCIPAL";
-    /**
-     * MEDIA_PERFORMANCE_CLASS - A performance class defines a set of device capabilities by Android
-     * e.g. 30, 31, See https://android-developers.googleblog.com/2022/03/using-performance-class-to-optimize.html
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["MEDIA_PERFORMANCE_CLASS"] = 249] = "MEDIA_PERFORMANCE_CLASS";
-    /** COMMUNITY_COUNT - Number of Communities user is in */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["COMMUNITY_COUNT"] = 250] = "COMMUNITY_COUNT";
-    /** RECIPIENTS_SUPPORT_FMP4 - A boolean indicating whether a group of recipients support fMP4 playback */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["RECIPIENTS_SUPPORT_FMP4"] = 251] = "RECIPIENTS_SUPPORT_FMP4";
-    /** SCREEN_ASPECT_RATIO - The screen aspect ratio. It's the result of SCREEN_WIDTH / SCREEN_HEIGHT */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["SCREEN_ASPECT_RATIO"] = 252] = "SCREEN_ASPECT_RATIO";
-    /**
-     * USER_GROUP - USER GROUP. This property is not expected to ever be supported on any
-     * of the clients, but is rather needed to signal to the client that a given
-     * config depends on an unsupported property, so that the client can emit a metric
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["USER_GROUP"] = 253] = "USER_GROUP";
-    /**
-     * USER_HAS_DENIED_CAMERA_PERM - A boolean value indicating whether the user has denied camera permission. And the property
-     * value would remain TRUE for users who have ever denied camera permission since first time
-     * of reading the property value
-     * New users are by default denied camera permission.
-     *
-     * @deprecated
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["USER_HAS_DENIED_CAMERA_PERM"] = 254] = "USER_HAS_DENIED_CAMERA_PERM";
-    /**
-     * CAMEOS_ENGAGEMENT_LEVEL - Cameos engagement level based on number of Cameos views in the last 7 days.
-     * e.g. IDLE, CASUAL, REGULAR, POWER
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["CAMEOS_ENGAGEMENT_LEVEL"] = 255] = "CAMEOS_ENGAGEMENT_LEVEL";
-    /**
-     * HAS_CAMEOS - Whether the user has Cameos.
-     * e.g. TRUE, FALSE
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["HAS_CAMEOS"] = 256] = "HAS_CAMEOS";
-    /**
-     * IS_ACTIVE_LENS_VIDEO_CHAT_USER - Whether the user has interacted with lenses in video chat in the last 7 days.
-     * e.g. TRUE, FALSE
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["IS_ACTIVE_LENS_VIDEO_CHAT_USER"] = 257] = "IS_ACTIVE_LENS_VIDEO_CHAT_USER";
-    /**
-     * NUM_SPOTLIGHT_POSTS_L7 - The number of Spotlight posts a user has made in the last 7 days.
-     * e.g. 0, 100, 1000
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["NUM_SPOTLIGHT_POSTS_L7"] = 258] = "NUM_SPOTLIGHT_POSTS_L7";
-    /**
-     * NUM_MAP_POSTS_L7 - The number of Map posts a user has made in the last 7 days.
-     * e.g. 0, 100, 1000
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["NUM_MAP_POSTS_L7"] = 259] = "NUM_MAP_POSTS_L7";
-    /**
-     * HAS_CREATED_PUBLIC_PROFILE - Whether a user has created a public profile.
-     * e.g. TRUE, FALSE
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["HAS_CREATED_PUBLIC_PROFILE"] = 260] = "HAS_CREATED_PUBLIC_PROFILE";
-    /**
-     * HAS_PUBLIC_PROFILE_ACCESS_VIA_ROLE - Whether a user has access to a public profile via a role.
-     * e.g. TRUE, FALSE
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["HAS_PUBLIC_PROFILE_ACCESS_VIA_ROLE"] = 261] = "HAS_PUBLIC_PROFILE_ACCESS_VIA_ROLE";
-    /**
-     * DAYS_SINCE_LAST_CAMERA_PERM_DENY - Integer value represents the number of days since last time the user denied camera permission.
-     * Default value is -1 if user has no record of denying camera permission (the user has granted camera permission permanently).
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DAYS_SINCE_LAST_CAMERA_PERM_DENY"] = 262] = "DAYS_SINCE_LAST_CAMERA_PERM_DENY";
-    /** DAYS_SINCE_AD_ORG_JOIN - The days since the user last joined an ads manager organization */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DAYS_SINCE_AD_ORG_JOIN"] = 263] = "DAYS_SINCE_AD_ORG_JOIN";
-    /** DAYS_SINCE_FIRST_AD_CREATE - The days since the user created an ad within ads manager via their ad organization */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DAYS_SINCE_FIRST_AD_CREATE"] = 264] = "DAYS_SINCE_FIRST_AD_CREATE";
-    /** ORGANIZATION_COUNTRY - Organization country */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["ORGANIZATION_COUNTRY"] = 265] = "ORGANIZATION_COUNTRY";
-    /** DAYS_SINCE_FIRST_DWEB_VISIT - The days since the user first visited dWeb (Web Chat) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DAYS_SINCE_FIRST_DWEB_VISIT"] = 266] = "DAYS_SINCE_FIRST_DWEB_VISIT";
-    /** DAYS_SINCE_LAST_DWEB_VISIT - The days since the user has last visited dWeb (Web Chat) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["DAYS_SINCE_LAST_DWEB_VISIT"] = 267] = "DAYS_SINCE_LAST_DWEB_VISIT";
-    /** WEEKS_SINCE_USING_DWEB - The weeks group in which the user has been absent from dWeb (Web Chat) */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["WEEKS_SINCE_USING_DWEB"] = 268] = "WEEKS_SINCE_USING_DWEB";
-    /** HAS_LENS - Whether a capture session has lens */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["HAS_LENS"] = 269] = "HAS_LENS";
-    /**
-     * BILLBOARD_SERVER_IMPRESSION_COUNT - Billboard Cooldown and Cap Unit will support these properties
-     * Basic Counter for impression / click / dismiss
-     */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_SERVER_IMPRESSION_COUNT"] = 270] = "BILLBOARD_SERVER_IMPRESSION_COUNT";
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_SERVER_CLICK_COUNT"] = 271] = "BILLBOARD_SERVER_CLICK_COUNT";
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_SERVER_DISMISS_COUNT"] = 272] = "BILLBOARD_SERVER_DISMISS_COUNT";
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_SERVER_INTERACTION_COUNT"] = 273] = "BILLBOARD_SERVER_INTERACTION_COUNT";
-    /** BILLBOARD_SERVER_FIRST_IMPRESSION_TIME_SECS_TO_NOW - Time to now signals in Seconds */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_SERVER_FIRST_IMPRESSION_TIME_SECS_TO_NOW"] = 274] = "BILLBOARD_SERVER_FIRST_IMPRESSION_TIME_SECS_TO_NOW";
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_SERVER_LAST_IMPRESSION_TIME_SECS_TO_NOW"] = 275] = "BILLBOARD_SERVER_LAST_IMPRESSION_TIME_SECS_TO_NOW";
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_SERVER_FIRST_CLICK_TIME_SECS_TO_NOW"] = 276] = "BILLBOARD_SERVER_FIRST_CLICK_TIME_SECS_TO_NOW";
@@ -12892,37 +12812,36 @@ var ClientTargetingExpression_Property;
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_SERVER_LAST_DISMISS_TIME_SECS_TO_NOW"] = 279] = "BILLBOARD_SERVER_LAST_DISMISS_TIME_SECS_TO_NOW";
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_SERVER_FIRST_INTERACTION_TIME_SECS_TO_NOW"] = 280] = "BILLBOARD_SERVER_FIRST_INTERACTION_TIME_SECS_TO_NOW";
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_SERVER_LAST_INTERACTION_TIME_SECS_TO_NOW"] = 281] = "BILLBOARD_SERVER_LAST_INTERACTION_TIME_SECS_TO_NOW";
-    /** BILLBOARD_SERVER_CONTINUOUS_DISMISS_COUNT - Continuous Counter */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_SERVER_CONTINUOUS_DISMISS_COUNT"] = 282] = "BILLBOARD_SERVER_CONTINUOUS_DISMISS_COUNT";
-    /** BILLBOARD_CAMPAIGN_LOCAL_FIRST_CLICK_TIME_SECS_TO_NOW - Billboard first click time to now */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_CAMPAIGN_LOCAL_FIRST_CLICK_TIME_SECS_TO_NOW"] = 283] = "BILLBOARD_CAMPAIGN_LOCAL_FIRST_CLICK_TIME_SECS_TO_NOW";
-    /** BILLBOARD_CAMPAIGN_LOCAL_LAST_CLICK_TIME_SECS_TO_NOW - Billboard last click time to now */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_CAMPAIGN_LOCAL_LAST_CLICK_TIME_SECS_TO_NOW"] = 284] = "BILLBOARD_CAMPAIGN_LOCAL_LAST_CLICK_TIME_SECS_TO_NOW";
-    /** BILLBOARD_CAMPAIGN_LOCAL_FIRST_DISMISS_TIME_SECS_TO_NOW - Billboard first dismiss time to now */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_CAMPAIGN_LOCAL_FIRST_DISMISS_TIME_SECS_TO_NOW"] = 285] = "BILLBOARD_CAMPAIGN_LOCAL_FIRST_DISMISS_TIME_SECS_TO_NOW";
-    /** BILLBOARD_CAMPAIGN_LOCAL_LAST_DISMISS_TIME_SECS_TO_NOW - Billboard last dismiss time to now */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_CAMPAIGN_LOCAL_LAST_DISMISS_TIME_SECS_TO_NOW"] = 286] = "BILLBOARD_CAMPAIGN_LOCAL_LAST_DISMISS_TIME_SECS_TO_NOW";
-    /** BILLBOARD_CAMPAIGN_LOCAL_FIRST_INTERACTION_TIME_SECS_TO_NOW - Billboard locally tracked first interaction time to now */
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["BILLBOARD_CAMPAIGN_LOCAL_FIRST_INTERACTION_TIME_SECS_TO_NOW"] = 287] = "BILLBOARD_CAMPAIGN_LOCAL_FIRST_INTERACTION_TIME_SECS_TO_NOW";
+    ClientTargetingExpression_Property[ClientTargetingExpression_Property["DAYS_SINCE_FIRST_AD_SPEND"] = 288] = "DAYS_SINCE_FIRST_AD_SPEND";
+    ClientTargetingExpression_Property[ClientTargetingExpression_Property["DAYS_SINCE_LAST_AD_SPEND"] = 289] = "DAYS_SINCE_LAST_AD_SPEND";
+    ClientTargetingExpression_Property[ClientTargetingExpression_Property["SPOTLIGHT_2_PLUS_STORY_SESSION_7D_STATUS_DETAILED"] = 290] = "SPOTLIGHT_2_PLUS_STORY_SESSION_7D_STATUS_DETAILED";
+    ClientTargetingExpression_Property[ClientTargetingExpression_Property["SPOTLIGHT_5_PLUS_STORY_SESSION_7D_STATUS_DETAILED"] = 291] = "SPOTLIGHT_5_PLUS_STORY_SESSION_7D_STATUS_DETAILED";
+    ClientTargetingExpression_Property[ClientTargetingExpression_Property["SPOTLIGHT_STORY_VIEW_7D_STATUS_DETAILED"] = 292] = "SPOTLIGHT_STORY_VIEW_7D_STATUS_DETAILED";
+    ClientTargetingExpression_Property[ClientTargetingExpression_Property["LAST_USER_ACCEPTED_TOS"] = 293] = "LAST_USER_ACCEPTED_TOS";
+    ClientTargetingExpression_Property[ClientTargetingExpression_Property["UPDATED_DEVICE_CLUSTER"] = 294] = "UPDATED_DEVICE_CLUSTER";
+    ClientTargetingExpression_Property[ClientTargetingExpression_Property["CREATOR_TIER"] = 295] = "CREATOR_TIER";
+    ClientTargetingExpression_Property[ClientTargetingExpression_Property["AV1_SW_DECODER"] = 296] = "AV1_SW_DECODER";
+    ClientTargetingExpression_Property[ClientTargetingExpression_Property["AV1_HW_DECODER"] = 297] = "AV1_HW_DECODER";
+    ClientTargetingExpression_Property[ClientTargetingExpression_Property["HAS_EXPLICIT_PUBLIC_PROFILE"] = 298] = "HAS_EXPLICIT_PUBLIC_PROFILE";
+    ClientTargetingExpression_Property[ClientTargetingExpression_Property["LARGER_TEXT_DISPLAY_OPTION_ENABLED"] = 299] = "LARGER_TEXT_DISPLAY_OPTION_ENABLED";
+    ClientTargetingExpression_Property[ClientTargetingExpression_Property["IS_PUBLIC_POSTING_PREFERRED_USER"] = 300] = "IS_PUBLIC_POSTING_PREFERRED_USER";
+    ClientTargetingExpression_Property[ClientTargetingExpression_Property["RUID"] = 301] = "RUID";
+    ClientTargetingExpression_Property[ClientTargetingExpression_Property["MUTABLE_USERNAME"] = 302] = "MUTABLE_USERNAME";
+    ClientTargetingExpression_Property[ClientTargetingExpression_Property["BUDGET_GROUP_ID"] = 303] = "BUDGET_GROUP_ID";
+    ClientTargetingExpression_Property[ClientTargetingExpression_Property["AB_POPULATION_RANGE_HASH_FUNC"] = 304] = "AB_POPULATION_RANGE_HASH_FUNC";
+    ClientTargetingExpression_Property[ClientTargetingExpression_Property["AB_TREATMENT_RANGE_HASH_FUNC"] = 305] = "AB_TREATMENT_RANGE_HASH_FUNC";
     ClientTargetingExpression_Property[ClientTargetingExpression_Property["UNRECOGNIZED"] = -1] = "UNRECOGNIZED";
 })(ClientTargetingExpression_Property || (ClientTargetingExpression_Property = {}));
-/**
- * Which field of feature_provided_signals.hash_signals to hash
- * To be used by the HASH_MURMUR3_128_MOD_100 property only
- */
 var ClientTargetingExpression_PropertyMetadata_SignalToHash;
 (function (ClientTargetingExpression_PropertyMetadata_SignalToHash) {
-    /** UNKNOWN_SIGNAL_TO_HASH - Unset variant */
     ClientTargetingExpression_PropertyMetadata_SignalToHash[ClientTargetingExpression_PropertyMetadata_SignalToHash["UNKNOWN_SIGNAL_TO_HASH"] = 0] = "UNKNOWN_SIGNAL_TO_HASH";
-    /**
-     * HASH_SEED_AND_USER_ID - Indicates that seed+user_id string should be hashed
-     * (namespace is supplied by the server, user_id - by the client)
-     */
     ClientTargetingExpression_PropertyMetadata_SignalToHash[ClientTargetingExpression_PropertyMetadata_SignalToHash["HASH_SEED_AND_USER_ID"] = 1] = "HASH_SEED_AND_USER_ID";
-    /**
-     * HASH_USER_ID_AND_NAMESPACE - Indicates that used_id+namespace string should be hashed
-     * (seed is supplied by the server, user_id - by the client)
-     */
     ClientTargetingExpression_PropertyMetadata_SignalToHash[ClientTargetingExpression_PropertyMetadata_SignalToHash["HASH_USER_ID_AND_NAMESPACE"] = 2] = "HASH_USER_ID_AND_NAMESPACE";
     ClientTargetingExpression_PropertyMetadata_SignalToHash[ClientTargetingExpression_PropertyMetadata_SignalToHash["UNRECOGNIZED"] = -1] = "UNRECOGNIZED";
 })(ClientTargetingExpression_PropertyMetadata_SignalToHash || (ClientTargetingExpression_PropertyMetadata_SignalToHash = {}));
@@ -12943,6 +12862,7 @@ function createBaseConfigResult() {
         ruidType: 0,
         segmentOrdinal: 0,
         generatedFromAbAllowlists: false,
+        internalFields: undefined,
     };
 }
 const ConfigResult = {
@@ -12993,6 +12913,9 @@ const ConfigResult = {
         }
         if (message.generatedFromAbAllowlists === true) {
             writer.uint32(120).bool(message.generatedFromAbAllowlists);
+        }
+        if (message.internalFields !== undefined) {
+            ConfigResult_InternalFields.encode(message.internalFields, writer.uint32(130).fork()).ldelim();
         }
         return writer;
     },
@@ -13056,6 +12979,9 @@ const ConfigResult = {
                 case 15:
                     message.generatedFromAbAllowlists = reader.bool();
                     break;
+                case 16:
+                    message.internalFields = ConfigResult_InternalFields.decode(reader, reader.uint32());
+                    break;
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -13084,6 +13010,65 @@ const ConfigResult = {
         message.ruidType = (_l = object.ruidType) !== null && _l !== void 0 ? _l : 0;
         message.segmentOrdinal = (_m = object.segmentOrdinal) !== null && _m !== void 0 ? _m : 0;
         message.generatedFromAbAllowlists = (_o = object.generatedFromAbAllowlists) !== null && _o !== void 0 ? _o : false;
+        message.internalFields =
+            object.internalFields !== undefined && object.internalFields !== null
+                ? ConfigResult_InternalFields.fromPartial(object.internalFields)
+                : undefined;
+        return message;
+    },
+};
+function createBaseConfigResult_InternalFields() {
+    return { configBitmapIndex: 0, configResultBitmapIndex: 0, hasServerPropertiesOnly: false, globalPriority: 0 };
+}
+const ConfigResult_InternalFields = {
+    encode(message, writer = minimal_default().Writer.create()) {
+        if (message.configBitmapIndex !== 0) {
+            writer.uint32(8).int32(message.configBitmapIndex);
+        }
+        if (message.configResultBitmapIndex !== 0) {
+            writer.uint32(16).int32(message.configResultBitmapIndex);
+        }
+        if (message.hasServerPropertiesOnly === true) {
+            writer.uint32(24).bool(message.hasServerPropertiesOnly);
+        }
+        if (message.globalPriority !== 0) {
+            writer.uint32(32).int32(message.globalPriority);
+        }
+        return writer;
+    },
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseConfigResult_InternalFields();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.configBitmapIndex = reader.int32();
+                    break;
+                case 2:
+                    message.configResultBitmapIndex = reader.int32();
+                    break;
+                case 3:
+                    message.hasServerPropertiesOnly = reader.bool();
+                    break;
+                case 4:
+                    message.globalPriority = reader.int32();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromPartial(object) {
+        var _a, _b, _c, _d;
+        const message = createBaseConfigResult_InternalFields();
+        message.configBitmapIndex = (_a = object.configBitmapIndex) !== null && _a !== void 0 ? _a : 0;
+        message.configResultBitmapIndex = (_b = object.configResultBitmapIndex) !== null && _b !== void 0 ? _b : 0;
+        message.hasServerPropertiesOnly = (_c = object.hasServerPropertiesOnly) !== null && _c !== void 0 ? _c : false;
+        message.globalPriority = (_d = object.globalPriority) !== null && _d !== void 0 ? _d : 0;
         return message;
     },
 };
@@ -13208,7 +13193,7 @@ const ClientTargetingExpression = {
     },
 };
 function createBaseClientTargetingExpression_PropertyMetadata() {
-    return { itemId: 0, signalToHash: 0, abNamespaceForHashing: "", abSeedForHashing: "" };
+    return { itemId: 0, signalToHash: 0, abNamespaceForHashing: "", abSeedForHashing: "", ruidType: undefined };
 }
 const ClientTargetingExpression_PropertyMetadata = {
     encode(message, writer = minimal_default().Writer.create()) {
@@ -13223,6 +13208,9 @@ const ClientTargetingExpression_PropertyMetadata = {
         }
         if (message.abSeedForHashing !== "") {
             writer.uint32(34).string(message.abSeedForHashing);
+        }
+        if (message.ruidType !== undefined) {
+            writer.uint32(40).int32(message.ruidType);
         }
         return writer;
     },
@@ -13245,6 +13233,9 @@ const ClientTargetingExpression_PropertyMetadata = {
                 case 4:
                     message.abSeedForHashing = reader.string();
                     break;
+                case 5:
+                    message.ruidType = reader.int32();
+                    break;
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -13253,12 +13244,13 @@ const ClientTargetingExpression_PropertyMetadata = {
         return message;
     },
     fromPartial(object) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e;
         const message = createBaseClientTargetingExpression_PropertyMetadata();
         message.itemId = (_a = object.itemId) !== null && _a !== void 0 ? _a : 0;
         message.signalToHash = (_b = object.signalToHash) !== null && _b !== void 0 ? _b : 0;
         message.abNamespaceForHashing = (_c = object.abNamespaceForHashing) !== null && _c !== void 0 ? _c : "";
         message.abSeedForHashing = (_d = object.abSeedForHashing) !== null && _d !== void 0 ? _d : "";
+        message.ruidType = (_e = object.ruidType) !== null && _e !== void 0 ? _e : undefined;
         return message;
     },
 };
@@ -13285,7 +13277,6 @@ if ((minimal_default()).util.Long !== (long_default())) {
 }
 //# sourceMappingURL=config_result.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/cdp/cof/config_response.js
-/* eslint-disable */
 
 
 
@@ -13421,11 +13412,9 @@ if ((minimal_default()).util.Long !== (long_default())) {
 }
 //# sourceMappingURL=config_response.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/cdp/cof/debug_info.js
-/* eslint-disable */
 
 
 const debug_info_protobufPackage = "snapchat.cdp.cof";
-/** Steps for AB process. */
 var AbStep;
 (function (AbStep) {
     AbStep[AbStep["USER_WHITELISTED"] = 0] = "USER_WHITELISTED";
@@ -13435,7 +13424,6 @@ var AbStep;
     AbStep[AbStep["TRAFFIC_ALLOCATED"] = 4] = "TRAFFIC_ALLOCATED";
     AbStep[AbStep["UNRECOGNIZED"] = -1] = "UNRECOGNIZED";
 })(AbStep || (AbStep = {}));
-/** Steps for COF process. */
 var CofStep;
 (function (CofStep) {
     CofStep[CofStep["VALIDATE_REQUEST"] = 0] = "VALIDATE_REQUEST";
@@ -13587,7 +13575,7 @@ if ((minimal_default()).util.Long !== (long_default())) {
 }
 //# sourceMappingURL=debug_info.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/cdp/cof/circumstance_service.js
-/* eslint-disable */
+
 
 
 
@@ -14362,150 +14350,6 @@ const GetBitmapByTokenResponse = {
         return message;
     },
 };
-function createBaseGetConfigValuesRegionalRequest() {
-    return {
-        token: "",
-        userId: "",
-        userCacheTtlInSeconds: 0,
-        userAgent: "",
-        clientIp: "",
-        deviceLocale: "",
-        configNames: [],
-        namespaces: [],
-        disableExposureLogging: false,
-    };
-}
-const GetConfigValuesRegionalRequest = {
-    encode(message, writer = minimal_default().Writer.create()) {
-        if (message.token !== "") {
-            writer.uint32(10).string(message.token);
-        }
-        if (message.userId !== "") {
-            writer.uint32(18).string(message.userId);
-        }
-        if (message.userCacheTtlInSeconds !== 0) {
-            writer.uint32(24).int32(message.userCacheTtlInSeconds);
-        }
-        if (message.userAgent !== "") {
-            writer.uint32(34).string(message.userAgent);
-        }
-        if (message.clientIp !== "") {
-            writer.uint32(42).string(message.clientIp);
-        }
-        if (message.deviceLocale !== "") {
-            writer.uint32(50).string(message.deviceLocale);
-        }
-        for (const v of message.configNames) {
-            ConfigWithNamespace.encode(v, writer.uint32(58).fork()).ldelim();
-        }
-        writer.uint32(66).fork();
-        for (const v of message.namespaces) {
-            writer.int32(v);
-        }
-        writer.ldelim();
-        if (message.disableExposureLogging === true) {
-            writer.uint32(72).bool(message.disableExposureLogging);
-        }
-        return writer;
-    },
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseGetConfigValuesRegionalRequest();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.token = reader.string();
-                    break;
-                case 2:
-                    message.userId = reader.string();
-                    break;
-                case 3:
-                    message.userCacheTtlInSeconds = reader.int32();
-                    break;
-                case 4:
-                    message.userAgent = reader.string();
-                    break;
-                case 5:
-                    message.clientIp = reader.string();
-                    break;
-                case 6:
-                    message.deviceLocale = reader.string();
-                    break;
-                case 7:
-                    message.configNames.push(ConfigWithNamespace.decode(reader, reader.uint32()));
-                    break;
-                case 8:
-                    if ((tag & 7) === 2) {
-                        const end2 = reader.uint32() + reader.pos;
-                        while (reader.pos < end2) {
-                            message.namespaces.push(reader.int32());
-                        }
-                    }
-                    else {
-                        message.namespaces.push(reader.int32());
-                    }
-                    break;
-                case 9:
-                    message.disableExposureLogging = reader.bool();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromPartial(object) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
-        const message = createBaseGetConfigValuesRegionalRequest();
-        message.token = (_a = object.token) !== null && _a !== void 0 ? _a : "";
-        message.userId = (_b = object.userId) !== null && _b !== void 0 ? _b : "";
-        message.userCacheTtlInSeconds = (_c = object.userCacheTtlInSeconds) !== null && _c !== void 0 ? _c : 0;
-        message.userAgent = (_d = object.userAgent) !== null && _d !== void 0 ? _d : "";
-        message.clientIp = (_e = object.clientIp) !== null && _e !== void 0 ? _e : "";
-        message.deviceLocale = (_f = object.deviceLocale) !== null && _f !== void 0 ? _f : "";
-        message.configNames = ((_g = object.configNames) === null || _g === void 0 ? void 0 : _g.map((e) => ConfigWithNamespace.fromPartial(e))) || [];
-        message.namespaces = ((_h = object.namespaces) === null || _h === void 0 ? void 0 : _h.map((e) => e)) || [];
-        message.disableExposureLogging = (_j = object.disableExposureLogging) !== null && _j !== void 0 ? _j : false;
-        return message;
-    },
-};
-function createBaseGetConfigValuesRegionalResponse() {
-    return { configResults: [] };
-}
-const GetConfigValuesRegionalResponse = {
-    encode(message, writer = minimal_default().Writer.create()) {
-        for (const v of message.configResults) {
-            ConfigResult.encode(v, writer.uint32(10).fork()).ldelim();
-        }
-        return writer;
-    },
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseGetConfigValuesRegionalResponse();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.configResults.push(ConfigResult.decode(reader, reader.uint32()));
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromPartial(object) {
-        var _a;
-        const message = createBaseGetConfigValuesRegionalResponse();
-        message.configResults = ((_a = object.configResults) === null || _a === void 0 ? void 0 : _a.map((e) => ConfigResult.fromPartial(e))) || [];
-        return message;
-    },
-};
 function createBaseGetUnevaluatedConfigResultsWithAbTargetingRequest() {
     return { namespaces: [], edgeConfigClientVersion: "" };
 }
@@ -14591,6 +14435,80 @@ const GetUnevaluatedConfigResultsWithAbTargetingResponse = {
         return message;
     },
 };
+function createBaseAddRuidsForDebuggingRequest() {
+    return { ruids: [], configNames: [], maxSnapshots: 0 };
+}
+const AddRuidsForDebuggingRequest = {
+    encode(message, writer = minimal_default().Writer.create()) {
+        for (const v of message.ruids) {
+            Ruid.encode(v, writer.uint32(10).fork()).ldelim();
+        }
+        for (const v of message.configNames) {
+            writer.uint32(18).string(v);
+        }
+        if (message.maxSnapshots !== 0) {
+            writer.uint32(24).int32(message.maxSnapshots);
+        }
+        return writer;
+    },
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseAddRuidsForDebuggingRequest();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.ruids.push(Ruid.decode(reader, reader.uint32()));
+                    break;
+                case 2:
+                    message.configNames.push(reader.string());
+                    break;
+                case 3:
+                    message.maxSnapshots = reader.int32();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromPartial(object) {
+        var _a, _b, _c;
+        const message = createBaseAddRuidsForDebuggingRequest();
+        message.ruids = ((_a = object.ruids) === null || _a === void 0 ? void 0 : _a.map((e) => Ruid.fromPartial(e))) || [];
+        message.configNames = ((_b = object.configNames) === null || _b === void 0 ? void 0 : _b.map((e) => e)) || [];
+        message.maxSnapshots = (_c = object.maxSnapshots) !== null && _c !== void 0 ? _c : 0;
+        return message;
+    },
+};
+function createBaseAddRuidsForDebuggingResponse() {
+    return {};
+}
+const AddRuidsForDebuggingResponse = {
+    encode(_, writer = minimal_default().Writer.create()) {
+        return writer;
+    },
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseAddRuidsForDebuggingResponse();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromPartial(_) {
+        const message = createBaseAddRuidsForDebuggingResponse();
+        return message;
+    },
+};
 class CircumstancesServiceClientImpl {
     constructor(rpc) {
         this.rpc = rpc;
@@ -14604,6 +14522,7 @@ class CircumstancesServiceClientImpl {
         this.pinConfigSet = this.pinConfigSet.bind(this);
         this.unpinConfigSet = this.unpinConfigSet.bind(this);
         this.getUnevaluatedConfigResultsWithAbTargeting = this.getUnevaluatedConfigResultsWithAbTargeting.bind(this);
+        this.addRuidsForDebugging = this.addRuidsForDebugging.bind(this);
     }
     targetingQuery(request, metadata) {
         return this.rpc.unary(CircumstancesServicetargetingQueryDesc, ConfigTargetingRequest.fromPartial(request), metadata);
@@ -14634,6 +14553,9 @@ class CircumstancesServiceClientImpl {
     }
     getUnevaluatedConfigResultsWithAbTargeting(request, metadata) {
         return this.rpc.unary(CircumstancesServicegetUnevaluatedConfigResultsWithAbTargetingDesc, GetUnevaluatedConfigResultsWithAbTargetingRequest.fromPartial(request), metadata);
+    }
+    addRuidsForDebugging(request, metadata) {
+        return this.rpc.unary(CircumstancesServiceaddRuidsForDebuggingDesc, AddRuidsForDebuggingRequest.fromPartial(request), metadata);
     }
 }
 const CircumstancesServiceDesc = {
@@ -14819,31 +14741,19 @@ const CircumstancesServicegetUnevaluatedConfigResultsWithAbTargetingDesc = {
         },
     },
 };
-class CircumstancesRegionalServiceClientImpl {
-    constructor(rpc) {
-        this.rpc = rpc;
-        this.getConfigValues = this.getConfigValues.bind(this);
-    }
-    getConfigValues(request, metadata) {
-        return this.rpc.unary(CircumstancesRegionalServicegetConfigValuesDesc, GetConfigValuesRegionalRequest.fromPartial(request), metadata);
-    }
-}
-const CircumstancesRegionalServiceDesc = {
-    serviceName: "snapchat.cdp.cof.CircumstancesRegionalService",
-};
-const CircumstancesRegionalServicegetConfigValuesDesc = {
-    methodName: "getConfigValues",
-    service: CircumstancesRegionalServiceDesc,
+const CircumstancesServiceaddRuidsForDebuggingDesc = {
+    methodName: "addRuidsForDebugging",
+    service: CircumstancesServiceDesc,
     requestStream: false,
     responseStream: false,
     requestType: {
         serializeBinary() {
-            return GetConfigValuesRegionalRequest.encode(this).finish();
+            return AddRuidsForDebuggingRequest.encode(this).finish();
         },
     },
     responseType: {
         deserializeBinary(data) {
-            return Object.assign(Object.assign({}, GetConfigValuesRegionalResponse.decode(data)), { toObject() {
+            return Object.assign(Object.assign({}, AddRuidsForDebuggingResponse.decode(data)), { toObject() {
                     return this;
                 } });
         },
@@ -14894,7 +14804,7 @@ if ((minimal_default()).util.Long !== (long_default())) {
 
 const responseCachingHandler_logger = getLogger("responseCachingHandler");
 const notFound = (key) => cacheKeyNotFoundError(`Response for key ${key} not found in cache.`);
-const strategyFailed = (key, cause) => new Error(`Network request and cache lookup for ${key} both failed.`, { cause });
+const strategyFailed = (key, cause) => new Error(`Network request and cache lookup for key ${key} both failed.`, { cause });
 /**
  * Create a CachingStrategy that first makes a request to the network, falling back to cache if the network request
  * fails. If the network request fails and a prior response has not been cached, an error is returned to the caller.
@@ -14927,12 +14837,17 @@ const staleIfErrorStrategy = () => (key, cache, network) => __awaiter(void 0, vo
  * entry is updated with a request to the network in the background. If no cached response is found, the network request
  * is made, the result cached and returned to the caller.
  */
-const staleWhileRevalidateStrategy = () => (key, cache, network) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
+const staleWhileRevalidateStrategy = (options) => (key, cache, network) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
     try {
         const cachedResponse = yield cache.retrieve(key);
         if (!cachedResponse)
             throw notFound(key);
-        network()
+        // By specifying isSideEffect: true, the handler chain allows the network handler to run to completion,
+        // even though we return an immediate response from the cache. In the typical use-case, once a response has
+        // resolved, any ongoing handlers are aborted because the handler chain knows their result will not be
+        // used -- but here, the network handler is run as a side-effect to update the cache after the cached
+        // response has been resolved.
+        network({ isSideEffect: true })
             .then((response) => cache.store(key, response))
             .catch((error) => {
             responseCachingHandler_logger.warn(`staleWhileRevalidateStrategy failed to retrieve and store key ${key}.`, error);
@@ -14940,6 +14855,7 @@ const staleWhileRevalidateStrategy = () => (key, cache, network) => tslib_es6_aw
         return cachedResponse;
     }
     catch (cacheError) {
+        options === null || options === void 0 ? void 0 : options.reporter.count("cache_miss", 1, new Map([["request_type", options.requestType]]));
         try {
             const response = yield network();
             cache.store(key, response).catch((error) => {
@@ -14969,7 +14885,10 @@ const staleWhileRevalidateStrategy = () => (key, cache, network) => tslib_es6_aw
  */
 const createResponseCachingHandler = (cache, resolveKey, strategy) => {
     return (next) => (request, metadata) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
-        const network = () => next(request, metadata);
+        const network = (additionalMetadata = {}) => {
+            const m = Object.assign(Object.assign({}, metadata), additionalMetadata);
+            return next(request, m);
+        };
         let key;
         try {
             key = resolveKey(request, metadata);
@@ -15233,6 +15152,2074 @@ class IndexedDBPersistence {
     }
 }
 //# sourceMappingURL=IndexedDBPersistence.js.map
+;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/handlers/mappingHandler.js
+
+/**
+ * Map from one request type to another, potentially asynchronously.
+ *
+ * **NOTE:** If `maxMapConcurrency` is set to some finite number, and more requests are handled than are allowed to
+ * be concurrently mapped, the waiting requests will be placed into a unbounded buffer. If, for example, requests are
+ * handled with high frequency, `maxMapConcurrency` is low, and the `map` function returns a long-running Promise, this
+ * buffer could use a large amount of memory. Keep this in mind when using this handler.
+ *
+ * @param map Transform each request, may be sync or async.
+ * @param pageVisibility Determines whether to flush buffered requests when the page becomes hidden.
+ * `false` value indicates that page visibility handling is avoided, while
+ * a {@link PageVisibility} instance is used to subscribe to page visibility change events.
+ * @param maxMapConcurrency If the `map` function is async, it will be invoked at most this number of times
+ * concurrently. Setting this to 1 could be useful if it's important for `map` to be called in serial.
+ * @returns {@link ChainableHandler}, suitable for use in {@link HandlerChainBuilder.map}
+ */
+const createMappingHandler = (map, pageVisibility, maxMapConcurrency = Number.POSITIVE_INFINITY) => {
+    const buffer = [];
+    let mapConcurrency = 0;
+    const processRequest = (request) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
+        try {
+            mapConcurrency++;
+            const mapped = request.map();
+            // We want to make sure that if the mapping operation is not async, we don't introduce asynchronicity here
+            // (which unfortunately happens even if you `await` a non-Promise value). This is important so that e.g.
+            // handlers which run when the page is terminated can send requests synchronously, since the browser may
+            // not pick up any async handlers registered to run on the following event loop.
+            if (mapped instanceof Promise)
+                request.next(yield mapped);
+            else if (mapped)
+                request.next(mapped);
+        }
+        catch (error) {
+            request.reject(error);
+        }
+        finally {
+            mapConcurrency--;
+        }
+        while (buffer.length > 0 && mapConcurrency < maxMapConcurrency) {
+            // Safety: we just checked for `buffer.length > 0`, so the shifted value will never be undefined.
+            processRequest(buffer.shift());
+        }
+    });
+    // This may indicate that the page is being unloaded, in which case we may want to flush any buffered requests
+    // regardless of our max concurrency – otherwise those requests will be lost when the page terminates.
+    if (pageVisibility) {
+        pageVisibility.onPageHidden(() => {
+            while (buffer.length > 0)
+                processRequest(buffer.shift());
+        });
+    }
+    return (next) => (request, metadata) => {
+        return new Promise((resolve, reject) => {
+            const mappableRequest = {
+                map: () => map(request),
+                next: (mappedRequest) => next(mappedRequest, metadata).then(resolve).catch(reject),
+                reject,
+            };
+            if (mapConcurrency < maxMapConcurrency)
+                processRequest(mappableRequest);
+            else
+                buffer.push(mappableRequest);
+        });
+    };
+};
+//# sourceMappingURL=mappingHandler.js.map
+;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/handlers/batchingHandler.js
+
+
+/**
+ * Accumulate requests into batches, which are then sent to the next handler in the chain. Batches are sent when either:
+ * - the given `isBatchComplete` function returns true, closing the current batch and sending it down the chain.
+ * - an optional `maxBatchAge` time has elapsed since the first request in the batch was received.
+ * - the page terminates.
+ *
+ * When handling a request, the Promise returned will resolve when that request has been successfully added to the
+ * current batch – **NOT** when that batch has been successfully processed by the rest of the handler chain.
+ *
+ * The `next` handler in the chain will receive the batch and should handle any errors arising from further processing
+ * on the batch (e.g. sending it to a server).
+ *
+ * **Note:** This handler does not support aborting handled requests via AbortSignal.
+ *
+ * @param options
+ * @returns {@link ChainableHandler}, suitable for use in {@link HandlerChainBuilder.map}
+ */
+const createBatchingHandler = ({ batchReduce, isBatchComplete, maxBatchAge, pageVisibility, }) => {
+    // TODO: this should just be `number`, but we're picking up NodeJS types (@types/node) when building, so setTimeout
+    // gets a different return type than what it should have in the browser. We should build without NodeJS types, but
+    // that will require some fixes across the codebase.
+    let batchTimeout;
+    let currentBatch = undefined;
+    let clearOnHidden = () => { };
+    const reducingHandler = createMappingHandler((request) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
+        currentBatch = yield batchReduce(currentBatch, request);
+        return currentBatch;
+    }), pageVisibility, 1);
+    const batchAndSend = (next, request, metadata) => {
+        const batch = request ? batchReduce(currentBatch, request) : currentBatch;
+        if (!batch)
+            return;
+        // `next` should handle its own errors – that is, the batchingHandler is meant to be placed in a handler chain
+        // prior to any error logging, retrying, etc. handlers.
+        const complete = batch instanceof Promise
+            ? batch.then((b) => next(b, metadata)).catch(() => { })
+            : next(batch, metadata).catch(() => { });
+        currentBatch = undefined;
+        clearTimeout(batchTimeout);
+        clearOnHidden();
+        return complete;
+    };
+    return (next) => (request, metadata) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
+        // Requests may be made while the page is transitioning to hidden – for example, the page is being unloaded and
+        // we're reporting final metrics. In this case, we need to skip batching and synchronously call `next` so that
+        // the request is not lost.
+        if (pageVisibility && pageVisibility.isDuringVisibilityTransition("hidden")) {
+            yield batchAndSend(next, request, metadata);
+            return;
+        }
+        // If this is the first request in a batch, we need to set up some callbacks to flush the batch when certain
+        // events occur:
+        //
+        // - maxBatchAge time passes.
+        // - page visibility transitions to hidden (which could indicate the page is being unloaded).
+        //
+        if (currentBatch === undefined) {
+            const sendBatch = () => batchAndSend(next, undefined, metadata);
+            if (maxBatchAge !== undefined)
+                batchTimeout = setTimeout(sendBatch, maxBatchAge);
+            if (pageVisibility)
+                clearOnHidden = pageVisibility.onPageHidden(sendBatch);
+        }
+        const handle = reducingHandler(() => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
+            if (!currentBatch)
+                return;
+            if (!isBatchComplete(currentBatch))
+                return;
+            yield batchAndSend(next, undefined, metadata);
+        }));
+        return handle(request, metadata);
+    });
+};
+//# sourceMappingURL=batchingHandler.js.map
+;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/camera_kit/v3/ranking.js
+
+
+const ranking_protobufPackage = "com.snap.camerakit.v3";
+var RankingData_OSType;
+(function (RankingData_OSType) {
+    RankingData_OSType["OS_TYPE_UNSET"] = "OS_TYPE_UNSET";
+    RankingData_OSType["OS_TYPE_ANDROID"] = "OS_TYPE_ANDROID";
+    RankingData_OSType["OS_TYPE_IOS"] = "OS_TYPE_IOS";
+    RankingData_OSType["OS_TYPE_IPAD_OS"] = "OS_TYPE_IPAD_OS";
+    RankingData_OSType["OS_TYPE_MAC_OS"] = "OS_TYPE_MAC_OS";
+    RankingData_OSType["OS_TYPE_WINDOWS"] = "OS_TYPE_WINDOWS";
+    RankingData_OSType["OS_TYPE_LINUX"] = "OS_TYPE_LINUX";
+    RankingData_OSType["UNRECOGNIZED"] = "UNRECOGNIZED";
+})(RankingData_OSType || (RankingData_OSType = {}));
+function rankingData_OSTypeFromJSON(object) {
+    switch (object) {
+        case 0:
+        case "OS_TYPE_UNSET":
+            return RankingData_OSType.OS_TYPE_UNSET;
+        case 1:
+        case "OS_TYPE_ANDROID":
+            return RankingData_OSType.OS_TYPE_ANDROID;
+        case 2:
+        case "OS_TYPE_IOS":
+            return RankingData_OSType.OS_TYPE_IOS;
+        case 3:
+        case "OS_TYPE_IPAD_OS":
+            return RankingData_OSType.OS_TYPE_IPAD_OS;
+        case 4:
+        case "OS_TYPE_MAC_OS":
+            return RankingData_OSType.OS_TYPE_MAC_OS;
+        case 5:
+        case "OS_TYPE_WINDOWS":
+            return RankingData_OSType.OS_TYPE_WINDOWS;
+        case 6:
+        case "OS_TYPE_LINUX":
+            return RankingData_OSType.OS_TYPE_LINUX;
+        case -1:
+        case "UNRECOGNIZED":
+        default:
+            return RankingData_OSType.UNRECOGNIZED;
+    }
+}
+function rankingData_OSTypeToJSON(object) {
+    switch (object) {
+        case RankingData_OSType.OS_TYPE_UNSET:
+            return "OS_TYPE_UNSET";
+        case RankingData_OSType.OS_TYPE_ANDROID:
+            return "OS_TYPE_ANDROID";
+        case RankingData_OSType.OS_TYPE_IOS:
+            return "OS_TYPE_IOS";
+        case RankingData_OSType.OS_TYPE_IPAD_OS:
+            return "OS_TYPE_IPAD_OS";
+        case RankingData_OSType.OS_TYPE_MAC_OS:
+            return "OS_TYPE_MAC_OS";
+        case RankingData_OSType.OS_TYPE_WINDOWS:
+            return "OS_TYPE_WINDOWS";
+        case RankingData_OSType.OS_TYPE_LINUX:
+            return "OS_TYPE_LINUX";
+        default:
+            return "UNKNOWN";
+    }
+}
+function rankingData_OSTypeToNumber(object) {
+    switch (object) {
+        case RankingData_OSType.OS_TYPE_UNSET:
+            return 0;
+        case RankingData_OSType.OS_TYPE_ANDROID:
+            return 1;
+        case RankingData_OSType.OS_TYPE_IOS:
+            return 2;
+        case RankingData_OSType.OS_TYPE_IPAD_OS:
+            return 3;
+        case RankingData_OSType.OS_TYPE_MAC_OS:
+            return 4;
+        case RankingData_OSType.OS_TYPE_WINDOWS:
+            return 5;
+        case RankingData_OSType.OS_TYPE_LINUX:
+            return 6;
+        default:
+            return 0;
+    }
+}
+var RankingData_ConnectivityType;
+(function (RankingData_ConnectivityType) {
+    RankingData_ConnectivityType["CONNECTIVITY_TYPE_UNSET"] = "CONNECTIVITY_TYPE_UNSET";
+    RankingData_ConnectivityType["CONNECTIVITY_TYPE_WIFI"] = "CONNECTIVITY_TYPE_WIFI";
+    RankingData_ConnectivityType["CONNECTIVITY_TYPE_MOBILE"] = "CONNECTIVITY_TYPE_MOBILE";
+    RankingData_ConnectivityType["CONNECTIVITY_TYPE_UNREACHABLE"] = "CONNECTIVITY_TYPE_UNREACHABLE";
+    RankingData_ConnectivityType["CONNECTIVITY_TYPE_BLUETOOTH"] = "CONNECTIVITY_TYPE_BLUETOOTH";
+    RankingData_ConnectivityType["UNRECOGNIZED"] = "UNRECOGNIZED";
+})(RankingData_ConnectivityType || (RankingData_ConnectivityType = {}));
+function rankingData_ConnectivityTypeFromJSON(object) {
+    switch (object) {
+        case 0:
+        case "CONNECTIVITY_TYPE_UNSET":
+            return RankingData_ConnectivityType.CONNECTIVITY_TYPE_UNSET;
+        case 1:
+        case "CONNECTIVITY_TYPE_WIFI":
+            return RankingData_ConnectivityType.CONNECTIVITY_TYPE_WIFI;
+        case 2:
+        case "CONNECTIVITY_TYPE_MOBILE":
+            return RankingData_ConnectivityType.CONNECTIVITY_TYPE_MOBILE;
+        case 3:
+        case "CONNECTIVITY_TYPE_UNREACHABLE":
+            return RankingData_ConnectivityType.CONNECTIVITY_TYPE_UNREACHABLE;
+        case 4:
+        case "CONNECTIVITY_TYPE_BLUETOOTH":
+            return RankingData_ConnectivityType.CONNECTIVITY_TYPE_BLUETOOTH;
+        case -1:
+        case "UNRECOGNIZED":
+        default:
+            return RankingData_ConnectivityType.UNRECOGNIZED;
+    }
+}
+function rankingData_ConnectivityTypeToJSON(object) {
+    switch (object) {
+        case RankingData_ConnectivityType.CONNECTIVITY_TYPE_UNSET:
+            return "CONNECTIVITY_TYPE_UNSET";
+        case RankingData_ConnectivityType.CONNECTIVITY_TYPE_WIFI:
+            return "CONNECTIVITY_TYPE_WIFI";
+        case RankingData_ConnectivityType.CONNECTIVITY_TYPE_MOBILE:
+            return "CONNECTIVITY_TYPE_MOBILE";
+        case RankingData_ConnectivityType.CONNECTIVITY_TYPE_UNREACHABLE:
+            return "CONNECTIVITY_TYPE_UNREACHABLE";
+        case RankingData_ConnectivityType.CONNECTIVITY_TYPE_BLUETOOTH:
+            return "CONNECTIVITY_TYPE_BLUETOOTH";
+        default:
+            return "UNKNOWN";
+    }
+}
+function rankingData_ConnectivityTypeToNumber(object) {
+    switch (object) {
+        case RankingData_ConnectivityType.CONNECTIVITY_TYPE_UNSET:
+            return 0;
+        case RankingData_ConnectivityType.CONNECTIVITY_TYPE_WIFI:
+            return 1;
+        case RankingData_ConnectivityType.CONNECTIVITY_TYPE_MOBILE:
+            return 2;
+        case RankingData_ConnectivityType.CONNECTIVITY_TYPE_UNREACHABLE:
+            return 3;
+        case RankingData_ConnectivityType.CONNECTIVITY_TYPE_BLUETOOTH:
+            return 4;
+        default:
+            return 0;
+    }
+}
+function createBaseRankingData() {
+    return {
+        sessionId: "",
+        locale: "",
+        osType: RankingData_OSType.OS_TYPE_UNSET,
+        connectivityType: RankingData_ConnectivityType.CONNECTIVITY_TYPE_UNSET,
+    };
+}
+const RankingData = {
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseRankingData();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.sessionId = reader.string();
+                    break;
+                case 2:
+                    message.locale = reader.string();
+                    break;
+                case 3:
+                    message.osType = rankingData_OSTypeFromJSON(reader.int32());
+                    break;
+                case 4:
+                    message.connectivityType = rankingData_ConnectivityTypeFromJSON(reader.int32());
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return {
+            sessionId: ranking_isSet(object.sessionId) ? String(object.sessionId) : "",
+            locale: ranking_isSet(object.locale) ? String(object.locale) : "",
+            osType: ranking_isSet(object.osType) ? rankingData_OSTypeFromJSON(object.osType) : RankingData_OSType.OS_TYPE_UNSET,
+            connectivityType: ranking_isSet(object.connectivityType)
+                ? rankingData_ConnectivityTypeFromJSON(object.connectivityType)
+                : RankingData_ConnectivityType.CONNECTIVITY_TYPE_UNSET,
+        };
+    },
+    toJSON(message) {
+        const obj = {};
+        message.sessionId !== undefined && (obj.sessionId = message.sessionId);
+        message.locale !== undefined && (obj.locale = message.locale);
+        message.osType !== undefined && (obj.osType = rankingData_OSTypeToJSON(message.osType));
+        message.connectivityType !== undefined &&
+            (obj.connectivityType = rankingData_ConnectivityTypeToJSON(message.connectivityType));
+        return obj;
+    },
+    fromPartial(object) {
+        var _a, _b, _c, _d;
+        const message = createBaseRankingData();
+        message.sessionId = (_a = object.sessionId) !== null && _a !== void 0 ? _a : "";
+        message.locale = (_b = object.locale) !== null && _b !== void 0 ? _b : "";
+        message.osType = (_c = object.osType) !== null && _c !== void 0 ? _c : RankingData_OSType.OS_TYPE_UNSET;
+        message.connectivityType = (_d = object.connectivityType) !== null && _d !== void 0 ? _d : RankingData_ConnectivityType.CONNECTIVITY_TYPE_UNSET;
+        return message;
+    },
+};
+if ((minimal_default()).util.Long !== (long_default())) {
+    (minimal_default()).util.Long = (long_default());
+    minimal_default().configure();
+}
+function ranking_isSet(value) {
+    return value !== null && value !== undefined;
+}
+//# sourceMappingURL=ranking.js.map
+;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/camera_kit/v3/legal_prompt.js
+
+
+
+const legal_prompt_protobufPackage = "com.snap.camerakit.v3";
+var LegalDocument_Type;
+(function (LegalDocument_Type) {
+    LegalDocument_Type["UNSET"] = "UNSET";
+    LegalDocument_Type["TERMS_OF_SERVICE"] = "TERMS_OF_SERVICE";
+    LegalDocument_Type["PRIVACY_POLICY"] = "PRIVACY_POLICY";
+    LegalDocument_Type["LEARN_MORE"] = "LEARN_MORE";
+    LegalDocument_Type["UNRECOGNIZED"] = "UNRECOGNIZED";
+})(LegalDocument_Type || (LegalDocument_Type = {}));
+function legalDocument_TypeFromJSON(object) {
+    switch (object) {
+        case 0:
+        case "UNSET":
+            return LegalDocument_Type.UNSET;
+        case 1:
+        case "TERMS_OF_SERVICE":
+            return LegalDocument_Type.TERMS_OF_SERVICE;
+        case 2:
+        case "PRIVACY_POLICY":
+            return LegalDocument_Type.PRIVACY_POLICY;
+        case 3:
+        case "LEARN_MORE":
+            return LegalDocument_Type.LEARN_MORE;
+        case -1:
+        case "UNRECOGNIZED":
+        default:
+            return LegalDocument_Type.UNRECOGNIZED;
+    }
+}
+function legalDocument_TypeToJSON(object) {
+    switch (object) {
+        case LegalDocument_Type.UNSET:
+            return "UNSET";
+        case LegalDocument_Type.TERMS_OF_SERVICE:
+            return "TERMS_OF_SERVICE";
+        case LegalDocument_Type.PRIVACY_POLICY:
+            return "PRIVACY_POLICY";
+        case LegalDocument_Type.LEARN_MORE:
+            return "LEARN_MORE";
+        default:
+            return "UNKNOWN";
+    }
+}
+function legalDocument_TypeToNumber(object) {
+    switch (object) {
+        case LegalDocument_Type.UNSET:
+            return 0;
+        case LegalDocument_Type.TERMS_OF_SERVICE:
+            return 1;
+        case LegalDocument_Type.PRIVACY_POLICY:
+            return 2;
+        case LegalDocument_Type.LEARN_MORE:
+            return 3;
+        default:
+            return 0;
+    }
+}
+function createBaseLegalPrompt() {
+    return { documents: [], disabled: false };
+}
+const LegalPrompt = {
+    encode(message, writer = minimal_default().Writer.create()) {
+        for (const v of message.documents) {
+            LegalDocument.encode(v, writer.uint32(10).fork()).ldelim();
+        }
+        if (message.disabled === true) {
+            writer.uint32(16).bool(message.disabled);
+        }
+        return writer;
+    },
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseLegalPrompt();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.documents.push(LegalDocument.decode(reader, reader.uint32()));
+                    break;
+                case 2:
+                    message.disabled = reader.bool();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return {
+            documents: Array.isArray(object === null || object === void 0 ? void 0 : object.documents) ? object.documents.map((e) => LegalDocument.fromJSON(e)) : [],
+            disabled: legal_prompt_isSet(object.disabled) ? Boolean(object.disabled) : false,
+        };
+    },
+    toJSON(message) {
+        const obj = {};
+        if (message.documents) {
+            obj.documents = message.documents.map((e) => (e ? LegalDocument.toJSON(e) : undefined));
+        }
+        else {
+            obj.documents = [];
+        }
+        message.disabled !== undefined && (obj.disabled = message.disabled);
+        return obj;
+    },
+    fromPartial(object) {
+        var _a, _b;
+        const message = createBaseLegalPrompt();
+        message.documents = ((_a = object.documents) === null || _a === void 0 ? void 0 : _a.map((e) => LegalDocument.fromPartial(e))) || [];
+        message.disabled = (_b = object.disabled) !== null && _b !== void 0 ? _b : false;
+        return message;
+    },
+};
+function createBaseLegalDocument() {
+    return { type: LegalDocument_Type.UNSET, webUrl: "", version: "", timestamp: undefined };
+}
+const LegalDocument = {
+    encode(message, writer = minimal_default().Writer.create()) {
+        if (message.type !== LegalDocument_Type.UNSET) {
+            writer.uint32(8).int32(legalDocument_TypeToNumber(message.type));
+        }
+        if (message.webUrl !== "") {
+            writer.uint32(18).string(message.webUrl);
+        }
+        if (message.version !== "") {
+            writer.uint32(26).string(message.version);
+        }
+        if (message.timestamp !== undefined) {
+            Timestamp.encode(legal_prompt_toTimestamp(message.timestamp), writer.uint32(34).fork()).ldelim();
+        }
+        return writer;
+    },
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseLegalDocument();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.type = legalDocument_TypeFromJSON(reader.int32());
+                    break;
+                case 2:
+                    message.webUrl = reader.string();
+                    break;
+                case 3:
+                    message.version = reader.string();
+                    break;
+                case 4:
+                    message.timestamp = legal_prompt_fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return {
+            type: legal_prompt_isSet(object.type) ? legalDocument_TypeFromJSON(object.type) : LegalDocument_Type.UNSET,
+            webUrl: legal_prompt_isSet(object.webUrl) ? String(object.webUrl) : "",
+            version: legal_prompt_isSet(object.version) ? String(object.version) : "",
+            timestamp: legal_prompt_isSet(object.timestamp) ? fromJsonTimestamp(object.timestamp) : undefined,
+        };
+    },
+    toJSON(message) {
+        const obj = {};
+        message.type !== undefined && (obj.type = legalDocument_TypeToJSON(message.type));
+        message.webUrl !== undefined && (obj.webUrl = message.webUrl);
+        message.version !== undefined && (obj.version = message.version);
+        message.timestamp !== undefined && (obj.timestamp = message.timestamp.toISOString());
+        return obj;
+    },
+    fromPartial(object) {
+        var _a, _b, _c, _d;
+        const message = createBaseLegalDocument();
+        message.type = (_a = object.type) !== null && _a !== void 0 ? _a : LegalDocument_Type.UNSET;
+        message.webUrl = (_b = object.webUrl) !== null && _b !== void 0 ? _b : "";
+        message.version = (_c = object.version) !== null && _c !== void 0 ? _c : "";
+        message.timestamp = (_d = object.timestamp) !== null && _d !== void 0 ? _d : undefined;
+        return message;
+    },
+};
+function legal_prompt_toTimestamp(date) {
+    const seconds = date.getTime() / 1000;
+    const nanos = (date.getTime() % 1000) * 1000000;
+    return { seconds, nanos };
+}
+function legal_prompt_fromTimestamp(t) {
+    let millis = t.seconds * 1000;
+    millis += t.nanos / 1000000;
+    return new Date(millis);
+}
+function fromJsonTimestamp(o) {
+    if (o instanceof Date) {
+        return o;
+    }
+    else if (typeof o === "string") {
+        return new Date(o);
+    }
+    else {
+        return legal_prompt_fromTimestamp(Timestamp.fromJSON(o));
+    }
+}
+if ((minimal_default()).util.Long !== (long_default())) {
+    (minimal_default()).util.Long = (long_default());
+    minimal_default().configure();
+}
+function legal_prompt_isSet(value) {
+    return value !== null && value !== undefined;
+}
+//# sourceMappingURL=legal_prompt.js.map
+;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/camera_kit/v3/operational_metrics.js
+
+
+
+const operational_metrics_protobufPackage = "com.snap.camerakit.v3";
+function createBaseOperationalMetric() {
+    return { name: "", timestamp: undefined, metric: undefined };
+}
+const OperationalMetric = {
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseOperationalMetric();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.name = reader.string();
+                    break;
+                case 2:
+                    message.timestamp = operational_metrics_fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+                    break;
+                case 3:
+                    message.metric = { $case: "count", count: operational_metrics_longToNumber(reader.uint64()) };
+                    break;
+                case 4:
+                    message.metric = { $case: "latencyMillis", latencyMillis: operational_metrics_longToNumber(reader.uint64()) };
+                    break;
+                case 5:
+                    message.metric = { $case: "histogram", histogram: operational_metrics_longToNumber(reader.int64()) };
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return {
+            name: operational_metrics_isSet(object.name) ? String(object.name) : "",
+            timestamp: operational_metrics_isSet(object.timestamp) ? operational_metrics_fromJsonTimestamp(object.timestamp) : undefined,
+            metric: operational_metrics_isSet(object.count)
+                ? { $case: "count", count: Number(object.count) }
+                : operational_metrics_isSet(object.latencyMillis)
+                    ? { $case: "latencyMillis", latencyMillis: Number(object.latencyMillis) }
+                    : operational_metrics_isSet(object.histogram)
+                        ? { $case: "histogram", histogram: Number(object.histogram) }
+                        : undefined,
+        };
+    },
+    toJSON(message) {
+        var _a, _b, _c, _d, _e, _f;
+        const obj = {};
+        message.name !== undefined && (obj.name = message.name);
+        message.timestamp !== undefined && (obj.timestamp = message.timestamp.toISOString());
+        ((_a = message.metric) === null || _a === void 0 ? void 0 : _a.$case) === "count" && (obj.count = Math.round((_b = message.metric) === null || _b === void 0 ? void 0 : _b.count));
+        ((_c = message.metric) === null || _c === void 0 ? void 0 : _c.$case) === "latencyMillis" && (obj.latencyMillis = Math.round((_d = message.metric) === null || _d === void 0 ? void 0 : _d.latencyMillis));
+        ((_e = message.metric) === null || _e === void 0 ? void 0 : _e.$case) === "histogram" && (obj.histogram = Math.round((_f = message.metric) === null || _f === void 0 ? void 0 : _f.histogram));
+        return obj;
+    },
+    fromPartial(object) {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+        const message = createBaseOperationalMetric();
+        message.name = (_a = object.name) !== null && _a !== void 0 ? _a : "";
+        message.timestamp = (_b = object.timestamp) !== null && _b !== void 0 ? _b : undefined;
+        if (((_c = object.metric) === null || _c === void 0 ? void 0 : _c.$case) === "count" && ((_d = object.metric) === null || _d === void 0 ? void 0 : _d.count) !== undefined && ((_e = object.metric) === null || _e === void 0 ? void 0 : _e.count) !== null) {
+            message.metric = { $case: "count", count: object.metric.count };
+        }
+        if (((_f = object.metric) === null || _f === void 0 ? void 0 : _f.$case) === "latencyMillis" &&
+            ((_g = object.metric) === null || _g === void 0 ? void 0 : _g.latencyMillis) !== undefined &&
+            ((_h = object.metric) === null || _h === void 0 ? void 0 : _h.latencyMillis) !== null) {
+            message.metric = { $case: "latencyMillis", latencyMillis: object.metric.latencyMillis };
+        }
+        if (((_j = object.metric) === null || _j === void 0 ? void 0 : _j.$case) === "histogram" &&
+            ((_k = object.metric) === null || _k === void 0 ? void 0 : _k.histogram) !== undefined &&
+            ((_l = object.metric) === null || _l === void 0 ? void 0 : _l.histogram) !== null) {
+            message.metric = { $case: "histogram", histogram: object.metric.histogram };
+        }
+        return message;
+    },
+};
+function createBaseOperationalMetricsBundle() {
+    return { metrics: [] };
+}
+const OperationalMetricsBundle = {
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseOperationalMetricsBundle();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.metrics.push(OperationalMetric.decode(reader, reader.uint32()));
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return {
+            metrics: Array.isArray(object === null || object === void 0 ? void 0 : object.metrics) ? object.metrics.map((e) => OperationalMetric.fromJSON(e)) : [],
+        };
+    },
+    toJSON(message) {
+        const obj = {};
+        if (message.metrics) {
+            obj.metrics = message.metrics.map((e) => (e ? OperationalMetric.toJSON(e) : undefined));
+        }
+        else {
+            obj.metrics = [];
+        }
+        return obj;
+    },
+    fromPartial(object) {
+        var _a;
+        const message = createBaseOperationalMetricsBundle();
+        message.metrics = ((_a = object.metrics) === null || _a === void 0 ? void 0 : _a.map((e) => OperationalMetric.fromPartial(e))) || [];
+        return message;
+    },
+};
+var operational_metrics_globalThis = (() => {
+    if (typeof operational_metrics_globalThis !== "undefined")
+        return operational_metrics_globalThis;
+    if (typeof self !== "undefined")
+        return self;
+    if (typeof window !== "undefined")
+        return window;
+    if (typeof __webpack_require__.g !== "undefined")
+        return __webpack_require__.g;
+    throw "Unable to locate global object";
+})();
+function operational_metrics_fromTimestamp(t) {
+    let millis = t.seconds * 1000;
+    millis += t.nanos / 1000000;
+    return new Date(millis);
+}
+function operational_metrics_fromJsonTimestamp(o) {
+    if (o instanceof Date) {
+        return o;
+    }
+    else if (typeof o === "string") {
+        return new Date(o);
+    }
+    else {
+        return operational_metrics_fromTimestamp(Timestamp.fromJSON(o));
+    }
+}
+function operational_metrics_longToNumber(long) {
+    if (long.gt(Number.MAX_SAFE_INTEGER)) {
+        throw new operational_metrics_globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+    }
+    return long.toNumber();
+}
+if ((minimal_default()).util.Long !== (long_default())) {
+    (minimal_default()).util.Long = (long_default());
+    minimal_default().configure();
+}
+function operational_metrics_isSet(value) {
+    return value !== null && value !== undefined;
+}
+//# sourceMappingURL=operational_metrics.js.map
+;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/camera_kit/v3/business_events.js
+
+
+const business_events_protobufPackage = "com.snap.camerakit.v3";
+var CameraKitFlavor;
+(function (CameraKitFlavor) {
+    CameraKitFlavor["CAMERA_KIT_FLAVOR_UNSET"] = "CAMERA_KIT_FLAVOR_UNSET";
+    CameraKitFlavor["CAMERA_KIT_FLAVOR_DEBUG"] = "CAMERA_KIT_FLAVOR_DEBUG";
+    CameraKitFlavor["CAMERA_KIT_FLAVOR_RELEASE"] = "CAMERA_KIT_FLAVOR_RELEASE";
+    CameraKitFlavor["UNRECOGNIZED"] = "UNRECOGNIZED";
+})(CameraKitFlavor || (CameraKitFlavor = {}));
+function cameraKitFlavorFromJSON(object) {
+    switch (object) {
+        case 0:
+        case "CAMERA_KIT_FLAVOR_UNSET":
+            return CameraKitFlavor.CAMERA_KIT_FLAVOR_UNSET;
+        case 1:
+        case "CAMERA_KIT_FLAVOR_DEBUG":
+            return CameraKitFlavor.CAMERA_KIT_FLAVOR_DEBUG;
+        case 2:
+        case "CAMERA_KIT_FLAVOR_RELEASE":
+            return CameraKitFlavor.CAMERA_KIT_FLAVOR_RELEASE;
+        case -1:
+        case "UNRECOGNIZED":
+        default:
+            return CameraKitFlavor.UNRECOGNIZED;
+    }
+}
+function cameraKitFlavorToJSON(object) {
+    switch (object) {
+        case CameraKitFlavor.CAMERA_KIT_FLAVOR_UNSET:
+            return "CAMERA_KIT_FLAVOR_UNSET";
+        case CameraKitFlavor.CAMERA_KIT_FLAVOR_DEBUG:
+            return "CAMERA_KIT_FLAVOR_DEBUG";
+        case CameraKitFlavor.CAMERA_KIT_FLAVOR_RELEASE:
+            return "CAMERA_KIT_FLAVOR_RELEASE";
+        default:
+            return "UNKNOWN";
+    }
+}
+function cameraKitFlavorToNumber(object) {
+    switch (object) {
+        case CameraKitFlavor.CAMERA_KIT_FLAVOR_UNSET:
+            return 0;
+        case CameraKitFlavor.CAMERA_KIT_FLAVOR_DEBUG:
+            return 1;
+        case CameraKitFlavor.CAMERA_KIT_FLAVOR_RELEASE:
+            return 2;
+        default:
+            return 0;
+    }
+}
+var CameraKitConnectivityType;
+(function (CameraKitConnectivityType) {
+    CameraKitConnectivityType["CAMERA_KIT_CONNECTIVITY_TYPE_UNSET"] = "CAMERA_KIT_CONNECTIVITY_TYPE_UNSET";
+    CameraKitConnectivityType["CAMERA_KIT_CONNECTIVITY_TYPE_WIFI"] = "CAMERA_KIT_CONNECTIVITY_TYPE_WIFI";
+    CameraKitConnectivityType["CAMERA_KIT_CONNECTIVITY_TYPE_MOBILE"] = "CAMERA_KIT_CONNECTIVITY_TYPE_MOBILE";
+    CameraKitConnectivityType["CAMERA_KIT_CONNECTIVITY_TYPE_UNREACHABLE"] = "CAMERA_KIT_CONNECTIVITY_TYPE_UNREACHABLE";
+    CameraKitConnectivityType["CAMERA_KIT_CONNECTIVITY_TYPE_BLUETOOTH"] = "CAMERA_KIT_CONNECTIVITY_TYPE_BLUETOOTH";
+    CameraKitConnectivityType["UNRECOGNIZED"] = "UNRECOGNIZED";
+})(CameraKitConnectivityType || (CameraKitConnectivityType = {}));
+function cameraKitConnectivityTypeFromJSON(object) {
+    switch (object) {
+        case 0:
+        case "CAMERA_KIT_CONNECTIVITY_TYPE_UNSET":
+            return CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_UNSET;
+        case 1:
+        case "CAMERA_KIT_CONNECTIVITY_TYPE_WIFI":
+            return CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_WIFI;
+        case 2:
+        case "CAMERA_KIT_CONNECTIVITY_TYPE_MOBILE":
+            return CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_MOBILE;
+        case 3:
+        case "CAMERA_KIT_CONNECTIVITY_TYPE_UNREACHABLE":
+            return CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_UNREACHABLE;
+        case 4:
+        case "CAMERA_KIT_CONNECTIVITY_TYPE_BLUETOOTH":
+            return CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_BLUETOOTH;
+        case -1:
+        case "UNRECOGNIZED":
+        default:
+            return CameraKitConnectivityType.UNRECOGNIZED;
+    }
+}
+function cameraKitConnectivityTypeToJSON(object) {
+    switch (object) {
+        case CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_UNSET:
+            return "CAMERA_KIT_CONNECTIVITY_TYPE_UNSET";
+        case CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_WIFI:
+            return "CAMERA_KIT_CONNECTIVITY_TYPE_WIFI";
+        case CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_MOBILE:
+            return "CAMERA_KIT_CONNECTIVITY_TYPE_MOBILE";
+        case CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_UNREACHABLE:
+            return "CAMERA_KIT_CONNECTIVITY_TYPE_UNREACHABLE";
+        case CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_BLUETOOTH:
+            return "CAMERA_KIT_CONNECTIVITY_TYPE_BLUETOOTH";
+        default:
+            return "UNKNOWN";
+    }
+}
+function cameraKitConnectivityTypeToNumber(object) {
+    switch (object) {
+        case CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_UNSET:
+            return 0;
+        case CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_WIFI:
+            return 1;
+        case CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_MOBILE:
+            return 2;
+        case CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_UNREACHABLE:
+            return 3;
+        case CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_BLUETOOTH:
+            return 4;
+        default:
+            return 0;
+    }
+}
+var CameraKitEnvironment;
+(function (CameraKitEnvironment) {
+    CameraKitEnvironment["CAMERA_KIT_ENVIRONMENT_UNSET"] = "CAMERA_KIT_ENVIRONMENT_UNSET";
+    CameraKitEnvironment["CAMERA_KIT_ENVIRONMENT_STAGING"] = "CAMERA_KIT_ENVIRONMENT_STAGING";
+    CameraKitEnvironment["CAMERA_KIT_ENVIRONMENT_PRODUCTION"] = "CAMERA_KIT_ENVIRONMENT_PRODUCTION";
+    CameraKitEnvironment["UNRECOGNIZED"] = "UNRECOGNIZED";
+})(CameraKitEnvironment || (CameraKitEnvironment = {}));
+function cameraKitEnvironmentFromJSON(object) {
+    switch (object) {
+        case 0:
+        case "CAMERA_KIT_ENVIRONMENT_UNSET":
+            return CameraKitEnvironment.CAMERA_KIT_ENVIRONMENT_UNSET;
+        case 1:
+        case "CAMERA_KIT_ENVIRONMENT_STAGING":
+            return CameraKitEnvironment.CAMERA_KIT_ENVIRONMENT_STAGING;
+        case 2:
+        case "CAMERA_KIT_ENVIRONMENT_PRODUCTION":
+            return CameraKitEnvironment.CAMERA_KIT_ENVIRONMENT_PRODUCTION;
+        case -1:
+        case "UNRECOGNIZED":
+        default:
+            return CameraKitEnvironment.UNRECOGNIZED;
+    }
+}
+function cameraKitEnvironmentToJSON(object) {
+    switch (object) {
+        case CameraKitEnvironment.CAMERA_KIT_ENVIRONMENT_UNSET:
+            return "CAMERA_KIT_ENVIRONMENT_UNSET";
+        case CameraKitEnvironment.CAMERA_KIT_ENVIRONMENT_STAGING:
+            return "CAMERA_KIT_ENVIRONMENT_STAGING";
+        case CameraKitEnvironment.CAMERA_KIT_ENVIRONMENT_PRODUCTION:
+            return "CAMERA_KIT_ENVIRONMENT_PRODUCTION";
+        default:
+            return "UNKNOWN";
+    }
+}
+function cameraKitEnvironmentToNumber(object) {
+    switch (object) {
+        case CameraKitEnvironment.CAMERA_KIT_ENVIRONMENT_UNSET:
+            return 0;
+        case CameraKitEnvironment.CAMERA_KIT_ENVIRONMENT_STAGING:
+            return 1;
+        case CameraKitEnvironment.CAMERA_KIT_ENVIRONMENT_PRODUCTION:
+            return 2;
+        default:
+            return 0;
+    }
+}
+function createBaseExtensionEventBase() {
+    return {
+        extensionName: "",
+        extensionVersion: "",
+        deviceCluster: 0,
+        cameraKitVersion: "",
+        lensCoreVersion: "",
+        deviceModel: "",
+        cameraKitFlavor: CameraKitFlavor.CAMERA_KIT_FLAVOR_UNSET,
+        appId: "",
+        deviceConnectivity: CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_UNSET,
+        sessionId: "",
+        cameraKitEnvironment: CameraKitEnvironment.CAMERA_KIT_ENVIRONMENT_UNSET,
+    };
+}
+const ExtensionEventBase = {
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseExtensionEventBase();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.extensionName = reader.string();
+                    break;
+                case 2:
+                    message.extensionVersion = reader.string();
+                    break;
+                case 3:
+                    message.deviceCluster = business_events_longToNumber(reader.int64());
+                    break;
+                case 4:
+                    message.cameraKitVersion = reader.string();
+                    break;
+                case 5:
+                    message.lensCoreVersion = reader.string();
+                    break;
+                case 6:
+                    message.deviceModel = reader.string();
+                    break;
+                case 7:
+                    message.cameraKitFlavor = cameraKitFlavorFromJSON(reader.int32());
+                    break;
+                case 8:
+                    message.appId = reader.string();
+                    break;
+                case 9:
+                    message.deviceConnectivity = cameraKitConnectivityTypeFromJSON(reader.int32());
+                    break;
+                case 10:
+                    message.sessionId = reader.string();
+                    break;
+                case 11:
+                    message.cameraKitEnvironment = cameraKitEnvironmentFromJSON(reader.int32());
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return {
+            extensionName: business_events_isSet(object.extensionName) ? String(object.extensionName) : "",
+            extensionVersion: business_events_isSet(object.extensionVersion) ? String(object.extensionVersion) : "",
+            deviceCluster: business_events_isSet(object.deviceCluster) ? Number(object.deviceCluster) : 0,
+            cameraKitVersion: business_events_isSet(object.cameraKitVersion) ? String(object.cameraKitVersion) : "",
+            lensCoreVersion: business_events_isSet(object.lensCoreVersion) ? String(object.lensCoreVersion) : "",
+            deviceModel: business_events_isSet(object.deviceModel) ? String(object.deviceModel) : "",
+            cameraKitFlavor: business_events_isSet(object.cameraKitFlavor)
+                ? cameraKitFlavorFromJSON(object.cameraKitFlavor)
+                : CameraKitFlavor.CAMERA_KIT_FLAVOR_UNSET,
+            appId: business_events_isSet(object.appId) ? String(object.appId) : "",
+            deviceConnectivity: business_events_isSet(object.deviceConnectivity)
+                ? cameraKitConnectivityTypeFromJSON(object.deviceConnectivity)
+                : CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_UNSET,
+            sessionId: business_events_isSet(object.sessionId) ? String(object.sessionId) : "",
+            cameraKitEnvironment: business_events_isSet(object.cameraKitEnvironment)
+                ? cameraKitEnvironmentFromJSON(object.cameraKitEnvironment)
+                : CameraKitEnvironment.CAMERA_KIT_ENVIRONMENT_UNSET,
+        };
+    },
+    toJSON(message) {
+        const obj = {};
+        message.extensionName !== undefined && (obj.extensionName = message.extensionName);
+        message.extensionVersion !== undefined && (obj.extensionVersion = message.extensionVersion);
+        message.deviceCluster !== undefined && (obj.deviceCluster = Math.round(message.deviceCluster));
+        message.cameraKitVersion !== undefined && (obj.cameraKitVersion = message.cameraKitVersion);
+        message.lensCoreVersion !== undefined && (obj.lensCoreVersion = message.lensCoreVersion);
+        message.deviceModel !== undefined && (obj.deviceModel = message.deviceModel);
+        message.cameraKitFlavor !== undefined && (obj.cameraKitFlavor = cameraKitFlavorToJSON(message.cameraKitFlavor));
+        message.appId !== undefined && (obj.appId = message.appId);
+        message.deviceConnectivity !== undefined &&
+            (obj.deviceConnectivity = cameraKitConnectivityTypeToJSON(message.deviceConnectivity));
+        message.sessionId !== undefined && (obj.sessionId = message.sessionId);
+        message.cameraKitEnvironment !== undefined &&
+            (obj.cameraKitEnvironment = cameraKitEnvironmentToJSON(message.cameraKitEnvironment));
+        return obj;
+    },
+    fromPartial(object) {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+        const message = createBaseExtensionEventBase();
+        message.extensionName = (_a = object.extensionName) !== null && _a !== void 0 ? _a : "";
+        message.extensionVersion = (_b = object.extensionVersion) !== null && _b !== void 0 ? _b : "";
+        message.deviceCluster = (_c = object.deviceCluster) !== null && _c !== void 0 ? _c : 0;
+        message.cameraKitVersion = (_d = object.cameraKitVersion) !== null && _d !== void 0 ? _d : "";
+        message.lensCoreVersion = (_e = object.lensCoreVersion) !== null && _e !== void 0 ? _e : "";
+        message.deviceModel = (_f = object.deviceModel) !== null && _f !== void 0 ? _f : "";
+        message.cameraKitFlavor = (_g = object.cameraKitFlavor) !== null && _g !== void 0 ? _g : CameraKitFlavor.CAMERA_KIT_FLAVOR_UNSET;
+        message.appId = (_h = object.appId) !== null && _h !== void 0 ? _h : "";
+        message.deviceConnectivity =
+            (_j = object.deviceConnectivity) !== null && _j !== void 0 ? _j : CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_UNSET;
+        message.sessionId = (_k = object.sessionId) !== null && _k !== void 0 ? _k : "";
+        message.cameraKitEnvironment = (_l = object.cameraKitEnvironment) !== null && _l !== void 0 ? _l : CameraKitEnvironment.CAMERA_KIT_ENVIRONMENT_UNSET;
+        return message;
+    },
+};
+var business_events_globalThis = (() => {
+    if (typeof business_events_globalThis !== "undefined")
+        return business_events_globalThis;
+    if (typeof self !== "undefined")
+        return self;
+    if (typeof window !== "undefined")
+        return window;
+    if (typeof __webpack_require__.g !== "undefined")
+        return __webpack_require__.g;
+    throw "Unable to locate global object";
+})();
+function business_events_longToNumber(long) {
+    if (long.gt(Number.MAX_SAFE_INTEGER)) {
+        throw new business_events_globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+    }
+    return long.toNumber();
+}
+if ((minimal_default()).util.Long !== (long_default())) {
+    (minimal_default()).util.Long = (long_default());
+    minimal_default().configure();
+}
+function business_events_isSet(value) {
+    return value !== null && value !== undefined;
+}
+//# sourceMappingURL=business_events.js.map
+;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/camera_kit/v3/service.js
+
+
+
+
+
+
+
+
+const service_protobufPackage = "com.snap.camerakit.v3";
+function createBaseGetGroupRequest() {
+    return { id: "", rankingData: undefined };
+}
+const GetGroupRequest = {
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseGetGroupRequest();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.id = reader.string();
+                    break;
+                case 2:
+                    message.rankingData = RankingData.decode(reader, reader.uint32());
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return {
+            id: service_isSet(object.id) ? String(object.id) : "",
+            rankingData: service_isSet(object.rankingData) ? RankingData.fromJSON(object.rankingData) : undefined,
+        };
+    },
+    toJSON(message) {
+        const obj = {};
+        message.id !== undefined && (obj.id = message.id);
+        message.rankingData !== undefined &&
+            (obj.rankingData = message.rankingData ? RankingData.toJSON(message.rankingData) : undefined);
+        return obj;
+    },
+    fromPartial(object) {
+        var _a;
+        const message = createBaseGetGroupRequest();
+        message.id = (_a = object.id) !== null && _a !== void 0 ? _a : "";
+        message.rankingData =
+            object.rankingData !== undefined && object.rankingData !== null
+                ? RankingData.fromPartial(object.rankingData)
+                : undefined;
+        return message;
+    },
+};
+function createBaseGetGroupResponse() {
+    return { id: "", lenses: [] };
+}
+const GetGroupResponse = {
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseGetGroupResponse();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.id = reader.string();
+                    break;
+                case 2:
+                    message.lenses.push(Lens.decode(reader, reader.uint32()));
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return {
+            id: service_isSet(object.id) ? String(object.id) : "",
+            lenses: Array.isArray(object === null || object === void 0 ? void 0 : object.lenses) ? object.lenses.map((e) => Lens.fromJSON(e)) : [],
+        };
+    },
+    toJSON(message) {
+        const obj = {};
+        message.id !== undefined && (obj.id = message.id);
+        if (message.lenses) {
+            obj.lenses = message.lenses.map((e) => (e ? Lens.toJSON(e) : undefined));
+        }
+        else {
+            obj.lenses = [];
+        }
+        return obj;
+    },
+    fromPartial(object) {
+        var _a, _b;
+        const message = createBaseGetGroupResponse();
+        message.id = (_a = object.id) !== null && _a !== void 0 ? _a : "";
+        message.lenses = ((_b = object.lenses) === null || _b === void 0 ? void 0 : _b.map((e) => Lens.fromPartial(e))) || [];
+        return message;
+    },
+};
+function createBaseGetGroupLensRequest() {
+    return { lensId: "", groupId: "" };
+}
+const GetGroupLensRequest = {
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseGetGroupLensRequest();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.lensId = reader.string();
+                    break;
+                case 2:
+                    message.groupId = reader.string();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return {
+            lensId: service_isSet(object.lensId) ? String(object.lensId) : "",
+            groupId: service_isSet(object.groupId) ? String(object.groupId) : "",
+        };
+    },
+    toJSON(message) {
+        const obj = {};
+        message.lensId !== undefined && (obj.lensId = message.lensId);
+        message.groupId !== undefined && (obj.groupId = message.groupId);
+        return obj;
+    },
+    fromPartial(object) {
+        var _a, _b;
+        const message = createBaseGetGroupLensRequest();
+        message.lensId = (_a = object.lensId) !== null && _a !== void 0 ? _a : "";
+        message.groupId = (_b = object.groupId) !== null && _b !== void 0 ? _b : "";
+        return message;
+    },
+};
+function createBaseGetGroupLensResponse() {
+    return { lens: undefined, groupId: "" };
+}
+const GetGroupLensResponse = {
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseGetGroupLensResponse();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.lens = Lens.decode(reader, reader.uint32());
+                    break;
+                case 2:
+                    message.groupId = reader.string();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return {
+            lens: service_isSet(object.lens) ? Lens.fromJSON(object.lens) : undefined,
+            groupId: service_isSet(object.groupId) ? String(object.groupId) : "",
+        };
+    },
+    toJSON(message) {
+        const obj = {};
+        message.lens !== undefined && (obj.lens = message.lens ? Lens.toJSON(message.lens) : undefined);
+        message.groupId !== undefined && (obj.groupId = message.groupId);
+        return obj;
+    },
+    fromPartial(object) {
+        var _a;
+        const message = createBaseGetGroupLensResponse();
+        message.lens = object.lens !== undefined && object.lens !== null ? Lens.fromPartial(object.lens) : undefined;
+        message.groupId = (_a = object.groupId) !== null && _a !== void 0 ? _a : "";
+        return message;
+    },
+};
+function createBaseBatchGetGroupLensRequest() {
+    return { getRequests: [] };
+}
+const BatchGetGroupLensRequest = {
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseBatchGetGroupLensRequest();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.getRequests.push(GetGroupLensRequest.decode(reader, reader.uint32()));
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return {
+            getRequests: Array.isArray(object === null || object === void 0 ? void 0 : object.getRequests)
+                ? object.getRequests.map((e) => GetGroupLensRequest.fromJSON(e))
+                : [],
+        };
+    },
+    toJSON(message) {
+        const obj = {};
+        if (message.getRequests) {
+            obj.getRequests = message.getRequests.map((e) => (e ? GetGroupLensRequest.toJSON(e) : undefined));
+        }
+        else {
+            obj.getRequests = [];
+        }
+        return obj;
+    },
+    fromPartial(object) {
+        var _a;
+        const message = createBaseBatchGetGroupLensRequest();
+        message.getRequests = ((_a = object.getRequests) === null || _a === void 0 ? void 0 : _a.map((e) => GetGroupLensRequest.fromPartial(e))) || [];
+        return message;
+    },
+};
+function createBaseBatchGetGroupLensResponse() {
+    return { getResponses: [] };
+}
+const BatchGetGroupLensResponse = {
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseBatchGetGroupLensResponse();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.getResponses.push(GetGroupLensResponse.decode(reader, reader.uint32()));
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return {
+            getResponses: Array.isArray(object === null || object === void 0 ? void 0 : object.getResponses)
+                ? object.getResponses.map((e) => GetGroupLensResponse.fromJSON(e))
+                : [],
+        };
+    },
+    toJSON(message) {
+        const obj = {};
+        if (message.getResponses) {
+            obj.getResponses = message.getResponses.map((e) => (e ? GetGroupLensResponse.toJSON(e) : undefined));
+        }
+        else {
+            obj.getResponses = [];
+        }
+        return obj;
+    },
+    fromPartial(object) {
+        var _a;
+        const message = createBaseBatchGetGroupLensResponse();
+        message.getResponses = ((_a = object.getResponses) === null || _a === void 0 ? void 0 : _a.map((e) => GetGroupLensResponse.fromPartial(e))) || [];
+        return message;
+    },
+};
+function createBaseGetPlaceholderConfigRequest() {
+    return {};
+}
+const GetPlaceholderConfigRequest = {
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseGetPlaceholderConfigRequest();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(_) {
+        return {};
+    },
+    toJSON(_) {
+        const obj = {};
+        return obj;
+    },
+    fromPartial(_) {
+        const message = createBaseGetPlaceholderConfigRequest();
+        return message;
+    },
+};
+function createBaseGetPlaceholderConfigResponse() {
+    return { configs: {} };
+}
+const GetPlaceholderConfigResponse = {
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseGetPlaceholderConfigResponse();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    const entry1 = GetPlaceholderConfigResponse_ConfigsEntry.decode(reader, reader.uint32());
+                    if (entry1.value !== undefined) {
+                        message.configs[entry1.key] = entry1.value;
+                    }
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return {
+            configs: service_isObject(object.configs)
+                ? Object.entries(object.configs).reduce((acc, [key, value]) => {
+                    acc[key] = String(value);
+                    return acc;
+                }, {})
+                : {},
+        };
+    },
+    toJSON(message) {
+        const obj = {};
+        obj.configs = {};
+        if (message.configs) {
+            Object.entries(message.configs).forEach(([k, v]) => {
+                obj.configs[k] = v;
+            });
+        }
+        return obj;
+    },
+    fromPartial(object) {
+        var _a;
+        const message = createBaseGetPlaceholderConfigResponse();
+        message.configs = Object.entries((_a = object.configs) !== null && _a !== void 0 ? _a : {}).reduce((acc, [key, value]) => {
+            if (value !== undefined) {
+                acc[key] = String(value);
+            }
+            return acc;
+        }, {});
+        return message;
+    },
+};
+function createBaseGetPlaceholderConfigResponse_ConfigsEntry() {
+    return { key: "", value: "" };
+}
+const GetPlaceholderConfigResponse_ConfigsEntry = {
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseGetPlaceholderConfigResponse_ConfigsEntry();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.key = reader.string();
+                    break;
+                case 2:
+                    message.value = reader.string();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return {
+            key: service_isSet(object.key) ? String(object.key) : "",
+            value: service_isSet(object.value) ? String(object.value) : "",
+        };
+    },
+    toJSON(message) {
+        const obj = {};
+        message.key !== undefined && (obj.key = message.key);
+        message.value !== undefined && (obj.value = message.value);
+        return obj;
+    },
+    fromPartial(object) {
+        var _a, _b;
+        const message = createBaseGetPlaceholderConfigResponse_ConfigsEntry();
+        message.key = (_a = object.key) !== null && _a !== void 0 ? _a : "";
+        message.value = (_b = object.value) !== null && _b !== void 0 ? _b : "";
+        return message;
+    },
+};
+function createBaseGetInitializationConfigRequest() {
+    return {};
+}
+const GetInitializationConfigRequest = {
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseGetInitializationConfigRequest();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(_) {
+        return {};
+    },
+    toJSON(_) {
+        const obj = {};
+        return obj;
+    },
+    fromPartial(_) {
+        const message = createBaseGetInitializationConfigRequest();
+        return message;
+    },
+};
+function createBaseGetInitializationConfigResponse() {
+    return {
+        appVendorUuidOptIn: false,
+        watermarkEnabled: false,
+        childrenProtectionActRestricted: false,
+        legalPrompt: undefined,
+    };
+}
+const GetInitializationConfigResponse = {
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseGetInitializationConfigResponse();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.appVendorUuidOptIn = reader.bool();
+                    break;
+                case 2:
+                    message.watermarkEnabled = reader.bool();
+                    break;
+                case 3:
+                    message.childrenProtectionActRestricted = reader.bool();
+                    break;
+                case 4:
+                    message.legalPrompt = LegalPrompt.decode(reader, reader.uint32());
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return {
+            appVendorUuidOptIn: service_isSet(object.appVendorUuidOptIn) ? Boolean(object.appVendorUuidOptIn) : false,
+            watermarkEnabled: service_isSet(object.watermarkEnabled) ? Boolean(object.watermarkEnabled) : false,
+            childrenProtectionActRestricted: service_isSet(object.childrenProtectionActRestricted)
+                ? Boolean(object.childrenProtectionActRestricted)
+                : false,
+            legalPrompt: service_isSet(object.legalPrompt) ? LegalPrompt.fromJSON(object.legalPrompt) : undefined,
+        };
+    },
+    toJSON(message) {
+        const obj = {};
+        message.appVendorUuidOptIn !== undefined && (obj.appVendorUuidOptIn = message.appVendorUuidOptIn);
+        message.watermarkEnabled !== undefined && (obj.watermarkEnabled = message.watermarkEnabled);
+        message.childrenProtectionActRestricted !== undefined &&
+            (obj.childrenProtectionActRestricted = message.childrenProtectionActRestricted);
+        message.legalPrompt !== undefined &&
+            (obj.legalPrompt = message.legalPrompt ? LegalPrompt.toJSON(message.legalPrompt) : undefined);
+        return obj;
+    },
+    fromPartial(object) {
+        var _a, _b, _c;
+        const message = createBaseGetInitializationConfigResponse();
+        message.appVendorUuidOptIn = (_a = object.appVendorUuidOptIn) !== null && _a !== void 0 ? _a : false;
+        message.watermarkEnabled = (_b = object.watermarkEnabled) !== null && _b !== void 0 ? _b : false;
+        message.childrenProtectionActRestricted = (_c = object.childrenProtectionActRestricted) !== null && _c !== void 0 ? _c : false;
+        message.legalPrompt =
+            object.legalPrompt !== undefined && object.legalPrompt !== null
+                ? LegalPrompt.fromPartial(object.legalPrompt)
+                : undefined;
+        return message;
+    },
+};
+function createBaseSetOperationalMetricsRequest() {
+    return { metrics: undefined };
+}
+const SetOperationalMetricsRequest = {
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseSetOperationalMetricsRequest();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.metrics = OperationalMetricsBundle.decode(reader, reader.uint32());
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return {
+            metrics: service_isSet(object.metrics) ? OperationalMetricsBundle.fromJSON(object.metrics) : undefined,
+        };
+    },
+    toJSON(message) {
+        const obj = {};
+        message.metrics !== undefined &&
+            (obj.metrics = message.metrics ? OperationalMetricsBundle.toJSON(message.metrics) : undefined);
+        return obj;
+    },
+    fromPartial(object) {
+        const message = createBaseSetOperationalMetricsRequest();
+        message.metrics =
+            object.metrics !== undefined && object.metrics !== null
+                ? OperationalMetricsBundle.fromPartial(object.metrics)
+                : undefined;
+        return message;
+    },
+};
+function createBaseSetOperationalMetricsResponse() {
+    return {};
+}
+const SetOperationalMetricsResponse = {
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseSetOperationalMetricsResponse();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(_) {
+        return {};
+    },
+    toJSON(_) {
+        const obj = {};
+        return obj;
+    },
+    fromPartial(_) {
+        const message = createBaseSetOperationalMetricsResponse();
+        return message;
+    },
+};
+function createBaseSetBusinessEventsRequest() {
+    return { batchEvents: undefined };
+}
+const SetBusinessEventsRequest = {
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseSetBusinessEventsRequest();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.batchEvents = Any.decode(reader, reader.uint32());
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return {
+            batchEvents: service_isSet(object.batchEvents) ? Any.fromJSON(object.batchEvents) : undefined,
+        };
+    },
+    toJSON(message) {
+        const obj = {};
+        message.batchEvents !== undefined &&
+            (obj.batchEvents = message.batchEvents ? Any.toJSON(message.batchEvents) : undefined);
+        return obj;
+    },
+    fromPartial(object) {
+        const message = createBaseSetBusinessEventsRequest();
+        message.batchEvents =
+            object.batchEvents !== undefined && object.batchEvents !== null ? Any.fromPartial(object.batchEvents) : undefined;
+        return message;
+    },
+};
+function createBaseSetBusinessEventsResponse() {
+    return {};
+}
+const SetBusinessEventsResponse = {
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseSetBusinessEventsResponse();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(_) {
+        return {};
+    },
+    toJSON(_) {
+        const obj = {};
+        return obj;
+    },
+    fromPartial(_) {
+        const message = createBaseSetBusinessEventsResponse();
+        return message;
+    },
+};
+function createBaseSetExtensionBusinessEventsRequest() {
+    return { events: [], extensionEventBase: undefined };
+}
+const SetExtensionBusinessEventsRequest = {
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseSetExtensionBusinessEventsRequest();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.events.push(Any.decode(reader, reader.uint32()));
+                    break;
+                case 2:
+                    message.extensionEventBase = ExtensionEventBase.decode(reader, reader.uint32());
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return {
+            events: Array.isArray(object === null || object === void 0 ? void 0 : object.events) ? object.events.map((e) => Any.fromJSON(e)) : [],
+            extensionEventBase: service_isSet(object.extensionEventBase)
+                ? ExtensionEventBase.fromJSON(object.extensionEventBase)
+                : undefined,
+        };
+    },
+    toJSON(message) {
+        const obj = {};
+        if (message.events) {
+            obj.events = message.events.map((e) => (e ? Any.toJSON(e) : undefined));
+        }
+        else {
+            obj.events = [];
+        }
+        message.extensionEventBase !== undefined &&
+            (obj.extensionEventBase = message.extensionEventBase
+                ? ExtensionEventBase.toJSON(message.extensionEventBase)
+                : undefined);
+        return obj;
+    },
+    fromPartial(object) {
+        var _a;
+        const message = createBaseSetExtensionBusinessEventsRequest();
+        message.events = ((_a = object.events) === null || _a === void 0 ? void 0 : _a.map((e) => Any.fromPartial(e))) || [];
+        message.extensionEventBase =
+            object.extensionEventBase !== undefined && object.extensionEventBase !== null
+                ? ExtensionEventBase.fromPartial(object.extensionEventBase)
+                : undefined;
+        return message;
+    },
+};
+function createBaseSetExtensionBusinessEventsResponse() {
+    return {};
+}
+const SetExtensionBusinessEventsResponse = {
+    decode(input, length) {
+        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseSetExtensionBusinessEventsResponse();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(_) {
+        return {};
+    },
+    toJSON(_) {
+        const obj = {};
+        return obj;
+    },
+    fromPartial(_) {
+        const message = createBaseSetExtensionBusinessEventsResponse();
+        return message;
+    },
+};
+if ((minimal_default()).util.Long !== (long_default())) {
+    (minimal_default()).util.Long = (long_default());
+    minimal_default().configure();
+}
+function service_isObject(value) {
+    return typeof value === "object" && value !== null;
+}
+function service_isSet(value) {
+    return value !== null && value !== undefined;
+}
+//# sourceMappingURL=service.js.map
+;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/common/pageVisibility.js
+
+class PageVisibility {
+    constructor() {
+        this.onHiddenHandlers = new Set();
+        this.onVisibleHandlers = new Set();
+        this.previousVisibilityState = document.visibilityState;
+        this.visibilityTransition = false;
+        this.onVisibilityChange = this.onVisibilityChange.bind(this);
+        this.isDuringVisibilityTransition = this.isDuringVisibilityTransition.bind(this);
+        this.onPageHidden = this.onPageHidden.bind(this);
+        this.onPageVisible = this.onPageVisible.bind(this);
+        this.destroy = this.destroy.bind(this);
+        document.addEventListener("visibilitychange", this.onVisibilityChange);
+    }
+    isDuringVisibilityTransition(test) {
+        return test === this.visibilityTransition;
+    }
+    /**
+     * Run a function when the page is hidden. If this occurs due to tab / browser closure,
+     * only synchronous functions will run to completion.
+     *
+     * If the given handler throws an error, it will be silently swallowed.
+     *
+     * @param handler
+     * @returns A function which, when called, removes the function from the set of visibility change handlers.
+     */
+    onPageHidden(handler) {
+        this.onHiddenHandlers.add(handler);
+        return () => this.onHiddenHandlers.delete(handler);
+    }
+    /**
+     * Run a function when the page is made visible.
+     *
+     * If the given handler throws an error, it will be silently swallowed.
+     *
+     * @param handler
+     * @returns A function which, when called, removes the function from the set of visibility change handlers.
+     */
+    onPageVisible(handler) {
+        this.onVisibleHandlers.add(handler);
+        return () => this.onVisibleHandlers.delete(handler);
+    }
+    destroy() {
+        document.removeEventListener("visibilitychange", this.onVisibilityChange);
+        this.onHiddenHandlers.clear();
+        this.onVisibleHandlers.clear();
+    }
+    onVisibilityChange() {
+        const handlers = this.previousVisibilityState === "visible" && document.visibilityState === "hidden"
+            ? this.onHiddenHandlers
+            : this.previousVisibilityState === "hidden" && document.visibilityState === "visible"
+                ? this.onVisibleHandlers
+                : new Set();
+        this.visibilityTransition = document.visibilityState;
+        for (const handler of handlers) {
+            try {
+                handler();
+            }
+            catch (error) {
+                // We'll do the same thing here that we would do if the handler was added directly as an event
+                // listener and dispatch an error event if we can.
+                if (typeof window !== "undefined")
+                    window.dispatchEvent(new CustomEvent("error", { detail: error }));
+            }
+        }
+        this.previousVisibilityState = this.visibilityTransition;
+        this.visibilityTransition = false;
+    }
+}
+const pageVisibilityFactory = Injectable("pageVisibility", () => new PageVisibility());
+//# sourceMappingURL=pageVisibility.js.map
+;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/handlers/rateLimitingHandler.js
+
+
+const delay = (duration) => new Promise((resolve) => setTimeout(resolve, duration));
+/**
+ * Limit the rate at which requests are passed to the next handler in the chain.
+ *
+ * During any page transitions to "hidden" – possibly indicating the page is about to terminate – requests will not be
+ * rate limited, to ensure that they are not lost.
+ *
+ * TODO: If there are requests in the queue waiting to be sent when the page transitions to "hidden," these will not
+ * be immediately sent. This means there still is an edge case in which a request may be lost on page termination. This
+ * can be fixed with changes to `createMappingHandler`.
+ *
+ * **NOTE:** Under the hood, requests that come in faster than the set `duration` are placed in an unbounded buffer.
+ * If many requests are made quickly and `duration` is long, this could result in high memory usage. Keep this in mind
+ * when using this handler.
+ *
+ * @param duration In milliseconds. Requests will be passed to the next handler in the chain no faster than this. That
+ * is, if `duration` is `1000`, the next handler will be called at most once per second.
+ * @param pageVisibility Determines whether to flush buffered requests when the page becomes hidden.
+ * `false` value indicates that page visibility handling is avoided, while
+ * a {@link PageVisibility} instance is used to subscribe to page visibility change events.
+ * @returns {@link ChainableHandler}, suitable for use in {@link HandlerChainBuilder.map}
+ */
+const createRateLimitingHandler = (duration, pageVisibility) => {
+    let mostRecentSendTime = undefined;
+    const mappingHandler = createMappingHandler((request) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
+        if (mostRecentSendTime !== undefined) {
+            const millisUntilNextSend = duration - (Date.now() - mostRecentSendTime);
+            if (millisUntilNextSend > 0)
+                yield delay(millisUntilNextSend);
+        }
+        mostRecentSendTime = Date.now();
+        return request;
+    }), pageVisibility, 1);
+    return (next) => (request, metadata) => {
+        // Requests may be made while the page is transitioning to hidden – for example, the page is being unloaded and
+        // we're reporting final metrics. In this case, we need to skip rate limiting and synchronously call `next`
+        // so that the request is not lost.
+        if (pageVisibility && pageVisibility.isDuringVisibilityTransition("hidden"))
+            return next(request, metadata);
+        return mappingHandler(next)(request, metadata);
+    };
+};
+//# sourceMappingURL=rateLimitingHandler.js.map
+;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/metrics/metricsHandler.js
+
+
+
+
+
+const METRIC_REQUEST_RATE_LIMIT_MS = 1000; // send at most one metric request per second.
+/**
+ * @internal
+ */
+const metricsHandlerFactory = Injectable("metricsHandler", [cameraKitServiceFetchHandlerFactory.token, pageVisibilityFactory.token], (fetchHandler, pageVisibility) => {
+    return new HandlerChainBuilder(fetchHandler).map(createRateLimitingHandler(METRIC_REQUEST_RATE_LIMIT_MS, pageVisibility)).handler;
+});
+//# sourceMappingURL=metricsHandler.js.map
+;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/metrics/operational/operationalMetricsReporter.js
+
+
+
+
+
+
+
+
+
+// CameraKit's prod metrics endpoint.
+// See: https://github.sc-corp.net/Snapchat/pb_schema/blob/c390b9c/proto/camera_kit/v3/service.proto#L126
+const DIMENSION_DELIMITER = ".";
+// These values are (currently) arbitrarily selected.
+// TODO: Once we have gathered a sufficient quantity of metrics data, we should tune these numbers to ensure we're
+// operating with the right cost vs. alarming SLA vs. IDB storage size tradeoffs.
+const METRIC_BATCH_MAX_SIZE = 100;
+const METRIC_BATCH_MAX_AGE_MS = 5000;
+/**
+ * Use this class to report operational metrics – these are metrics that describe aspects of the SDK's performance,
+ * which may be used to assess and investigate operational issues.
+ */
+/** @internal */
+class OperationalMetricsReporter {
+    constructor(metricsHandler) {
+        this.metricsHandler = metricsHandler;
+    }
+    /**
+     * Record a count.
+     *
+     * @param name
+     * @param count
+     * @param dimensions An optional Map containing dimensions which describe the metric.
+     * For example: `new Map([['status', '200']])`
+     * @returns Promise which resolves when the metric has been handled.
+     */
+    count(name, count, dimensions) {
+        return this.record(name, { $case: "count", count }, dimensions);
+    }
+    /**
+     * Record a duration in milliseconds.
+     *
+     * @param name
+     * @param latencyMillis
+     * @param dimensions An optional Map containing dimensions which describe the metric.
+     * For example: `new Map([['status', '200']])`
+     * @returns Promise which resolves when the metric has been handled.
+     */
+    timer(name, latencyMillis, dimensions) {
+        return this.record(name, { $case: "latencyMillis", latencyMillis }, dimensions);
+    }
+    /**
+     * Record a histogram.
+     *
+     * @param name
+     * @param histogram
+     * @param dimensions An optional Map containing dimensions which describe the metric.
+     * For example: `new Map([['status', '200']])`
+     * @returns Promise which resolves when the metric has been handled.
+     */
+    histogram(name, histogram, dimensions) {
+        return this.record(name, { $case: "histogram", histogram }, dimensions);
+    }
+    /**
+     * TODO: This entire class in no longer necessary, since the new Timer/Count/Histogram classes offer a cleaner API
+     * for recording metrics. Once we migrate all operational metrics to use those new APIs, this class can be removed
+     * and call sites will just call the metrics handler directly.
+     *
+     * @param metric Any concrete Metric (e.g. Count, Timer, Histogram)
+     * @returns
+     */
+    report(metric) {
+        return tslib_es6_awaiter(this, void 0, void 0, function* () {
+            yield Promise.all(metric.toOperationalMetric().map((metric) => this.metricsHandler(metric)));
+        });
+    }
+    record(name, metric, dimensions) {
+        // The naming convention (metricName.dimensionName.dimensionValue.dimensionName.dimensionValue...) is mentioned
+        // the Graphene docs here https://wiki.sc-corp.net/display/METRICS/Graphene
+        // TODO: find explicit documentation of the API, if it exists.
+        const serializedDimensions = dimensions
+            ? `.${Array.from(dimensions.entries())
+                .map((d) => d.join(DIMENSION_DELIMITER))
+                .join(DIMENSION_DELIMITER)}`
+            : "";
+        return this.metricsHandler({
+            name: `${name}${serializedDimensions}`,
+            timestamp: new Date(),
+            metric,
+        });
+    }
+}
+/**
+ * @internal
+ */
+const operationalMetricReporterFactory = Injectable("operationalMetricsReporter", [metricsHandlerFactory.token, pageVisibilityFactory.token, configurationToken], (metricsHandler, pageVisibility, configuration) => {
+    const handler = new HandlerChainBuilder(metricsHandler)
+        .map(createMappingHandler((metrics) => {
+        const request = { metrics };
+        return new Request(
+        // eslint-disable-next-line max-len
+        `https://${configuration.apiHostname}/com.snap.camerakit.v3.Metrics/metrics/operational_metrics`, {
+            method: "POST",
+            body: JSON.stringify(SetOperationalMetricsRequest.toJSON(request)),
+            credentials: "include",
+            // When this is true it makes fetch behave like `Navigator.sendBeacon` – that is, the
+            // request will still be made even if the page terminates.
+            // https://developer.mozilla.org/en-US/docs/Web/API/fetch
+            keepalive: pageVisibility.isDuringVisibilityTransition("hidden"),
+        });
+    }, pageVisibility))
+        .map(createBatchingHandler({
+        // The batching logic here is very simple – it could be improved by e.g. combining counts with
+        // the same name, computing statistics to reduce overall data sent, etc. Right now this is
+        // premature optimization, but could become a good idea in the future.
+        batchReduce: (previousBundle, metric) => {
+            const bundle = previousBundle !== null && previousBundle !== void 0 ? previousBundle : { metrics: [] };
+            bundle.metrics.push(metric);
+            return bundle;
+        },
+        isBatchComplete: (bundle) => bundle.metrics.length >= METRIC_BATCH_MAX_SIZE,
+        maxBatchAge: METRIC_BATCH_MAX_AGE_MS,
+        pageVisibility,
+    })).handler;
+    return new OperationalMetricsReporter(handler);
+});
+//# sourceMappingURL=operationalMetricsReporter.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/remote-configuration/cofHandler.js
 
 
@@ -15246,33 +17233,10 @@ class IndexedDBPersistence {
 
 
 
+
+
+
 const id = (h) => h;
-// We need to wrap `targetingQuery` to create a usable Handler – the main issue is that HandlerChainBuilder always adds
-// a `signal` property to the metadata argument (second argument of the Handler), but `targetingQuery` expects the
-// second argument to only contain headers.
-const createTargetingQueryHandler = (apiToken) => (request, _a) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
-    var { signal } = _a, metadata = __rest(_a, ["signal"]);
-    const rpc = new GrpcWebImpl("https://api-kit.snapchat.com", {});
-    const client = new CircumstancesServiceClientImpl(rpc);
-    return new Promise((resolve, reject) => {
-        if (signal) {
-            signal.addEventListener("abort", () => reject(new Error("COF request aborted by handler chain.")));
-        }
-        client
-            .targetingQuery(request, new browser_headers_umd.BrowserHeaders(Object.assign({ authorization: `Bearer ${apiToken}`, "x-snap-client-user-agent": cameraKitUserAgent.userAgent }, metadata)))
-            .then((response) => {
-            // NOTE: in order for cache persistance to work, we need to make the object cloneable,
-            // i.e. with no methods (it appears targetingQuery() attaches toObject() to response object).
-            // Safety: We have to cast response object to a type that has toObject defined, because that is
-            // indeed what generated code has:
-            // eslint-disable-next-line max-len
-            // https://github.sc-corp.net/Snapchat/camera-kit-web-sdk/blob/8d6b4e8bfa3717b376ab197a49972a1e410851f7/packages/web-sdk/src/generated-proto/pb_schema/cdp/cof/circumstance_service.ts#L1459
-            delete response.toObject;
-            resolve(response);
-        })
-            .catch(reject);
-    });
-});
 const COF_REQUEST_TYPE = "cof";
 /**
  * Handler chain used to make COF requests. Uses the COF client to perform the
@@ -15282,47 +17246,85 @@ const COF_REQUEST_TYPE = "cof";
  * immediately and the cache is updated in the background. If no response is found, a COF request is made. This request
  * will retry (with exponential backoff + jitter) for 5 seconds before returning an error to the caller.
  */
-const cofHandlerFactory = (apiToken) => new HandlerChainBuilder(createTargetingQueryHandler(apiToken))
-    .map(id((next) => (request, metadata) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
-    const dimensions = { requestType: COF_REQUEST_TYPE };
-    const { requestId } = dispatchRequestStarted({ dimensions });
-    try {
-        const response = yield next(request, metadata);
-        // TODO: We hardcode status code and sizeByte values because we do not have access to underlying
-        // transport of configs-web.
-        // When this ticket is done https://jira.sc-corp.net/browse/CAMKIT-2840,
-        // we will remove this handler and benefit from existing ones.
-        const status = 200;
-        let sizeByte = 0;
+const cofHandlerFactory = Injectable("cofHandler", [configurationToken, requestStateEventTargetFactory.token, operationalMetricReporterFactory.token], (config, requestStateEventTarget, reporter) => {
+    // We need to wrap `targetingQuery` to create a usable Handler – the main issue is that HandlerChainBuilder
+    // always adds a `signal` property to the metadata argument (second argument of the Handler), but
+    // `targetingQuery` expects the second argument to only contain headers.
+    return (new HandlerChainBuilder((request, _a) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
+        var { signal, isSideEffect: _ } = _a, metadata = __rest(_a, ["signal", "isSideEffect"]);
+        const rpc = new GrpcWebImpl(`https://${config.apiHostname}`, {});
+        const client = new CircumstancesServiceClientImpl(rpc);
+        return new Promise((resolve, reject) => {
+            if (signal) {
+                signal.addEventListener("abort", () => reject(new Error("COF request aborted by handler chain.")));
+            }
+            client
+                .targetingQuery(request, new browser_headers_umd.BrowserHeaders(Object.assign({ authorization: `Bearer ${config.apiToken}`, "x-snap-client-user-agent": cameraKitUserAgent.userAgent }, metadata)))
+                .then((response) => {
+                // NOTE: in order for cache persistance to work, we need to make the object cloneable,
+                // i.e. with no methods (it appears targetingQuery() attaches toObject() to response
+                // object). Safety: We have to cast response object to a type that has toObject
+                // defined, because that is indeed what generated code has:
+                // eslint-disable-next-line max-len
+                // https://github.sc-corp.net/Snapchat/camera-kit-web-sdk/blob/8d6b4e8bfa3717b376ab197a49972a1e410851f7/packages/web-sdk/src/generated-proto/pb_schema/cdp/cof/circumstance_service.ts#L1459
+                delete response.toObject;
+                resolve(response);
+            })
+                .catch(reject);
+        });
+    }))
+        .map(id((next) => (request, metadata) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
+        const dimensions = { requestType: COF_REQUEST_TYPE };
+        const { requestId } = dispatchRequestStarted(requestStateEventTarget, { dimensions });
         try {
-            sizeByte = new TextEncoder().encode(JSON.stringify(response)).byteLength;
+            const response = yield next(request, metadata);
+            // TODO: We hardcode status code and sizeByte values because we do not have access to
+            // underlying transport of configs-web.
+            // When this ticket is done https://jira.sc-corp.net/browse/CAMKIT-2840,
+            // we will remove this handler and benefit from existing ones.
+            const status = 200;
+            let sizeByte = 0;
+            try {
+                sizeByte = new TextEncoder().encode(JSON.stringify(response)).byteLength;
+            }
+            finally {
+                dispatchRequestCompleted(requestStateEventTarget, {
+                    requestId,
+                    dimensions,
+                    status,
+                    sizeByte,
+                });
+                return response;
+            }
         }
-        finally {
-            dispatchRequestCompleted({ requestId, dimensions, status, sizeByte });
-            return response;
+        catch (error) {
+            dispatchRequestErrored(requestStateEventTarget, {
+                requestId,
+                dimensions,
+                error: errorHelpers_ensureError(error),
+            });
+            throw error;
         }
-    }
-    catch (error) {
-        dispatchRequestErrored({ requestId, dimensions, error: errorHelpers_ensureError(error) });
-        throw error;
-    }
-})))
-    // targetingQuery() always converts failed responses into errors (unlike fetch()), so we need a custom
-    // retryPredicate that retries all errors. We'll keep retrying (with backoff) for 20 seconds total elapsed
-    // time before we return an error back up the chain.
-    .map(createRetryingHandler({ retryPredicate: (r) => r instanceof Error }))
-    // API gateway has 15 seconds timeout, so we rely on that first
-    .map(createTimeoutHandler({ timeout: 20 * 1000 }))
-    .map(createResponseCachingHandler(
-// COF responses will be removed from cache after 1 week. Keep in mind that the staleWhileRevalidate
-// strategy will update the cache each time COF is requested – this expiration comes into play only if
-// e.g. a user doesn't load the page for more than a week.
-new ExpiringPersistence(() => 7 * 24 * 60 * 60, new IndexedDBPersistence({ databaseName: "COFCache" })), (r) => JSON.stringify(r), 
-// If we have a matching response already in cache, we'll return it immediately and then update the
-// cache in the background.
-staleWhileRevalidateStrategy())).handler;
+    })))
+        // targetingQuery() always converts failed responses into errors (unlike fetch()), so we need a custom
+        // retryPredicate that retries all errors. We'll keep retrying (with backoff) for 20 seconds total
+        // elapsed time before we return an error back up the chain.
+        .map(createRetryingHandler({ retryPredicate: (r) => r instanceof Error }))
+        // API gateway has 15 seconds timeout, so we rely on that first
+        .map(createTimeoutHandler({ timeout: 20 * 1000 }))
+        .map(createResponseCachingHandler(
+    // COF responses will be removed from cache after 1 week. Keep in mind that the
+    // staleWhileRevalidate strategy will update the cache each time COF is requested
+    //  – this expiration comes into play only if e.g. a user doesn't load the page
+    // for more than a week.
+    new ExpiringPersistence(() => 7 * 24 * 60 * 60, new IndexedDBPersistence({ databaseName: "COFCache" })), (r) => JSON.stringify(r), 
+    // If we have a matching response already in cache,
+    // we'll return it immediately and then update the cache in the background.
+    staleWhileRevalidateStrategy({ requestType: "cof", reporter }))).handler);
+});
 //# sourceMappingURL=cofHandler.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/remote-configuration/remoteConfiguration.js
+
 
 
 
@@ -15331,13 +17333,13 @@ staleWhileRevalidateStrategy())).handler;
 const defaultTargetingRequest = {
     namespaces: [Namespace.LENS_CORE, Namespace.CAMERA_KIT_CORE],
 };
+const initializeConfigRelativePath = "/com.snap.camerakit.v3.Metrics/metrics/initialization_config";
 class RemoteConfiguration {
-    constructor(apiToken, lensPerformance) {
+    constructor(lensPerformance, apiHostname, cofHandler, fetchHandler) {
         const lensCluster = Promise.resolve(lensPerformance).then((lensPerformance) => {
             // `0` means no cluster could be determined. For COF, we'll omit a value in that case.
             return (lensPerformance === null || lensPerformance === void 0 ? void 0 : lensPerformance.cluster) === 0 ? undefined : lensPerformance === null || lensPerformance === void 0 ? void 0 : lensPerformance.cluster;
         });
-        const cofHandler = cofHandlerFactory(apiToken);
         this.configById = from_from(lensCluster).pipe(
         // Note: we don't catch errors here, purposefully letting them propagate to subscribers outside this class.
         // Subscribers, having more context about the config use-case, will know better how to handle an error than
@@ -15353,13 +17355,31 @@ class RemoteConfiguration {
             });
             return configById;
         }), shareReplay(1));
+        this.initializationConfig = new Observable_Observable((observer) => {
+            fetchHandler(`https://${apiHostname}${initializeConfigRelativePath}`)
+                .then((response) => response.json())
+                .then((data) => {
+                observer.next(data);
+                observer.complete();
+            })
+                .catch((err) => observer.error(err));
+        }).pipe(shareReplay(1));
     }
+    /**
+     * COF configuration.
+     */
     get(configId) {
         return this.configById.pipe(map((config) => { var _a; return (_a = config.get(configId)) !== null && _a !== void 0 ? _a : []; }));
     }
+    /**
+     * Configuration that is provided by Camera Kit backend.
+     */
+    getIntializationConfig() {
+        return this.initializationConfig;
+    }
 }
-const remoteConfigurationFactory = Injectable("remoteConfiguration", [configurationToken], (config) => {
-    const remoteConfig = new RemoteConfiguration(config.apiToken, config.lensPerformance);
+const remoteConfigurationFactory = Injectable("remoteConfiguration", [configurationToken, cofHandlerFactory.token, cameraKitServiceFetchHandlerFactory.token], (config, cofHandler, fetchHandler) => {
+    const remoteConfig = new RemoteConfiguration(config.lensPerformance, config.apiHostname, cofHandler, fetchHandler);
     // We'll kick off remote configuration loading by subscribing (and then unsubscribing) to a dummy config value.
     // Subsequent requests for config will use the shared Observable, benefitting from this eager loading.
     remoteConfig.get("").pipe(take(1)).subscribe();
@@ -15520,10 +17540,11 @@ function mapManfiestItemToAssetType(lensCore, type) {
  * initialized, the registry of the asset provider function will fail silently and no remote assets will be loaded.
  */
 class LensAssetRepository {
-    constructor(lensCore, assetLoaders, metrics) {
+    constructor(lensCore, assetLoaders, metrics, requestStateEventTarget) {
         this.lensCore = lensCore;
         this.assetLoaders = assetLoaders;
         this.metrics = metrics;
+        this.requestStateEventTarget = requestStateEventTarget;
         this.cachedAssetKeys = new Set();
     }
     /**
@@ -15574,18 +17595,23 @@ class LensAssetRepository {
                 assetType: safeAssetTypeName,
                 lensId: (_b = lens === null || lens === void 0 ? void 0 : lens.id) !== null && _b !== void 0 ? _b : "unknown",
             };
-            const { requestId } = dispatchRequestStarted({ dimensions });
+            const { requestId } = dispatchRequestStarted(this.requestStateEventTarget, { dimensions });
             try {
                 if (!assetLoader) {
-                    throw new Error(`Cannot get asset "${assetId}". Asset type "${safeAssetTypeName}" is not supported.`);
+                    throw new Error(`Cannot get asset ${assetId}. Asset type ${safeAssetTypeName} is not supported.`);
                 }
                 const assetResponse = yield assetLoader(assetDescriptor, lens, assetManifest);
                 const assetBuffer = "data" in assetResponse ? assetResponse.data : assetResponse;
                 const assetChecksum = "checksum" in assetResponse ? assetResponse.checksum : undefined;
                 if (assetBuffer.byteLength === 0) {
-                    throw new Error(`Got empty response for asset "${assetId}" from "${safeAssetTypeName}" loader.`);
+                    throw new Error(`Got empty response for asset ${assetId} from ${safeAssetTypeName} loader.`);
                 }
-                dispatchRequestCompleted({ requestId, dimensions, status: 200, sizeByte: assetBuffer.byteLength });
+                dispatchRequestCompleted(this.requestStateEventTarget, {
+                    requestId,
+                    dimensions,
+                    status: 200,
+                    sizeByte: assetBuffer.byteLength,
+                });
                 this.lensCore.provideRemoteAssetsResponse({
                     assetId,
                     assetBuffer,
@@ -15599,13 +17625,13 @@ class LensAssetRepository {
                                 assetId,
                             }));
                         }
-                        LensAssetRepository_logger.warn(new Error(`Failed to provide lens asset "${assetId}".`, { cause: lensCoreError }));
+                        LensAssetRepository_logger.warn(new Error(`Failed to provide lens asset ${assetId}.`, { cause: lensCoreError }));
                     },
                 });
             }
             catch (error) {
-                const wrappedError = new Error(`Failed to load lens asset "${assetId}".`, { cause: error });
-                dispatchRequestErrored({ requestId, dimensions, error: wrappedError });
+                const wrappedError = new Error(`Failed to load lens asset ${assetId}.`, { cause: error });
+                dispatchRequestErrored(this.requestStateEventTarget, { requestId, dimensions, error: wrappedError });
                 throw wrappedError;
             }
         });
@@ -15633,7 +17659,9 @@ class LensAssetRepository {
                 catch (error) {
                     const { assetId, assetType } = assetDescriptor;
                     const [assetTypeName] = (_a = this.assetLoaders.get(assetType)) !== null && _a !== void 0 ? _a : [];
-                    LensAssetRepository_logger.warn(new Error(`Failed to cache asset "${assetId}" of type "${assetTypeName !== null && assetTypeName !== void 0 ? assetTypeName : assetType.value}".`, { cause: error }));
+                    LensAssetRepository_logger.warn(new Error(`Failed to cache asset ${assetId} of type ${assetTypeName !== null && assetTypeName !== void 0 ? assetTypeName : assetType.value}.`, {
+                        cause: error,
+                    }));
                 }
             })));
         });
@@ -15648,16 +17676,18 @@ const lensAssetRepositoryFactory = Injectable("lensAssetRepository", [
     remoteMediaAssetLoaderFactory.token,
     staticAssetLoaderFactory.token,
     metricsEventTargetFactory.token,
-], (lensCore, deviceDependentAssetLoader, remoteMediaAssetLoader, staticAssetLoader, metrics) => new LensAssetRepository(lensCore, new Map([
+    requestStateEventTargetFactory.token,
+], (lensCore, deviceDependentAssetLoader, remoteMediaAssetLoader, staticAssetLoader, metrics, requestStateEventTarget) => new LensAssetRepository(lensCore, new Map([
     [lensCore.AssetType.DeviceDependent, ["DeviceDependent", deviceDependentAssetLoader]],
     [lensCore.AssetType.RemoteMediaByUrl, ["RemoteMediaByUrl", remoteMediaAssetLoader]],
     // URL type is deprecated and was introduced before RemoteMediaByURL
     // however, there are some lenses still using it so we need to support it
     [lensCore.AssetType.URL, ["URL", remoteMediaAssetLoader]],
     [lensCore.AssetType.Static, ["Static", staticAssetLoader]],
-]), metrics));
+]), metrics, requestStateEventTarget));
 //# sourceMappingURL=LensAssetRepository.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/lens/LensRepository.js
+
 
 
 
@@ -15706,11 +17736,12 @@ function isOptionalAssetTimingArray(value) {
  */
 class LensRepository {
     /** @internal */
-    constructor(lensMetadataFetchHandler, lensFetchHandler, lensSources, lensAssetRepository) {
+    constructor(lensMetadataFetchHandler, lensFetchHandler, lensSources, lensAssetRepository, apiHostname) {
         this.lensMetadataFetchHandler = lensMetadataFetchHandler;
         this.lensFetchHandler = lensFetchHandler;
         this.lensSources = lensSources;
         this.lensAssetRepository = lensAssetRepository;
+        this.apiHostname = apiHostname;
         this.metadataCache = new Map();
         this.binariesCache = new Map();
     }
@@ -15728,11 +17759,11 @@ class LensRepository {
             if (envelopes) {
                 lens = decodeEnvelopes(envelopes)[0];
                 if (!lens) {
-                    throw new Error("Expected non-empty envelope");
+                    throw new Error("Expected non-empty envelope.");
                 }
             }
             else {
-                lens = yield retrieveCameraKitLens(this.lensMetadataFetchHandler, lensId, groupId);
+                lens = yield retrieveCameraKitLens(this.lensMetadataFetchHandler, lensId, groupId, this.apiHostname);
             }
             this.metadataCache.set(lens.id, lens);
             return toPublicLens(lens);
@@ -15757,12 +17788,12 @@ class LensRepository {
                     const envelopes = yield this.lensSources.retrieveLenses({ groupId });
                     const lenses = envelopes
                         ? decodeEnvelopes(envelopes)
-                        : yield retrieveCameraKitLensGroup(this.lensMetadataFetchHandler, groupId);
+                        : yield retrieveCameraKitLensGroup(this.lensMetadataFetchHandler, groupId, this.apiHostname);
                     lenses.forEach((lens) => this.metadataCache.set(lens.id, lens));
                     return lenses.map(toPublicLens);
                 }
                 catch (error) {
-                    LensRepository_logger.error(new Error(`Failed to load lens group ${groupId}`, { cause: error }));
+                    LensRepository_logger.error(new Error(`Failed to load lens group ${groupId}.`, { cause: error }));
                     return error;
                 }
             })));
@@ -15886,15 +17917,17 @@ __decorate([
  * @internal
  */
 const lensRepositoryFactory = Injectable("LensRepository", [
+    requestStateEventTargetFactory.token,
     cameraKitServiceFetchHandlerFactory.token,
     defaultFetchHandlerFactory.token,
     lensSourcesFactory.token,
     lensAssetRepositoryFactory.token,
-], (lensMetadataFetchHandler, defaultFetchHandler, lensSources, lensAssetRepository) => {
+    configurationToken,
+], (requestStateEventTarget, lensMetadataFetchHandler, defaultFetchHandler, lensSources, lensAssetRepository, configuration) => {
     const lensFetchHandler = new HandlerChainBuilder(defaultFetchHandler)
-        .map(createRequestStateEmittingHandler())
+        .map(createRequestStateEmittingHandler(requestStateEventTarget))
         .map(createArrayBufferParsingHandler()).handler;
-    return new LensRepository(lensMetadataFetchHandler, lensFetchHandler, lensSources, lensAssetRepository);
+    return new LensRepository(lensMetadataFetchHandler, lensFetchHandler, lensSources, lensAssetRepository, configuration.apiHostname);
 });
 //# sourceMappingURL=LensRepository.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/common/memoize.js
@@ -16054,16 +18087,6 @@ const CONTAINER = "$container";
  */
 /** @internal */
 class Container {
-    constructor(factories) {
-        this.factories = {};
-        for (const k in factories) {
-            const fn = factories[k];
-            if (isMemoized(fn))
-                this.factories[k] = fn;
-            else
-                this.factories[k] = memoize(fn);
-        }
-    }
     static provides(fnOrContainer) {
         // Although the `provides` method has overloads that match both members of the union type separately, it does
         // not match the union type itself, so the compiler forces us to branch and handle each type within the union
@@ -16073,6 +18096,16 @@ class Container {
         if (fnOrContainer instanceof Container)
             return new Container({}).provides(fnOrContainer);
         return new Container({}).provides(fnOrContainer);
+    }
+    constructor(factories) {
+        this.factories = {};
+        for (const k in factories) {
+            const fn = factories[k];
+            if (isMemoized(fn))
+                this.factories[k] = fn;
+            else
+                this.factories[k] = memoize(fn);
+        }
     }
     /**
      * Create a copy of this Container, optionally providing a list of Services which will be scoped to the copy.
@@ -16170,28 +18203,6 @@ function filter(predicate, thisArg) {
     });
 }
 //# sourceMappingURL=filter.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/isScheduler.js
-
-function isScheduler(value) {
-    return value && isFunction_isFunction(value.schedule);
-}
-//# sourceMappingURL=isScheduler.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/args.js
-
-
-function last(arr) {
-    return arr[arr.length - 1];
-}
-function args_popResultSelector(args) {
-    return isFunction_isFunction(last(args)) ? args.pop() : undefined;
-}
-function args_popScheduler(args) {
-    return isScheduler(last(args)) ? args.pop() : undefined;
-}
-function popNumber(args, defaultValue) {
-    return typeof last(args) === 'number' ? args.pop() : defaultValue;
-}
-//# sourceMappingURL=args.js.map
 ;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/observable/of.js
 
 
@@ -16216,47 +18227,6 @@ function takeUntil(notifier) {
     });
 }
 //# sourceMappingURL=takeUntil.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/tap.js
-
-
-
-
-function tap(observerOrNext, error, complete) {
-    var tapObserver = isFunction_isFunction(observerOrNext) || error || complete
-        ?
-            { next: observerOrNext, error: error, complete: complete }
-        : observerOrNext;
-    return tapObserver
-        ? operate(function (source, subscriber) {
-            var _a;
-            (_a = tapObserver.subscribe) === null || _a === void 0 ? void 0 : _a.call(tapObserver);
-            var isUnsub = true;
-            source.subscribe(createOperatorSubscriber(subscriber, function (value) {
-                var _a;
-                (_a = tapObserver.next) === null || _a === void 0 ? void 0 : _a.call(tapObserver, value);
-                subscriber.next(value);
-            }, function () {
-                var _a;
-                isUnsub = false;
-                (_a = tapObserver.complete) === null || _a === void 0 ? void 0 : _a.call(tapObserver);
-                subscriber.complete();
-            }, function (err) {
-                var _a;
-                isUnsub = false;
-                (_a = tapObserver.error) === null || _a === void 0 ? void 0 : _a.call(tapObserver, err);
-                subscriber.error(err);
-            }, function () {
-                var _a, _b;
-                if (isUnsub) {
-                    (_a = tapObserver.unsubscribe) === null || _a === void 0 ? void 0 : _a.call(tapObserver);
-                }
-                (_b = tapObserver.finalize) === null || _b === void 0 ? void 0 : _b.call(tapObserver);
-            }));
-        })
-        :
-            identity_identity;
-}
-//# sourceMappingURL=tap.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/state-management/dist/types.js
 // `Object.entries` does preserve key types.
 const types_entries = (o) => Object.entries(o);
@@ -16452,14 +18422,6 @@ function never() {
     return NEVER;
 }
 //# sourceMappingURL=never.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/mergeAll.js
-
-
-function mergeAll(concurrent) {
-    if (concurrent === void 0) { concurrent = Infinity; }
-    return mergeMap(identity_identity, concurrent);
-}
-//# sourceMappingURL=mergeAll.js.map
 ;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/concatAll.js
 
 function concatAll() {
@@ -16716,69 +18678,6 @@ function dispatch(stateMachine) {
 
 
 //# sourceMappingURL=index.js.map
-;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/common/pageVisibility.js
-const onHiddenHandlers = new Set();
-const onVisibleHandlers = new Set();
-let previousVisibilityState = document.visibilityState;
-let visibilityTransition = false;
-let initialized = false;
-function maybeInitializeVisibilityListeners() {
-    if (initialized)
-        return;
-    initialized = true;
-    document.addEventListener("visibilitychange", () => {
-        const handlers = previousVisibilityState === "visible" && document.visibilityState === "hidden"
-            ? onHiddenHandlers
-            : previousVisibilityState === "hidden" && document.visibilityState === "visible"
-                ? onVisibleHandlers
-                : new Set();
-        visibilityTransition = document.visibilityState;
-        for (const handler of handlers) {
-            try {
-                handler();
-            }
-            catch (error) {
-                // We'll do the same thing here that we would do if the handler was added directly as an event
-                // listener and dispatch an error event if we can.
-                if (typeof window !== "undefined")
-                    window.dispatchEvent(new CustomEvent("error", { detail: error }));
-            }
-        }
-        previousVisibilityState = visibilityTransition;
-        visibilityTransition = false;
-    });
-}
-function isDuringVisibilityTransition(test) {
-    return test === visibilityTransition;
-}
-/**
- * Run a function when the page is hidden. If this occurs due to tab / browser closure, only synchronous functions will
- * run to completion.
- *
- * If the given handler throws an error, it will be silently swallowed.
- *
- * @param handler
- * @returns A function which, when called, removes the function from the set of visibility change handlers.
- */
-function onPageHidden(handler) {
-    maybeInitializeVisibilityListeners();
-    onHiddenHandlers.add(handler);
-    return () => onHiddenHandlers.delete(handler);
-}
-/**
- * Run a function when the page is made visible.
- *
- * If the given handler throws an error, it will be silently swallowed.
- *
- * @param handler
- * @returns A function which, when called, removes the function from the set of visibility change handlers.
- */
-function onPageVisible(handler) {
-    maybeInitializeVisibilityListeners();
-    onVisibleHandlers.add(handler);
-    return () => onVisibleHandlers.delete(handler);
-}
-//# sourceMappingURL=pageVisibility.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/transforms/Transform2D.js
 /**
  * Use this class to supply the CameraKitSession::setSourceTransform with the proper data
@@ -16947,10 +18846,24 @@ __decorate([
 
 
 
+
 const MediaStreamSource_defaultOptions = {
     transform: Transform2D_Transform2D.Identity,
     disableSourceAudio: false,
 };
+function closeWorklet(worklet) {
+    if (!worklet)
+        return;
+    worklet.port.onmessage = null;
+    worklet.disconnect();
+}
+function closeAudioContext(audioContext) {
+    return tslib_es6_awaiter(this, void 0, void 0, function* () {
+        if (!audioContext || audioContext.state === "closed")
+            return;
+        return audioContext.close();
+    });
+}
 /**
  * Create a {@link CameraKitSource} from a user's media device -- this calls
  * [MediaDevices.getUserMedia](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia) to get a
@@ -16967,6 +18880,10 @@ const MediaStreamSource_defaultOptions = {
  * @returns A Promise, resolving to {@link CameraKitSource}
  *
  * @category Rendering
+ *
+ * @deprecated The helper will be removed in one of the future releases.
+ * Consumer apps are responsible for acquiring a media stream,
+ * which can then be supplied to {@link createMediaStreamSource}.
  */
 function createUserMediaSource(constraints = { video: true }, options = {}) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -16978,7 +18895,7 @@ function createUserMediaSource(constraints = { video: true }, options = {}) {
  * Create a {@link CameraKitSource} from any
  * [MediaStream](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream).
  *
- * @param stream Any MediaStream, such as obtained via `canvas.captureStream()`
+ * @param stream Any MediaStream, such as obtained via `canvas.captureStream()` or `mediaDevices.getUserMedia()`.
  * @param options
  * @param options.transform We apply no transformation by default.
  * @param options.disableSourceAudio By default we pass audio to lens. Settings this to true will disable sending audio
@@ -16997,6 +18914,7 @@ function createMediaStreamSource(stream, options = {}) {
     const sampleRate = 44100;
     let audioContext = undefined;
     let audioSource = undefined;
+    let worklet = undefined;
     let microphoneRecorderUrl;
     if (enableSourceAudio) {
         // https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Using_AudioWorklet
@@ -17032,8 +18950,16 @@ function createMediaStreamSource(stream, options = {}) {
                         reportError(error);
                     },
                 });
-                if (audioContext) {
-                    yield audioContext.close();
+                try {
+                    // There is a possibility of the onAttach method being called twice in a row due to a bug.
+                    // To ensure there are not leaks, it is better to close any existing connections.
+                    closeWorklet(worklet);
+                    audioSource === null || audioSource === void 0 ? void 0 : audioSource.disconnect();
+                    yield closeAudioContext(audioContext);
+                }
+                catch (error) {
+                    // We still want to continue if anything above failed
+                    reportError(errorHelpers_ensureError(error));
                 }
                 audioContext = new AudioContext();
                 audioSource = audioContext.createMediaStreamSource(stream);
@@ -17042,19 +18968,23 @@ function createMediaStreamSource(stream, options = {}) {
                     .addModule(microphoneRecorderUrl)
                     .then(() => {
                     if (audioContext) {
-                        const worklet = new AudioWorkletNode(audioContext, "microphone-worklet");
+                        worklet = new AudioWorkletNode(audioContext, "microphone-worklet");
                         scopedAudioSource.connect(worklet);
                         worklet.connect(audioContext.destination);
                         // NOTE: We subscribe to messages here, and they will continue to arrive
                         // even after audioContext.close() is called. To disconnect the audio worklets
-                        // created here, we need to track another variable - audioSource.
-                        // By calling audioSource.disconnect(), we can properly
+                        // created here, we need to track two variables - worklet and audioSource.
+                        // By calling disconnect() on them, we can properly
                         // disconnect the audio worklets.
                         worklet.port.onmessage = (e) => {
                             if (e.data.eventType === "data") {
                                 // developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor/process
                                 // inputs[n][m] is the list of samples in the n-th input at the m-th channel.
                                 const leftSamples = e.data.buffer[0][0];
+                                // Firefox might have leftSamples undefined:
+                                // https://jira.sc-corp.net/browse/CAMKIT-5189
+                                if (!leftSamples)
+                                    return;
                                 let inputBuffers = [leftSamples];
                                 if (simulateStereoAudio) {
                                     const rightSamples = e.data.buffer[0].length > 1 ? e.data.buffer[0][1] : leftSamples.slice();
@@ -17076,14 +19006,16 @@ function createMediaStreamSource(stream, options = {}) {
             }
         }),
         onDetach: (reportError) => tslib_es6_awaiter(this, void 0, void 0, function* () {
+            if (worklet) {
+                closeWorklet(worklet);
+                worklet = undefined;
+            }
             if (audioSource) {
                 audioSource.disconnect();
                 audioSource = undefined;
             }
             if (audioContext) {
-                yield audioContext.close().catch((error) => {
-                    reportError(error);
-                });
+                yield closeAudioContext(audioContext).catch(reportError);
                 audioContext = undefined;
             }
         }),
@@ -17135,29 +19067,35 @@ function createVideoSource(video, options = {}) {
 /**
  * The factory creates new logEntries subject.
  *
- * NOTE: The factory calls `initLogger()`, which overrides the global `logEntrySubject`.
+ * NOTE: The factory calls `resetLogger()`, which overrides the global `logEntrySubject`.
  * This is currently necessary to avoid sharing the same subject between multiple `CameraKit` instances.
  * In the future, we may throw an error when bootstrapping more than a single `CameraKit`,
  * that will allow us to have a single log entry subject.
  *
  * @internal
  */
-const logEntriesFactory = Injectable("logEntries", () => initLogger().asObservable());
+const logEntriesFactory = Injectable("logEntries", () => resetLogger().asObservable());
 //# sourceMappingURL=logEntries.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/session/LensPerformanceMeasurement.js
-const defaultFrameMetricsState = {
+const getDefaultFrameMetricsState = () => ({
     avgFps: 0,
     averageProcessingTime: 0,
+    n: 0,
+    processingTimeBuckets: new Uint32Array(frameProcessingTimeMedianMax + 1),
     procFrameCount: 0,
     procFrameMean: 0,
     procFrameD2: 0,
-};
+});
 // This duration is chosen to be larger than we expect frame processing to reasonably take on any device, but smaller
 // than the duration of a manual rendering pause (e.g. a user clicking a pause button followed by a play button).
 //
 // This also defines the min avgFps that will be reported – if we see avgFps at `1 / frameDurationThresholdSec`
 // consistently, it's safe to assume actual fps is probably even lower.
 const frameDurationThreshold = 1;
+// When computing the median frame processing time, in order to save space, we'll record a maximum frame processing
+// time median of 200ms -- that's already unnusably slow, and we don't really care if the true median is greater than
+// 200ms.
+const frameProcessingTimeMedianMax = 200;
 /**
  * Represents an ongoing measurement of rendering metrics.
  *
@@ -17170,7 +19108,7 @@ const frameDurationThreshold = 1;
 class LensPerformanceMeasurement {
     constructor(instances) {
         this.instances = instances;
-        this.state = Object.assign({}, defaultFrameMetricsState);
+        this.state = Object.assign({}, getDefaultFrameMetricsState());
         this.instances.add(this);
     }
     /** @internal */
@@ -17184,10 +19122,21 @@ class LensPerformanceMeasurement {
      * was created.
      */
     measure() {
+        // We count the number of frames in each per-millisecond bucket, stopping when we've counted half the frames --
+        // that bucket contains the median.
+        let median = 0;
+        let count = 0;
+        for (; median < this.state.processingTimeBuckets.length; median++) {
+            count += this.state.processingTimeBuckets[median];
+            if (count >= (this.state.n + 1) / 2)
+                break;
+        }
         return {
             avgFps: this.state.avgFps,
             lensFrameProcessingTimeMsAvg: this.state.procFrameMean,
             lensFrameProcessingTimeMsStd: Math.sqrt(this.state.procFrameD2 / this.state.procFrameCount),
+            lensFrameProcessingTimeMsMedian: this.state.n > 0 ? median : 0,
+            lensFrameProcessingN: this.state.n,
         };
     }
     /**
@@ -17196,7 +19145,7 @@ class LensPerformanceMeasurement {
      * more convenient.
      */
     reset() {
-        this.state = Object.assign({}, defaultFrameMetricsState);
+        this.state = Object.assign({}, getDefaultFrameMetricsState());
     }
     /**
      * Stop measuring performance statistics.
@@ -17233,6 +19182,12 @@ class LensPerformanceMeasurement {
             }
             this.priorFrameCompletedTime = performance.now();
         }
+        // To approximate the median, we put each processing time into a per-millisecond bucket, and then when we
+        // compute a measurement, we can count how many frames fell into each bucket. We don't care about latencies
+        // above 200ms, since that's already unusably slow (if we regress from 280ms to 320ms, we don't really care
+        // since both are unnusable).
+        this.state.n++;
+        this.state.processingTimeBuckets[Math.min(Math.round(processingTimeMs), frameProcessingTimeMedianMax)]++;
     }
 }
 //# sourceMappingURL=LensPerformanceMeasurement.js.map
@@ -17295,30 +19250,6 @@ __decorate([
     __metadata("design:returntype", LensPerformanceMeasurement)
 ], LensPerformanceMetrics.prototype, "beginMeasurement", null);
 //# sourceMappingURL=LensPerformanceMetrics.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/observable/merge.js
-
-
-
-
-
-function merge() {
-    var args = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i] = arguments[_i];
-    }
-    var scheduler = args_popScheduler(args);
-    var concurrent = popNumber(args, Infinity);
-    var sources = args;
-    return !sources.length
-        ?
-            EMPTY
-        : sources.length === 1
-            ?
-                innerFrom_innerFrom(sources[0])
-            :
-                mergeAll(concurrent)(from_from(sources, scheduler));
-}
-//# sourceMappingURL=merge.js.map
 ;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/exhaustMap.js
 
 
@@ -17389,14 +19320,13 @@ const lensPersistenceStoreFactory = Injectable("lensPersistenceStore", [lensCore
             yield db.store(id, data);
         }
         catch (error) {
-            LensPersistenceStore_logger.error(persistentStoreError(`Unable to store data for lens "${id}".`, error));
+            LensPersistenceStore_logger.error(persistentStoreError(`Error occurred while storing data for lens ${id}.`, error));
         }
     }));
     return db;
 });
 //# sourceMappingURL=LensPersistenceStore.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/lenses/snappable.js
-/* eslint-disable */
 
 
 const snappable_protobufPackage = "snapchat.lenses.snappable";
@@ -17405,7 +19335,6 @@ var EncryptionData_EncryptionScheme;
     EncryptionData_EncryptionScheme["NOT_APPLICABLE"] = "NOT_APPLICABLE";
     EncryptionData_EncryptionScheme["SPOOKEY"] = "SPOOKEY";
     EncryptionData_EncryptionScheme["REGISTRY"] = "REGISTRY";
-    /** FIDELIUS - Add others as necessary */
     EncryptionData_EncryptionScheme["FIDELIUS"] = "FIDELIUS";
     EncryptionData_EncryptionScheme["UNRECOGNIZED"] = "UNRECOGNIZED";
 })(EncryptionData_EncryptionScheme || (EncryptionData_EncryptionScheme = {}));
@@ -18351,7 +20280,6 @@ if ((minimal_default()).util.Long !== (long_default())) {
 }
 //# sourceMappingURL=snappable.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/lenses/geopoint.js
-/* eslint-disable */
 
 
 const geopoint_protobufPackage = "snapchat.lenses";
@@ -18402,7 +20330,6 @@ if ((minimal_default()).util.Long !== (long_default())) {
 }
 //# sourceMappingURL=geopoint.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/lenses/geocircle.js
-/* eslint-disable */
 
 
 
@@ -18455,7 +20382,6 @@ if ((minimal_default()).util.Long !== (long_default())) {
 }
 //# sourceMappingURL=geocircle.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/lenses/lures.js
-/* eslint-disable */
 
 
 
@@ -18520,7 +20446,6 @@ if ((minimal_default()).util.Long !== (long_default())) {
 }
 //# sourceMappingURL=lures.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/lenses/user_data.js
-/* eslint-disable */
 
 
 
@@ -18883,7 +20808,6 @@ if ((minimal_default()).util.Long !== (long_default())) {
 }
 //# sourceMappingURL=user_data.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/lenses/persistent_store.js
-/* eslint-disable */
 
 
 const persistent_store_protobufPackage = "snapchat.lenses";
@@ -18927,7 +20851,6 @@ if ((minimal_default()).util.Long !== (long_default())) {
 }
 //# sourceMappingURL=persistent_store.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/lenses/launch_params.js
-/* eslint-disable */
 
 
 const launch_params_protobufPackage = "snapchat.lenses";
@@ -18971,7 +20894,6 @@ if ((minimal_default()).util.Long !== (long_default())) {
 }
 //# sourceMappingURL=launch_params.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/lenses/launchdata.js
-/* eslint-disable */
 
 
 
@@ -18989,6 +20911,8 @@ var LaunchData_EntryPoint;
     LaunchData_EntryPoint["PREVIEW_CANCEL"] = "PREVIEW_CANCEL";
     LaunchData_EntryPoint["MAP"] = "MAP";
     LaunchData_EntryPoint["BITMOJI_STICKERS"] = "BITMOJI_STICKERS";
+    LaunchData_EntryPoint["POST_CAPTURE_PREVIEW"] = "POST_CAPTURE_PREVIEW";
+    LaunchData_EntryPoint["POST_CAPTURE_TRANSCODING"] = "POST_CAPTURE_TRANSCODING";
     LaunchData_EntryPoint["UNRECOGNIZED"] = "UNRECOGNIZED";
 })(LaunchData_EntryPoint || (LaunchData_EntryPoint = {}));
 function launchData_EntryPointFromJSON(object) {
@@ -19014,6 +20938,12 @@ function launchData_EntryPointFromJSON(object) {
         case 6:
         case "BITMOJI_STICKERS":
             return LaunchData_EntryPoint.BITMOJI_STICKERS;
+        case 7:
+        case "POST_CAPTURE_PREVIEW":
+            return LaunchData_EntryPoint.POST_CAPTURE_PREVIEW;
+        case 8:
+        case "POST_CAPTURE_TRANSCODING":
+            return LaunchData_EntryPoint.POST_CAPTURE_TRANSCODING;
         case -1:
         case "UNRECOGNIZED":
         default:
@@ -19036,15 +20966,17 @@ function launchData_EntryPointToNumber(object) {
             return 5;
         case LaunchData_EntryPoint.BITMOJI_STICKERS:
             return 6;
+        case LaunchData_EntryPoint.POST_CAPTURE_PREVIEW:
+            return 7;
+        case LaunchData_EntryPoint.POST_CAPTURE_TRANSCODING:
+            return 8;
         default:
             return 0;
     }
 }
 var LaunchData_ApiDescriptor;
 (function (LaunchData_ApiDescriptor) {
-    /** NONE - Extend as appropriate */
     LaunchData_ApiDescriptor["NONE"] = "NONE";
-    /** EXPERIMENTAL - https://snapchat.quip.com/Z6pNAfq26OKk */
     LaunchData_ApiDescriptor["EXPERIMENTAL"] = "EXPERIMENTAL";
     LaunchData_ApiDescriptor["UNRECOGNIZED"] = "UNRECOGNIZED";
 })(LaunchData_ApiDescriptor || (LaunchData_ApiDescriptor = {}));
@@ -19197,16 +21129,18 @@ const isValidNumber = (value) => isNumber(value) && !Number.isNaN(value) && Numb
  */
 function isLaunchParamsValid(launchParams) {
     if (!isRecord(launchParams) || launchParams instanceof Date) {
-        throw new Error("should be a record <string, number | string | string[] | number[]>");
+        throw new Error("Expected an object.");
     }
-    for (const value of Object.values(launchParams)) {
+    for (const [key, value] of Object.entries(launchParams)) {
         if (Array.isArray(value)) {
             if (!value.every(isString) && !value.every(isValidNumber)) {
-                throw new Error("only number, string, string[], number[] values are allowed");
+                throw new Error(`Field ${key} expects a value of type string, number, string array, or number array. ` +
+                    `Received: ${JSON.stringify(value)}.`);
             }
         }
         else if (isNotValid(value)) {
-            throw new Error("only number, string, string[], number[] values are allowed");
+            throw new Error(`Field ${key} expects a value of type string, number, string array, or number array. ` +
+                `Received: ${JSON.stringify(value)}.`);
         }
     }
     return true;
@@ -19226,282 +21160,108 @@ LaunchData.encode(LaunchData.fromPartial(Object.assign(Object.assign({}, (launch
     .finish()
     .slice();
 //# sourceMappingURL=LensLaunchParams.js.map
-;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/camera_kit/v3/legal_prompt.js
-/* eslint-disable */
-
-
-
-const legal_prompt_protobufPackage = "com.snap.camerakit.v3";
-/** All known types of legal documents that may be provided to a user. */
-var LegalDocument_Type;
-(function (LegalDocument_Type) {
-    /** UNSET - Default unset field. */
-    LegalDocument_Type["UNSET"] = "UNSET";
-    /** TERMS_OF_SERVICE - Represents terms of service type of a document. */
-    LegalDocument_Type["TERMS_OF_SERVICE"] = "TERMS_OF_SERVICE";
-    /** PRIVACY_POLICY - Represents privacy policy type of a document. */
-    LegalDocument_Type["PRIVACY_POLICY"] = "PRIVACY_POLICY";
-    /** LEARN_MORE - Represents additional legal information type of a document. */
-    LegalDocument_Type["LEARN_MORE"] = "LEARN_MORE";
-    LegalDocument_Type["UNRECOGNIZED"] = "UNRECOGNIZED";
-})(LegalDocument_Type || (LegalDocument_Type = {}));
-function legalDocument_TypeFromJSON(object) {
-    switch (object) {
-        case 0:
-        case "UNSET":
-            return LegalDocument_Type.UNSET;
-        case 1:
-        case "TERMS_OF_SERVICE":
-            return LegalDocument_Type.TERMS_OF_SERVICE;
-        case 2:
-        case "PRIVACY_POLICY":
-            return LegalDocument_Type.PRIVACY_POLICY;
-        case 3:
-        case "LEARN_MORE":
-            return LegalDocument_Type.LEARN_MORE;
-        case -1:
-        case "UNRECOGNIZED":
-        default:
-            return LegalDocument_Type.UNRECOGNIZED;
-    }
-}
-function legalDocument_TypeToNumber(object) {
-    switch (object) {
-        case LegalDocument_Type.UNSET:
-            return 0;
-        case LegalDocument_Type.TERMS_OF_SERVICE:
-            return 1;
-        case LegalDocument_Type.PRIVACY_POLICY:
-            return 2;
-        case LegalDocument_Type.LEARN_MORE:
-            return 3;
-        default:
-            return 0;
-    }
-}
-function createBaseLegalPrompt() {
-    return { documents: [], disabled: false };
-}
-const LegalPrompt = {
-    encode(message, writer = minimal_default().Writer.create()) {
-        for (const v of message.documents) {
-            LegalDocument.encode(v, writer.uint32(10).fork()).ldelim();
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/argsArgArrayOrObject.js
+var argsArgArrayOrObject_isArray = Array.isArray;
+var getPrototypeOf = Object.getPrototypeOf, objectProto = Object.prototype, getKeys = Object.keys;
+function argsArgArrayOrObject_argsArgArrayOrObject(args) {
+    if (args.length === 1) {
+        var first_1 = args[0];
+        if (argsArgArrayOrObject_isArray(first_1)) {
+            return { args: first_1, keys: null };
         }
-        if (message.disabled === true) {
-            writer.uint32(16).bool(message.disabled);
-        }
-        return writer;
-    },
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseLegalPrompt();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.documents.push(LegalDocument.decode(reader, reader.uint32()));
-                    break;
-                case 2:
-                    message.disabled = reader.bool();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromPartial(object) {
-        var _a, _b;
-        const message = createBaseLegalPrompt();
-        message.documents = ((_a = object.documents) === null || _a === void 0 ? void 0 : _a.map((e) => LegalDocument.fromPartial(e))) || [];
-        message.disabled = (_b = object.disabled) !== null && _b !== void 0 ? _b : false;
-        return message;
-    },
-};
-function createBaseLegalDocument() {
-    return { type: LegalDocument_Type.UNSET, webUrl: "", version: "", timestamp: undefined };
-}
-const LegalDocument = {
-    encode(message, writer = minimal_default().Writer.create()) {
-        if (message.type !== LegalDocument_Type.UNSET) {
-            writer.uint32(8).int32(legalDocument_TypeToNumber(message.type));
-        }
-        if (message.webUrl !== "") {
-            writer.uint32(18).string(message.webUrl);
-        }
-        if (message.version !== "") {
-            writer.uint32(26).string(message.version);
-        }
-        if (message.timestamp !== undefined) {
-            Timestamp.encode(legal_prompt_toTimestamp(message.timestamp), writer.uint32(34).fork()).ldelim();
-        }
-        return writer;
-    },
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseLegalDocument();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.type = legalDocument_TypeFromJSON(reader.int32());
-                    break;
-                case 2:
-                    message.webUrl = reader.string();
-                    break;
-                case 3:
-                    message.version = reader.string();
-                    break;
-                case 4:
-                    message.timestamp = legal_prompt_fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromPartial(object) {
-        var _a, _b, _c, _d;
-        const message = createBaseLegalDocument();
-        message.type = (_a = object.type) !== null && _a !== void 0 ? _a : LegalDocument_Type.UNSET;
-        message.webUrl = (_b = object.webUrl) !== null && _b !== void 0 ? _b : "";
-        message.version = (_c = object.version) !== null && _c !== void 0 ? _c : "";
-        message.timestamp = (_d = object.timestamp) !== null && _d !== void 0 ? _d : undefined;
-        return message;
-    },
-};
-// @ts-ignore
-function legal_prompt_toTimestamp(date) {
-    const seconds = date.getTime() / 1000;
-    const nanos = (date.getTime() % 1000) * 1000000;
-    return { seconds, nanos };
-}
-function legal_prompt_fromTimestamp(t) {
-    let millis = t.seconds * 1000;
-    millis += t.nanos / 1000000;
-    return new Date(millis);
-}
-if ((minimal_default()).util.Long !== (long_default())) {
-    (minimal_default()).util.Long = (long_default());
-    minimal_default().configure();
-}
-//# sourceMappingURL=legal_prompt.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/mapOneOrManyArgs.js
-
-
-var isArray = Array.isArray;
-function callOrApply(fn, args) {
-    return isArray(args) ? fn.apply(void 0, __spreadArray([], __read(args))) : fn(args);
-}
-function mapOneOrManyArgs_mapOneOrManyArgs(fn) {
-    return map(function (args) { return callOrApply(fn, args); });
-}
-//# sourceMappingURL=mapOneOrManyArgs.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/observable/fromEvent.js
-
-
-
-
-
-
-
-var nodeEventEmitterMethods = ['addListener', 'removeListener'];
-var eventTargetMethods = ['addEventListener', 'removeEventListener'];
-var jqueryMethods = ['on', 'off'];
-function fromEvent(target, eventName, options, resultSelector) {
-    if (isFunction_isFunction(options)) {
-        resultSelector = options;
-        options = undefined;
-    }
-    if (resultSelector) {
-        return fromEvent(target, eventName, options).pipe(mapOneOrManyArgs_mapOneOrManyArgs(resultSelector));
-    }
-    var _a = __read(isEventTarget(target)
-        ? eventTargetMethods.map(function (methodName) { return function (handler) { return target[methodName](eventName, handler, options); }; })
-        :
-            isNodeStyleEventEmitter(target)
-                ? nodeEventEmitterMethods.map(toCommonHandlerRegistry(target, eventName))
-                : isJQueryStyleEventEmitter(target)
-                    ? jqueryMethods.map(toCommonHandlerRegistry(target, eventName))
-                    : [], 2), add = _a[0], remove = _a[1];
-    if (!add) {
-        if (isArrayLike(target)) {
-            return mergeMap(function (subTarget) { return fromEvent(subTarget, eventName, options); })(innerFrom_innerFrom(target));
+        if (isPOJO(first_1)) {
+            var keys = getKeys(first_1);
+            return {
+                args: keys.map(function (key) { return first_1[key]; }),
+                keys: keys,
+            };
         }
     }
-    if (!add) {
-        throw new TypeError('Invalid event target');
-    }
-    return new Observable_Observable(function (subscriber) {
-        var handler = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i] = arguments[_i];
-            }
-            return subscriber.next(1 < args.length ? args : args[0]);
-        };
-        add(handler);
-        return function () { return remove(handler); };
-    });
+    return { args: args, keys: null };
 }
-function toCommonHandlerRegistry(target, eventName) {
-    return function (methodName) { return function (handler) { return target[methodName](eventName, handler); }; };
+function isPOJO(obj) {
+    return obj && typeof obj === 'object' && getPrototypeOf(obj) === objectProto;
 }
-function isNodeStyleEventEmitter(target) {
-    return isFunction_isFunction(target.addListener) && isFunction_isFunction(target.removeListener);
+//# sourceMappingURL=argsArgArrayOrObject.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/createObject.js
+function createObject_createObject(keys, values) {
+    return keys.reduce(function (result, key, i) { return ((result[key] = values[i]), result); }, {});
 }
-function isJQueryStyleEventEmitter(target) {
-    return isFunction_isFunction(target.on) && isFunction_isFunction(target.off);
-}
-function isEventTarget(target) {
-    return isFunction_isFunction(target.addEventListener) && isFunction_isFunction(target.removeEventListener);
-}
-//# sourceMappingURL=fromEvent.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/argsOrArgArray.js
-var argsOrArgArray_isArray = Array.isArray;
-function argsOrArgArray_argsOrArgArray(args) {
-    return args.length === 1 && argsOrArgArray_isArray(args[0]) ? args[0] : args;
-}
-//# sourceMappingURL=argsOrArgArray.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/merge.js
+//# sourceMappingURL=createObject.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/observable/forkJoin.js
 
 
 
 
 
 
-function merge_merge() {
+
+function forkJoin() {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
     }
-    var scheduler = args_popScheduler(args);
-    var concurrent = popNumber(args, Infinity);
-    args = argsOrArgArray_argsOrArgArray(args);
-    return operate(function (source, subscriber) {
-        mergeAll(concurrent)(from_from(__spreadArray([source], __read(args)), scheduler)).subscribe(subscriber);
+    var resultSelector = args_popResultSelector(args);
+    var _a = argsArgArrayOrObject_argsArgArrayOrObject(args), sources = _a.args, keys = _a.keys;
+    var result = new Observable_Observable(function (subscriber) {
+        var length = sources.length;
+        if (!length) {
+            subscriber.complete();
+            return;
+        }
+        var values = new Array(length);
+        var remainingCompletions = length;
+        var remainingEmissions = length;
+        var _loop_1 = function (sourceIndex) {
+            var hasValue = false;
+            innerFrom_innerFrom(sources[sourceIndex]).subscribe(createOperatorSubscriber(subscriber, function (value) {
+                if (!hasValue) {
+                    hasValue = true;
+                    remainingEmissions--;
+                }
+                values[sourceIndex] = value;
+            }, function () { return remainingCompletions--; }, undefined, function () {
+                if (!remainingCompletions || !hasValue) {
+                    if (!remainingEmissions) {
+                        subscriber.next(keys ? createObject_createObject(keys, values) : values);
+                    }
+                    subscriber.complete();
+                }
+            }));
+        };
+        for (var sourceIndex = 0; sourceIndex < length; sourceIndex++) {
+            _loop_1(sourceIndex);
+        }
     });
+    return resultSelector ? result.pipe(mapOneOrManyArgs_mapOneOrManyArgs(resultSelector)) : result;
 }
-//# sourceMappingURL=merge.js.map
-;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/mergeWith.js
-
-
-function mergeWith() {
-    var otherSources = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        otherSources[_i] = arguments[_i];
-    }
-    return merge_merge.apply(void 0, __spreadArray([], __read(otherSources)));
-}
-//# sourceMappingURL=mergeWith.js.map
+//# sourceMappingURL=forkJoin.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/common/localization.js
-var _a;
-
+/**
+ * This implementation is limited by how TypeScript currently implements tag function for template literals.
+ *
+ * The way tag functions are typed by the TypeScript compiler limits their usefulness, for two reasons:
+ *
+ * 1. Specific literal types are not inferred from interpolation expressions -- the following does not work:
+ * ```ts
+ * function tag<K extends readonly string[]>(strings: readonly string[], ...keys: K): string { ... }
+ * tag`This is a ${"test"} template.` // the K type parameter is not correctly inferred as `readonly ['test']`
+ * ```
+ * 2. The return type of a function used as a tag function will always be `string` -- the following does not work:
+ * ```ts
+ * function tag<K extends readonly string[]>(
+ *   strings: readonly string[],
+ *   ...keys: K
+ * ): (values: {[k in K[number]]: string}) => string { ... }
+ *
+ * const template = tag`This is a ${"test"} template` // TS infers the type of `template` as `string` -- clearly wrong.
+ * ```
+ *
+ * An attempt is made here to work around those limitations and still provide a reasonably amount of type safety without
+ * adding too much verbosity.
+ *
+ * See https://github.com/microsoft/TypeScript/pull/49552
+ */
 function makeTemplate(keys) {
     return (template) => (values) => {
         const tag = (readonlyStrings) => {
@@ -19519,176 +21279,959 @@ function makeTemplate(keys) {
  */
 const legalPromptMessage = makeTemplate(["privacyPolicyUrl", "termsOfServiceUrl", "learnMoreUrl"]);
 /**
- * Strings for each language are defined blow.
+ * Strings for each language are defined below.
  */
-// en_US is used both to:
-//  A) define the set of strings which can be localized and
-//  B) provide a default set of strings in case a specific localization cannot be found.
-const en_US = {
-    legalPromptMessage: legalPromptMessage((tag) => tag `By using Lenses, you acknowledge reading Snap's <a href="${0}" target="_blank">
-            Privacy Policy</a> and agree to Snap's <a href="${0}" target="_blank">Terms of Service</a>.
-            Some Lenses use information about your face, hands, and voice to work. <a href="${0}"
-            target="_blank">Learn More</a>, and if you want to agree and continue, click or tap below.`),
-    legalPromptAccept: "I Agree",
-    legalPromptReject: "Dismiss",
+/* eslint-disable max-len */
+/**
+ * Translations for supported locales.
+ * https://wiki.sc-corp.net/display/Engineering/Consumer+Product+Localization
+ */
+const allStrings = {
+    "en-US": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `By using Lenses, you acknowledge reading Snap’s <a href="${0}" target="_blank">Privacy Policy</a> and agree to Snap’s <a href="${0}" target="_blank">Terms of Service</a>. Some lenses use information about your face, hands and voice to work. <a href="${0}" target="_blank">Learn More</a>, and if you want to agree and continue, tap below.`),
+        legalPromptAccept: `I Agree`,
+        legalPromptReject: `Dismiss`,
+        legalPromptTermsOfService: `Terms of Service`,
+        legalPromptVariantGMessage: `This feature uses information about face(s), hands and voice(s) detected by the camera and microphone to work. With this feature, you can apply fun and useful augmented reality effects on top of selfies and images. Our camera uses technology to locate certain features (like where your hands, eyes, and nose are) and uses that information to accurately position the feature with the image sensed by the camera. Any information that is collected will be deleted as soon as possible (typically soon after the app is closed) and always within no more than three years.<br/><br/>If you want to agree and continue, tap below.`,
+        legalPromptVariantGAdultOrChild: `Are you an adult or child?`,
+        legalPromptVariantGFindYourParent: `Please find your parent or legal guardian.`,
+        legalPromptVariantGIAmGuardian: `I am the child\'s guardian`,
+        legalPromptVariantGCancel: `Cancel`,
+        legalPromptVariantGAdult: `Adult`,
+        legalPromptVariantGChild: `Child`,
+    },
+    ar: {
+        legalPromptMessage: legalPromptMessage((tag) => tag `باستخدامك للعدسات، فأنت تقر بقراءتك <a href="${0}" target="_blank">لسياسة الخصوصية</a> وتوافق على <a href="${0}" target="_blank">شروط الخدمة</a> الخاصة بسناب. تستخدم بعض العدسات معلومات عن وجهك ويديك وصوتك لكي تعمل. <a href="${0}" target="_blank">تعرّف على مزيد من المعلومات</a>، وإذا أردت الموافقة والاستمرار فالمس أدناه.`),
+        legalPromptAccept: `أنا أوافق`,
+        legalPromptReject: `تجاهل`,
+        legalPromptTermsOfService: `شروط الخدمة`,
+        legalPromptVariantGMessage: `تستخدم هذه الميزة معلومات تتعلق بالوجه(الوجوه) واليدين والصوت(الأصوات) تكتشفها الكاميرا والميكروفون للعمل. وباستخدام هذه الميزة، يمكنك تطبيق تأثيرات الواقع المُعزّز الممتعة والمفيدة على صور السيلفي والصور. تستخدم الكاميرا لدينا التكنولوجيا لتحديد مكان ملامح معيَّنة (مثل مكان وجود يديك وعينيك وأنفك) وتستخدم هذه المعلومات لتحديد مكان الملامح بدقة مع الصورة التي تستشعرها الكاميرا. سيتم حذف أي معلومات يتم جمعها في أقرب وقت ممكن (عادةً بعد إغلاق التطبيق بفترة وجيزة) وخلال فترة لا تزيد عن ثلاث سنوات دائمًا.<br/><br/>إذا كنت تريد الموافقة والمتابعة، فالمس أدناه.`,
+        legalPromptVariantGAdultOrChild: `هل أنت شخص بالغ أم طفل؟`,
+        legalPromptVariantGFindYourParent: `يُرجى البحث عن وليّ أمرك أو الوصي القانوني.`,
+        legalPromptVariantGIAmGuardian: `أنا الوصي على الطفل`,
+        legalPromptVariantGCancel: `إلغاء`,
+        legalPromptVariantGAdult: `شخص بالغ`,
+        legalPromptVariantGChild: `طفل`,
+    },
+    "bn-BD": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `লেন্সগুলি ব্যবহার করার মাধ্যমে আপনি Snap-এর <a href="${0}" target="_blank">গোপনীয়তা নীতি</a> পড়েছেন এবং Snap-এর <a href="${0}" target="_blank">পরিষেবার শর্তাবলী</a>-তে সম্মত হচ্ছেন বলে স্বীকার করছেন। কিছু কিছু লেন্স কাজ করার জন্য আপনার মুখ, হাত ও কন্ঠস্বর ব্যবহার করে। <a href="${0}" target="_blank">আরো জানুন</a> এবং আপনি যদি সম্মত হতে ও চালিয়ে যেতে চান তবে নিচে ট্যাপ করুন।`),
+        legalPromptAccept: `আমি সম্মতি দিচ্ছি`,
+        legalPromptReject: `খারিজ করুন`,
+        legalPromptTermsOfService: `পরিষেবার শর্তাবলী`,
+        legalPromptVariantGMessage: `কাজ করতে এই বৈশিষ্ট্যটি ক্যামেরা এবং মাইক্রোফোন দ্বারা শনাক্ত করা মুখ, হাত এবং কণ্ঠস্বর সম্পর্কে তথ্য ব্যবহার করে। এই বৈশিষ্ট্যটি দিয়ে আপনি সেলফি এবং ছবির উপর মজার এবং উপযোগী অগমেন্টেড রিয়ালিটির ইফেক্ট প্রয়োগ করতে পারবেন। আমাদের ক্যামেরা নির্দিষ্ট বৈশিষ্ট্যগুলি (যেমন আপনার হাত, চোখ এবং নাক কোথায়) শনাক্ত করতে প্রযুক্তি ব্যবহার করে এবং ক্যামেরা দ্বারা আঁচ করা ছবির সাথে বৈশিষ্ট্যটিকে সঠিকভাবে অবস্থান করতে সেই তথ্য ব্যবহার করে। সংগৃহীত যেকোনো তথ্য যত তাড়াতাড়ি সম্ভব মুছে ফেলা হবে (সাধারণত অ্যাপটি বন্ধ হওয়ার পরেই) এবং কোনো সময়েই তা তিন বছরের বেশি রাখা হবে না।<br/><br/>আপনি যদি সম্মত হতে চান এবং চালিয়ে যেতে চান তাহলে নিচে ট্যাপ করুন।`,
+        legalPromptVariantGAdultOrChild: `আপনি একজন প্রাপ্তবয়স্ক না শিশু?`,
+        legalPromptVariantGFindYourParent: `অনুগ্রহ করে আপনার পিতামাতা বা আইনি অভিভাবককে খুঁজুন।`,
+        legalPromptVariantGIAmGuardian: `আমি শিশুটির অভিভাবক`,
+        legalPromptVariantGCancel: `বাতিল করুন`,
+        legalPromptVariantGAdult: `প্রাপ্তবয়স্ক`,
+        legalPromptVariantGChild: `শিশু`,
+    },
+    "bn-IN": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `লেন্স ব্যবহার করে, আপনি Snap\'এর \"<a href="${0}" target="_blank">\"গোপনীয়তার নীতি</a> পড়েছেন এবং Snap\'এর <a href="${0}" target="_blank">পরিষেবার শর্তাবলী</a>-তে সম্মত হচ্ছেন বলে স্বীকার করছেন। কিছু কিছু লেন্স কাজ করার জন্য আপনার মুখ, হাত ও কন্ঠস্বরের তথ্য ব্যবহার করে। <a href="${0}" target="_blank">আরও জানুন</a> এবং আপনি সম্মত হলে ও চালিয়ে যেতে চাইলে নিচে ট্যাপ করুন।`),
+        legalPromptAccept: `আমি সম্মত`,
+        legalPromptReject: `খারিজ করুন`,
+        legalPromptTermsOfService: `পরিষেবার শর্তাবলী`,
+        legalPromptVariantGMessage: `কাজ করার জন্য এই বৈশিষ্ট্যটি ক্যামেরা এবং মাইক্রোফোন দ্বারা শনাক্ত করা মুখ(গুলি), হাত এবং ভয়েস(গুলি) সম্পর্কিত তথ্য ব্যবহার করে৷ এই বৈশিষ্ট্যটির সাহায্যে, আপনি সেলফি এবং ছবিগুলির উপরে মজাদার এবং দরকারী অগমেন্টেড রিয়েলিটি প্রভাব প্রয়োগ করতে পারেন। আমাদের ক্যামেরা নির্দিষ্ট কিছু বৈশিষ্ট্য শনাক্ত করতে প্রযুক্তি ব্যবহার করে (যেমন আপনার হাত, চোখ এবং নাক কোথায়) এবং ক্যামেরা দ্বারা সংবেদিত ছবির সাথে বৈশিষ্ট্যটিকে ঠিক জায়গায় বসাতে সেই তথ্য ব্যবহার সবসময়ই তিন বছরের কম সময়ের মধ্যে। <br/><br/>আপনি যদি সম্মত থাকেন এবং চালিয়ে যেতে চান, নিচে ট্যাপ করুন।`,
+        legalPromptVariantGAdultOrChild: `আপনি কি একজন প্রাপ্তবয়স্ক না শিশু?`,
+        legalPromptVariantGFindYourParent: `অনুগ্রহ করে আপনার মা-বাবা বা আইনী অভিভাবককে খুঁজুন।`,
+        legalPromptVariantGIAmGuardian: `আমি শিশুটির অভিভাবক`,
+        legalPromptVariantGCancel: `বাতিল করুন`,
+        legalPromptVariantGAdult: `প্রাপ্তবয়স্ক`,
+        legalPromptVariantGChild: `শিশু`,
+    },
+    "da-DK": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `Når du anvender Linser, bekræfter du, at du har læst Snaps <a href="${0}" target="_blank">privatlivspolitik</a> og accepterer Snaps <a href="${0}" target="_blank">servicevilkår</a>. Nogle Linser bruger information om dit ansigt, dine hænder og din stemme for at fungere. <a href="${0}" target="_blank">Få mere at vide</a>, og tryk nedenfor, hvis du vil acceptere og fortsætte.`),
+        legalPromptAccept: `Jeg er enig`,
+        legalPromptReject: `Afvis`,
+        legalPromptTermsOfService: `Servicevilkår`,
+        legalPromptVariantGMessage: `Denne funktion bruger oplysninger om ansigt(er), hænder og stemme(r), der registreres af kameraet og mikrofonen, for at kunne fungere. Med denne funktion kan du anvende sjove og nyttige augmented reality-effekter på selfies og billeder. Vores kamera bruger teknologi til at finde bestemte træk (f.eks. hvor dine hænder, øjne og næse er) og bruger disse oplysninger til nøjagtigt at placere trækket i billedet, der opfanges af kameraet. Alle oplysninger, der indsamles, slettes så hurtigst som muligt (typisk kort efter, at appen lukkes) og altid inden for højst tre år.<br/><br/>Tryk herunder, hvis du accepterer og vil fortsætte.`,
+        legalPromptVariantGAdultOrChild: `Er du voksen eller barn?`,
+        legalPromptVariantGFindYourParent: `Find din forælder eller værge.`,
+        legalPromptVariantGIAmGuardian: `Jeg er barnets værge`,
+        legalPromptVariantGCancel: `Annuller`,
+        legalPromptVariantGAdult: `Voksen`,
+        legalPromptVariantGChild: `Barn`,
+    },
+    "de-DE": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `Wenn du Linsen verwendet, versicherst du, dass du die <a href="${0}" target="_blank">Datenschutzbestimmungen</a> von Snap gelesen hast und den <a href="${0}" target="_blank">Servicebestimmungen</a> von Snap zustimmst. Manche Linsen verarbeiten Informationen zu deinem Gesicht, deinen Händen und deiner Stimme, um zu funktionieren. <a href="${0}" target="_blank">Hier erfährst du mehr.</a> Tippe unten, wenn du zustimmen und fortfahren möchtest.`),
+        legalPromptAccept: `Zustimmen`,
+        legalPromptReject: `Ablehnen`,
+        legalPromptTermsOfService: `Servicebestimmungen`,
+        legalPromptVariantGMessage: `Diese Funktion verwendet Informationen über Gesichter, Hände und Stimmen, die von der Kamera und dem Mikrofon erkannt werden. Mit dieser Funktion kannst du lustige und nützliche Augmented Reality-Effekte auf Selfies und Bilder anwenden. Unsere Kamera nutzt Technologien, um bestimmte Merkmale zu lokalisieren (z. B. wo sich deine Hände, Augen und Nase befinden), und verwendet diese Informationen, um dieses Merkmal dann exakt über das von der Kamera erfasste Bild zu positionieren. Alle gesammelten Informationen werden so schnell wie möglich gelöscht (in der Regel kurz nach dem Schließen der App), spätestens aber innerhalb von drei Jahren.<br/><br/>Tippe unten, um zuzustimmen und fortzufahren.`,
+        legalPromptVariantGAdultOrChild: `Bist du erwachsen oder minderjährig?`,
+        legalPromptVariantGFindYourParent: `Bitte hole ein Elternteil oder Erziehungsberechtigten.`,
+        legalPromptVariantGIAmGuardian: `Ich bin der Erziehungsberechtigte des Kindes.`,
+        legalPromptVariantGCancel: `Abbrechen`,
+        legalPromptVariantGAdult: `Erwachsen`,
+        legalPromptVariantGChild: `Minderjährig`,
+    },
+    "el-GR": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `Χρησιμοποιώντας τους Φακούς, αναγνωρίζεις ότι έχεις διαβάσει την <a href="${0}" target="_blank">Πολιτική απορρήτου</a> του Snap και ότι συμφωνείς με τους <a href="${0}" target="_blank">Όρους υπηρεσίας</a> του Snap. Ορισμένοι Φακοί χρησιμοποιούν πληροφορίες σχετικά με το πρόσωπο, τα χέρια και τη φωνή σου για να λειτουργήσουν. <a href="${0}" target="_blank">Μάθε περισσότερα</a> και αν θέλεις να συμφωνήσεις και να συνεχίσεις, άγγιξε παρακάτω.`),
+        legalPromptAccept: `Συμφωνώ`,
+        legalPromptReject: `Απόρριψη`,
+        legalPromptTermsOfService: `Όροι υπηρεσίας`,
+        legalPromptVariantGMessage: `Αυτή η λειτουργία χρησιμοποιεί πληροφορίες σχετικά με τα πρόσωπα, τα χέρια και τις φωνές που ανιχνεύονται από την κάμερα και το μικρόφωνο, προκειμένου να λειτουργήσει. Με αυτήν τη λειτουργία μπορείς να εφαρμόσεις διασκεδαστικά και χρήσιμα εφέ επαυξημένης πραγματικότητας σε σέλφι και εικόνες. Η κάμερά μας χρησιμοποιεί την τεχνολογία για να εντοπίσει ορισμένα χαρακτηριστικά (όπως που βρίσκονται τα χέρια, τα μάτια και η μύτη σου) και αξιοποιεί αυτές τις πληροφορίες για να τοποθετήσει με ακρίβεια τη λειτουργία στην εικόνα που καταγράφεται από την κάμερα. Όλες οι πληροφορίες που συλλέγονται διαγράφονται το συντομότερο δυνατό (συνήθως λίγο μετά το κλείσιμο της εφαρμογής) και σε κάθε περίπτωση σε όχι παραπάνω από τρία χρόνια.<br/><br/>Αν συμφωνείς και θέλεις να συνεχίσεις, άγγιξε παρακάτω.`,
+        legalPromptVariantGAdultOrChild: `Είσαι ενήλικας ή παιδί;`,
+        legalPromptVariantGFindYourParent: `Βρες τον γονέα ή τον νόμιμο κηδεμόνα σου.`,
+        legalPromptVariantGIAmGuardian: `Είμαι ο κηδεμόνας του παιδιού`,
+        legalPromptVariantGCancel: `Άκυρο`,
+        legalPromptVariantGAdult: `Ενήλικος`,
+        legalPromptVariantGChild: `Παιδί`,
+    },
+    "en-GB": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `By using Lenses, you acknowledge reading Snap\’s <a href="${0}" target="_blank">Privacy Policy</a> and agree to Snap\’s <a href="${0}" target="_blank">Terms of Service</a>. Some Lenses use information about your face, hands and voice to work. <a href="${0}" target="_blank">Learn More</a>, and if you want to agree and continue, tap below.`),
+        legalPromptAccept: `I agree`,
+        legalPromptReject: `Dismiss`,
+        legalPromptTermsOfService: `Terms of Service`,
+        legalPromptVariantGMessage: `This feature uses information about face(s), hands and voice(s) detected by the camera and microphone to work. With this feature, you can apply fun and useful augmented reality effects on top of selfies and images. Our camera uses technology to locate certain features (like where your hands, eyes and nose are) and uses that information to accurately position the feature with the image sensed by the camera. Any information that is collected will be deleted as soon as possible (typically soon after the app is closed) and always within no more than three years.<br/><br/>If you want to agree and continue, tap below.`,
+        legalPromptVariantGAdultOrChild: `Are you an adult or child?`,
+        legalPromptVariantGFindYourParent: `Please find your parent or legal guardian.`,
+        legalPromptVariantGIAmGuardian: `I am the child\’s guardian`,
+        legalPromptVariantGCancel: `Cancel`,
+        legalPromptVariantGAdult: `Adult`,
+        legalPromptVariantGChild: `Child`,
+    },
+    es: {
+        legalPromptMessage: legalPromptMessage((tag) => tag `Al usar Lentes, confirmas que leíste la <a href="${0}" target="_blank">Política de privacidad</a> de Snap y aceptas las <a href="${0}" target="_blank">Condiciones de servicio</a>. Algunos Lentes funcionan usando información acerca de tu cara, tus manos y tu voz. <a href="${0}" target="_blank">Obtén más información</a> y, si quieres aceptar y continuar, toca a continuación.`),
+        legalPromptAccept: `Acepto`,
+        legalPromptReject: `Ignorar`,
+        legalPromptTermsOfService: `Condiciones de servicio`,
+        legalPromptVariantGMessage: `Esta función utiliza información sobre caras, manos y voces detectadas por la cámara y el micrófono para funcionar. Con esta función, puedes aplicar divertidos y útiles efectos de realidad aumentada sobre selfies e imágenes. Nuestra cámara utiliza tecnología para localizar ciertos rasgos (como dónde están las manos, los ojos y la nariz) y utiliza dicha información para posicionar correctamente el rasgo sobre la imagen detectada por la cámara. Toda la información recopilada se eliminará tan pronto como sea posible (por lo general, poco después de que se cierre la app), siempre en un plazo menor a tres años.<br/><br/>Para aceptar y continuar, toca a continuación.`,
+        legalPromptVariantGAdultOrChild: `¿Eres mayor o menor de edad?`,
+        legalPromptVariantGFindYourParent: `Busca a tu padre, madre o tutor legal.`,
+        legalPromptVariantGIAmGuardian: `Soy el tutor legal del menor`,
+        legalPromptVariantGCancel: `Cancelar`,
+        legalPromptVariantGAdult: `Mayor de edad`,
+        legalPromptVariantGChild: `Menor de edad`,
+    },
+    "es-AR": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `Al usar los Lentes, confirmás que leíste la <a href="${0}" target="_blank">Política de privacidad</a> de Snap y que aceptás sus <a href="${0}" target="_blank">Condiciones de servicio</a>. Algunos Lentes usan información sobre tu cara, tus manos y tu voz para funcionar. <a href="${0}" target="_blank">Obtené más información</a>, y si querés aceptar y continuar, tocá el botón que aparece más abajo.`),
+        legalPromptAccept: `Acepto`,
+        legalPromptReject: `Omitir`,
+        legalPromptTermsOfService: `Condiciones de servicio`,
+        legalPromptVariantGMessage: `Esta función utiliza la información sobre caras, manos y voces detectadas por la cámara y el micrófono. Con esta función, podés aplicar divertidos y útiles efectos de realidad aumentada sobre selfies e imágenes. Nuestra cámara utiliza tecnología para localizar ciertos rasgos (como dónde están las manos, los ojos y la nariz) y utiliza esa información para posicionar con precisión el rasgo con la imagen detectada por la cámara. Toda la información recopilada se eliminará lo antes posible (normalmente poco después de cerrar la aplicación) y siempre en un plazo máximo de tres años.<br/><br/>Si deseas aceptar y continuar, tocá a continuación.`,
+        legalPromptVariantGAdultOrChild: `¿Sos mayor o menor de edad?`,
+        legalPromptVariantGFindYourParent: `Buscá a tu padre, madre o tutor legal.`,
+        legalPromptVariantGIAmGuardian: `Soy el tutor legal del menor`,
+        legalPromptVariantGCancel: `Cancelar`,
+        legalPromptVariantGAdult: `Mayor de edad`,
+        legalPromptVariantGChild: `Menor de edad`,
+    },
+    "es-ES": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `Al usar las Lentes, reconoces haber leído la <a href="${0}" target="_blank">Política de privacidad</a> y aceptas los <a href="${0}" target="_blank">Términos del servicio</a> de Snap. Algunas Lentes funcionan utilizando información de tu cara, tus manos o tu voz. Puedes obtener <a href="${0}" target="_blank">más información</a>, y si quieres aceptar y continuar, toca el botón a continuación.`),
+        legalPromptAccept: `Acepto`,
+        legalPromptReject: `Descartar`,
+        legalPromptTermsOfService: `Términos del servicio`,
+        legalPromptVariantGMessage: `Para su funcionamiento, esta función hace uso de los datos sobre la cara, las manos y las voces detectados por la cámara y el micrófono. Con ella, puedes aplicar efectos de realidad aumentada, tanto útiles como divertidos, en selfies e imágenes. Nuestra cámara utiliza la tecnología para localizar determinados elementos (como la posición de las manos, los ojos o la nariz) y utiliza esta información para colocar el elemento sobre la imagen de forma fiel, según lo detectado por la cámara. Cualquier información que se recopile se eliminará lo antes posible (normalmente, al cerrar la aplicación) y nunca se almacenará durante más de tres años.<br/><br/>Si quieres aceptar y continuar, toca a continuación.`,
+        legalPromptVariantGAdultOrChild: `¿Eres una persona adulta o eres menor?`,
+        legalPromptVariantGFindYourParent: `Habla con tu padre, madre o tutor/a legal.`,
+        legalPromptVariantGIAmGuardian: `Soy el tutor o tutora legal del menor`,
+        legalPromptVariantGCancel: `Cancelar`,
+        legalPromptVariantGAdult: `Adulto`,
+        legalPromptVariantGChild: `Menor`,
+    },
+    "es-MX": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `Al usar Lentes, confirmas que leíste la <a href="${0}" target="_blank">Política de privacidad</a> y aceptas los <a href="${0}" target="_blank">Términos y condiciones de servicio</a> de Snap. Algunos lentes usan información sobre tu cara, manos o voz para funcionar. <a href="${0}" target="_blank">Obtén más información</a> y, si quieres aceptarlo, toca a continuación.`),
+        legalPromptAccept: `Acepto`,
+        legalPromptReject: `Ignorar`,
+        legalPromptTermsOfService: `Términos y condiciones de servicio`,
+        legalPromptVariantGMessage: `Esta característica utiliza información sobre la(s) cara(s), manos y voz o voces detectadas por la cámara y el micrófono para funcionar. Con ella, puedes aplicar efectos de realidad aumentada útiles y divertidos a selfies e imágenes. Nuestra cámara usa tecnología para localizar ciertos rasgos (como dónde están tus manos, ojos y nariz) y utiliza esa información para posicionar con precisión esta característica con la imagen que la cámara percibió. Toda la información que se recopile se eliminará lo más pronto posible (por lo general, poco después de cerrar la app) y nunca excederá los tres días.<br/><br/>Si quieres aceptar y proseguir, toca a continuación.`,
+        legalPromptVariantGAdultOrChild: `¿Eres mayor o menor de edad?`,
+        legalPromptVariantGFindYourParent: `Busca a tu madre, padre o quien tenga tu custodia legal.`,
+        legalPromptVariantGIAmGuardian: `Tengo la custodia de la persona menor`,
+        legalPromptVariantGCancel: `Cancelar`,
+        legalPromptVariantGAdult: `Persona adulta`,
+        legalPromptVariantGChild: `Persona menor`,
+    },
+    "fi-FI": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `Käyttämällä tehosteita ilmaiset lukeneesi Snapin <a href="${0}" target="_blank">tietosuojaselosteen</a> ja hyväksyväsi Snapin <a href="${0}" target="_blank">palveluehdot</a>. Jotkin tehosteet käyttävät toimintaan tietoja kasvoistasi, käsistäsi ja äänestäsi. <a href="${0}" target="_blank">Lisätietoja saat täältä</a>. Hyväksy ja jatka napauttamalla alla olevaa painiketta.`),
+        legalPromptAccept: `Hyväksyn`,
+        legalPromptReject: `Hylkää`,
+        legalPromptTermsOfService: `Palveluehdot`,
+        legalPromptVariantGMessage: `Tämä ominaisuus käyttää toimiakseen tietoja kameran ja mikrofonin havaitsemista kasvoista, käsistä ja äänistä. Ominaisuudella voit lisätä hauskoja ja hyödyllisiä lisätyn todellisuuden efektejä selfieiden ja kuvien päälle. Kameramme käyttää teknologiaa tiettyjen piirteiden paikallistamiseen (kuten käsiesi, silmiesi ja nenäsi sijaintiin) ja käyttää näitä tietoja ominaisuuden asettamiseen oikeaan kohtaan kameran havaitsemassa kuvassa. Kaikki kerätyt tiedot poistetaan mahdollisimman pian (yleensä pian sovelluksen sulkemisen jälkeen) ja aina viimeistään kolmen vuoden kuluttua.<br/><br/>Jos haluat hyväksyä ja jatkaa, napauta painiketta alla. `,
+        legalPromptVariantGAdultOrChild: `Oletko aikuinen vai lapsi?`,
+        legalPromptVariantGFindYourParent: `Etsi vanhempasi tai huoltajasi.`,
+        legalPromptVariantGIAmGuardian: `Olen lapsen huoltaja`,
+        legalPromptVariantGCancel: `Peruuta`,
+        legalPromptVariantGAdult: `Aikuinen`,
+        legalPromptVariantGChild: `Lapsi`,
+    },
+    "fil-PH": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `Sa pamamagitan ng paggamit sa Lenses, kinikilala mong binasa mo ang <a href="${0}" target="_blank">Privacy Policy</a> ng Snap at sumasang-ayon ka sa <a href="${0}" target="_blank">Terms of Service</a> ng Snap. Ang ilang lens ay gumagamit ng impormasyon tungkol sa iyong mukha , mga kamay at boses para gumana. <a href="${0}" target="_blank">Alamin Pa</a>, at kung gusto mong sumang-ayon at magpatuloy, mag-tap sa ibaba.`),
+        legalPromptAccept: `Sang-ayon Ako`,
+        legalPromptReject: `I-dismiss`,
+        legalPromptTermsOfService: `Terms of Service`,
+        legalPromptVariantGMessage: `Ang feature na ito ay gumagamit ng impormasyon tungkol sa (mga) mukha, mga kamay at (mga) boses na nade-detect ng camera at microphone para gumana ito. Gamit ang feature na ito, pwede kang mag-apply ng nakakatuwa at kapaki-pakinabang na augmented reality effects sa ibabaw ng mga selfie at image. Gumagamit ang camera namin ng technology para matukoy ang mga partikular na anyo (tulad ng kung nasaan ang iyong mga kamay, mga mata, at ilong) at ginagamit nito ang impormasyong iyon para eksaktong mapwesto ang anyong iyon sa image na nase-sense ng camera. Ang anumang impormasyong kinokolekta ay ide-delete sa lalong madaling panahon (karaniwan ay maikling panahon lang matapos isara ang app) at palaging hindi lalampas nang tatlong taon.<br/><br/>Kung gusto mong sumang-ayon at magpatuloy, mag-tap sa ibaba.`,
+        legalPromptVariantGAdultOrChild: `Isa ka bang adult o bata?`,
+        legalPromptVariantGFindYourParent: `Pakihanap ang iyong magulang o legal guardian.`,
+        legalPromptVariantGIAmGuardian: `Ako ang guardian ng bata`,
+        legalPromptVariantGCancel: `I-cancel`,
+        legalPromptVariantGAdult: `Adult`,
+        legalPromptVariantGChild: `Bata`,
+    },
+    "fr-FR": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `En utilisant les Lenses, vous reconnaissez avoir lu la <a href="${0}" target="_blank">Politique de confidentialité</a> de Snap et vous acceptez les <a href="${0}" target="_blank">Conditions d\'utilisation du service</a> de Snap. Le fonctionnement de certaines Lenses requiert l\'utilisation d\'informations sur votre visage, vos mains et votre voix. <a href="${0}" target="_blank">En savoir plus</a>. Si vous acceptez ces conditions et souhaitez continuer, appuyez ci-dessous.`),
+        legalPromptAccept: `J\'accepte`,
+        legalPromptReject: `Ignorer`,
+        legalPromptTermsOfService: `Conditions d\'utilisation du service`,
+        legalPromptVariantGMessage: `Pour fonctionner, cette fonctionnalité utilise des informations sur le ou les visages, les mains et la ou les voix détectés par l\'appareil photo et le micro. Elle vous permet d\'appliquer des effets en réalité augmentée amusants et utiles sur vos selfies et vos images. Notre appareil photo utilise une technologie qui localise certaines caractéristiques (comme l\'emplacement de vos mains, de vos yeux et de votre nez) afin de positionner avec précision la fonctionnalité sur l\'image détectée par l\'appareil photo. Toutes les informations collectées sont supprimées dès que possible (généralement peu après la fermeture de l\'application) et toujours dans un délai maximum de trois ans.<br/><br/>Si vous souhaitez accepter et continuer, appuyez ci-dessous.`,
+        legalPromptVariantGAdultOrChild: `Êtes-vous adulte ou mineur ?`,
+        legalPromptVariantGFindYourParent: `Veuillez appeler votre parent ou votre tuteur·rice.`,
+        legalPromptVariantGIAmGuardian: `Je suis le ou la tuteur·rice de l\'enfant.`,
+        legalPromptVariantGCancel: `Annuler`,
+        legalPromptVariantGAdult: `Adulte`,
+        legalPromptVariantGChild: `Mineur`,
+    },
+    "gu-IN": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `લેન્સનો ઉપયોગ કરીને, તમે સ્વીકારો છો કે તમે Snapની <a href="${0}" target="_blank">પ્રાઇવસી પોલિસી</a> વાંચી છે અને Snapની <a href="${0}" target="_blank">સેવાની શરતો</a> સાથે સંમત છો. કેટલાક લેન્સ કામ કરી શકે તે માટે તે તમારા ચહેરા, હાથ અને અવાજનો ઉપયોગ કરે છે. <a href="${0}" target="_blank">વધુ જાણો</a>, અને જો તમે સંમત થવા માંગતા હો, તો નીચે ટૅપ કરો.`),
+        legalPromptAccept: `હું સંમત છું`,
+        legalPromptReject: `બરતરફ કરો`,
+        legalPromptTermsOfService: `સેવાની શરતો`,
+        legalPromptVariantGMessage: `આ સુવિધા કામ કરી શકે તે માટે કૅમેરા અને માઇક્રોફોન દ્વારા શોધાયેલા ચહેરા(ઓ), હાથ અને અવાજ(જો) વિશેની માહિતીનો ઉપયોગ કરે છે. આ સુવિધા સાથે તમે સેલ્ફી અને ઇમેજની ઉપર મજેદાર અને ઉપયોગી ઑગ્મેંટેડ રિયાલીટી ઇફેક્ટ લાગુ કરી શકો છો. અમારા કૅમેરા અમુક લક્ષણો (જેમ કે તમારા હાથ, આંખો અને નાક ક્યાં છે તે)નું સ્થાન જાણવા માટે ટેક્નોલોજીનો ઉપયોગ કરે છે અને તે માહિતીનો ઉપયોગ તે લક્ષણને કૅમેરા દ્વારા શોધાયેલ ઇમેજ સાથે સ્થિત કરવા માટે કરે છે. એકત્રિત કરેલી કોઈ પણ માહિતી શક્ય તેટલી વહેલી તકે (સામાન્ય રીતે ઍપ બંધ કરવામાં આવે પછી તરત) અને હંમેશાં ત્રણ દિવસની અંદર ડિલીટ કરવામાં આવશે.<br/><br/>જો તમે સંમત થવા અને ચાલુ રાખવા માંગતા હો, તો નીચે ટૅપ કરો.`,
+        legalPromptVariantGAdultOrChild: `તમે વયસ્ક છો કે બાળક?`,
+        legalPromptVariantGFindYourParent: `કૃપા કરીને તમારા માતા-પિતા અથવા કાનૂની વાલીને શોધો.`,
+        legalPromptVariantGIAmGuardian: `હું બાળકના વાલી છું.`,
+        legalPromptVariantGCancel: `રદ કરો`,
+        legalPromptVariantGAdult: `વયસ્ક`,
+        legalPromptVariantGChild: `બાળક`,
+    },
+    "hi-IN": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `लेंस का इस्तेमाल करके, आप स्वीकार करते हैं कि आपने Snap की <a href="${0}" target="_blank">गोपनीयता नीति</a> को पढ़ लिया है और आप Snap की <a href="${0}" target="_blank">सेवा शर्तों</a> से सहमत हैं। कुछ लेंस काम करने के लिए आपके चेहरे, हाथों और आवाज़ का इस्तेमाल करते हैं। <a href="${0}" target="_blank">और जानें</a>, और अगर आप सहमत होते हैं और जारी रखना चाहते हैं, तो नीचे टैप करें।`),
+        legalPromptAccept: `मैं सहमत हूं`,
+        legalPromptReject: `खारिज करें`,
+        legalPromptTermsOfService: `सेवा शर्तें`,
+        legalPromptVariantGMessage: `यह फ़ीचर काम करने के लिए कैमरा और माइक्रोफ़ोन द्वारा फ़ेस, हाथों और आवाज़(जों) के बारे में पहचानी गई जानकारी का इस्तेमाल करता है। इस फ़ीचर की मदद से आप सेल्फ़ी और इमेज के ऊपर मज़ेदार और उपयोगी ऑगमेंटेड रिएलिटी इफ़ेक्ट्स डाल सकते हैं। हमारा कैमरा कुछ फ़ीचर्स (जैसे कि, आपके हाथ, आंख और नाक की जगह) का पता लगाने के लिए टेक्नॉलॉजी का इस्तेमाल करता है और उस जानकारी के इस्तेमाल से खुद महसूस की गई इमेज पर फ़ीचर को सटीक जगह पर लाया जाता है। इकठ्ठा की गई किसी भी जानकारी को जल्द से जल्द (आमतौर पर ऐप बंद करते ही) और तीन सालों के अंदर हमेशा के लिए डिलीट कर दिया जाएगा।<br/><br/>अगर आप सहमत हैं और जारी रखना चाहते हैं, तो नीचे टैप करें।`,
+        legalPromptVariantGAdultOrChild: `क्या आप बच्चे हैं या व्यस्क?`,
+        legalPromptVariantGFindYourParent: `प्लीज़ अपने माता-पिता या कानूनी गार्जियन का पता लगाएं।`,
+        legalPromptVariantGIAmGuardian: `मैं बच्चे का गार्जियन हूं`,
+        legalPromptVariantGCancel: `रद्द करें`,
+        legalPromptVariantGAdult: `वयस्क`,
+        legalPromptVariantGChild: `बच्चा`,
+    },
+    "id-ID": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `Dengan menggunakan Lensa, kamu menyatakan bahwa kamu sudah membaca <a href="${0}" target="_blank">Kebijakan Privasi</a> Snap dan menyetujui <a href="${0}" target="_blank">Ketentuan Layanan</a> Snap. Beberapa lensa menggunakan informasi tentang wajah, tangan, dan suaramu agar bisa berfungsi dengan baik. <a href="${0}" target="_blank">Pelajari Selengkapnya</a>, dan silakan ketuk tombol di bawah jika kamu ingin menyetujuinya dan melanjutkan.`),
+        legalPromptAccept: `Saya setuju`,
+        legalPromptReject: `Tutup`,
+        legalPromptTermsOfService: `Ketentuan Layanan`,
+        legalPromptVariantGMessage: `Agar bisa berfungsi, fitur ini menggunakan informasi terkait wajah, tangan, dan suara yang dideteksi oleh kamera serta mikrofon. Dengan fitur ini, efek augmented reality yang menyenangkan dan berguna dapat diterapkan ke selfie dan gambar. Kamera kami menggunakan teknologi untuk menemukan lokasi fitur tertentu (misalnya menemukan bagian tangan, mata, dan hidung), lalu menggunakan informasi tersebut untuk menempatkan fitur secara akurat di gambar yang dideteksi oleh kamera. Informasi apa pun yang dikumpulkan akan segera dihapus (biasanya setelah aplikasi ditutup) dan selalu disimpan tidak lebih dari tiga tahun.<br/><br/>Jika ingin menyetujui dan melanjutkan, ketuk tombol di bawah ini.`,
+        legalPromptVariantGAdultOrChild: `Apakah kamu orang dewasa atau anak-anak?`,
+        legalPromptVariantGFindYourParent: `Panggil orang tua atau wali resmi.`,
+        legalPromptVariantGIAmGuardian: `Saya wali si anak`,
+        legalPromptVariantGCancel: `Batal`,
+        legalPromptVariantGAdult: `Orang Dewasa`,
+        legalPromptVariantGChild: `Anak-Anak`,
+    },
+    "it-IT": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `Usando le Lenti, confermi di aver letto l\'<a href="${0}" target="_blank">Informativa sulla Privacy</a> di Snap Inc. e di accettare i <a href="${0}" target="_blank">Termini di Servizio</a> di Snap Inc. Alcune Lenti utilizzano informazioni sul tuo viso, le tue mani e la tua voce per funzionare. <a href="${0}" target="_blank">Scopri di più</a> e, se sei d\'accordo e vuoi continuare, tocca qui sotto.`),
+        legalPromptAccept: `Accetto`,
+        legalPromptReject: `Ignora`,
+        legalPromptTermsOfService: `Termini di Servizio`,
+        legalPromptVariantGMessage: `Questa funzionalità utilizza le informazioni su viso, mani e voce rilevate dalla fotocamera e dal microfono per funzionare. Ti consente di applicare effetti in realtà aumentata divertenti e utili ai selfie e alle immagini. La nostra Fotocamera sfrutta una tecnologia specifica per individuare certe parti del corpo (ad esempio mani, occhi e naso) e usa questi dati per posizionarle in modo accurato sull\'immagine rilevata. Qualsiasi informazione raccolta viene eliminata appena possibile (di solito poco dopo la chiusura dell\'app) e, in ogni caso, entro 3 anni.<br/><br/>Se sei d\'accordo e vuoi continuare, tocca qui sotto.`,
+        legalPromptVariantGAdultOrChild: `Sei un adulto o un minore?`,
+        legalPromptVariantGFindYourParent: `C\'è bisogno di un genitore o tutore legale.`,
+        legalPromptVariantGIAmGuardian: `Sono il tutore del minore`,
+        legalPromptVariantGCancel: `Annulla`,
+        legalPromptVariantGAdult: `Adulto`,
+        legalPromptVariantGChild: `Minore`,
+    },
+    "ja-JP": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `レンズを使用することにより、Snap社の<a href="${0}" target="_blank">プライバシーポリシー</a>を読み、<a href="${0}" target="_blank">利用規約</a>に同意したことになります。レンズの中には、あなたの顔や手、声の情報を利用するものがあります。<a href="${0}" target="_blank">詳細はこちらからご覧いただき</a>、同意して利用を継続する場合には下をタップしてください。`),
+        legalPromptAccept: `同意します`,
+        legalPromptReject: `閉じる`,
+        legalPromptTermsOfService: `利用規約`,
+        legalPromptVariantGMessage: `この機能はカメラとマイクを使って検知した顔や手、声の情報を利用します。この機能で、自撮りや画像に楽しく便利な拡張現実の効果を適用できます。Snapのカメラは特定の特徴（例えばあなたの手や目、鼻などの位置）をとらえるテクノロジーを使用し、その情報を利用してカメラによって感知した画像に特徴を適用します。収集した情報はいずれもすぐに消去され（通常アプリが閉じられてからすぐ）、3年を超えて保存されることはありません。<br/><br/>同意して続行するには下記をタップしてください。`,
+        legalPromptVariantGAdultOrChild: `大人ですか、子どもですか？`,
+        legalPromptVariantGFindYourParent: `親または保護者を探してください。`,
+        legalPromptVariantGIAmGuardian: `私はその子供の保護者です`,
+        legalPromptVariantGCancel: `キャンセル`,
+        legalPromptVariantGAdult: `大人`,
+        legalPromptVariantGChild: `子ども`,
+    },
+    "kn-IN": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `ಲೆನ್ಸ್‌ಗಳನ್ನು ಬಳಸುವ ಮೂಲಕ, Snap ನ <a href="${0}" target="_blank">ಗೌಪ್ಯತಾ ನೀತಿ</a> ಅನ್ನು ನೀವು ಓದಿದ್ದೀರಿ ಎಂದು ಅಂಗೀಕರಿಸುತ್ತೀರಿ ಮತ್ತು Snap ನ <a href="${0}" target="_blank">ಸೇವೆಯ ನಿಯಮಗಳು</a> ಅನ್ನು ಒಪ್ಪುತ್ತೀರಿ. ಕೆಲವು ಲೆನ್ಸ್‌ಗಳು ಕಾರ್ಯನಿರ್ವಹಿಸಲು ನಿಮ್ಮ ಮುಖ, ಕೈಗಳು ಮತ್ತು ಧ್ವನಿಯ ಮಾಹಿತಿಯನ್ನು ಬಳಸುತ್ತವೆ. <a href="${0}" target="_blank">ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ</a>, ಹಾಗೂ ಒಂದು ವೇಳೆ ನೀವು ಒಪ್ಪಿ ಮುಂದುವರಿಯಲು ಬಯಸಿದರೆ, ಕೆಳಗೆ ಟ್ಯಾಪ್ ಮಾಡಿ.`),
+        legalPromptAccept: `ನಾನು ಒಪ್ಪುತ್ತೇನೆ`,
+        legalPromptReject: `ವಜಾಮಾಡಿ`,
+        legalPromptTermsOfService: `ಸೇವೆಯ ನಿಯಮಗಳು`,
+        legalPromptVariantGMessage: `ಈ ವೈಶಿಷ್ಟ್ಯವು ಕಾರ್ಯನಿರ್ವಹಿಸಲು ಕ್ಯಾಮರಾ ಮತ್ತು ಮೈಕ್ರೊಫೋನ್‌ನಿಂದ ಪತ್ತೆಯಾದ ಮುಖ(ಗಳು), ಕೈಗಳು ಮತ್ತು ಧ್ವನಿ(ಗಳು) ಕುರಿತು ಮಾಹಿತಿಯನ್ನು ಬಳಸುತ್ತದೆ. ಈ ವೈಶಿಷ್ಟ್ಯದೊಂದಿಗೆ, ನೀವು ಸೆಲ್ಫಿಗಳು ಮತ್ತು ಚಿತ್ರಗಳ ಮೇಲೆ ವಿನೋದ ಮತ್ತು ಉಪಯುಕ್ತ ಆಗ್ಮೆಂಟೆಡ್‌ ರಿಯಾಲಿಟಿ ಪರಿಣಾಮಗಳನ್ನು ಅನ್ವಯಿಸಬಹುದು. ನಮ್ಮ ಕ್ಯಾಮರಾ ಕೆಲವು ವೈಶಿಷ್ಟ್ಯಗಳನ್ನು (ನಿಮ್ಮ ಕೈಗಳು, ಕಣ್ಣುಗಳು ಮತ್ತು ಮೂಗು ಎಲ್ಲಿದೆ ಎಂದು) ಪತ್ತೆಹಚ್ಚಲು ತಂತ್ರಜ್ಞಾನವನ್ನು ಬಳಸುತ್ತದೆ ಮತ್ತು ಕ್ಯಾಮರಾದಿಂದ ಗ್ರಹಿಸಲ್ಪಟ್ಟ ಚಿತ್ರದೊಂದಿಗೆ ವೈಶಿಷ್ಟ್ಯವನ್ನು ನಿಖರವಾಗಿ ಇರಿಸಲು ಆ ಮಾಹಿತಿಯನ್ನು ಬಳಸುತ್ತದೆ. ಸಂಗ್ರಹಿಸಿದ ಯಾವುದೇ ಮಾಹಿತಿಯನ್ನು ಸಾಧ್ಯವಾದಷ್ಟು ಬೇಗ ಅಳಿಸಲಾಗುತ್ತದೆ (ಸಾಮಾನ್ಯವಾಗಿ ಆ್ಯಪ್‌ ಅನ್ನು ಮುಚ್ಚಿದ ನಂತರ) ಮತ್ತು ಎಂದಿಗೂ ಮೂರು ವರ್ಷಗಳ ನಂತರ ಇರಿಸಿಕೊಳ್ಳಲಾಗುವುದಿಲ್ಲ. <br/><br/> ನೀವು ಒಪ್ಪಿಕೊಳ್ಳಲು ಮತ್ತು ಮುಂದುವರಿಸಲು ಬಯಸಿದರೆ, ಕೆಳಗೆ ಟ್ಯಾಪ್ ಮಾಡಿ.`,
+        legalPromptVariantGAdultOrChild: `ನೀವು ವಯಸ್ಕರೇ ಅಥವಾ ಮಗುವೇ?`,
+        legalPromptVariantGFindYourParent: `ದಯವಿಟ್ಟು ನಿಮ್ಮ ಪೋಷಕರು ಅಥವಾ ಕಾನೂನು ಪಾಲಕರನ್ನು ಹುಡುಕಿ.`,
+        legalPromptVariantGIAmGuardian: `ನಾನು ಮಗುವಿನ ಪೋಷಕ`,
+        legalPromptVariantGCancel: `ರದ್ದುಮಾಡಿ`,
+        legalPromptVariantGAdult: `ವಯಸ್ಕ`,
+        legalPromptVariantGChild: `ಮಗು`,
+    },
+    "ko-KR": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `렌즈를 사용하면 Snap의 <a href="${0}" target="_blank">개인정보 보호정책</a>을 읽고 Snap의 <a href="${0}" target="_blank">이용 약관</a>에 동의하는 것으로 간주됩니다. 일부 렌즈는 회원님의 얼굴, 손 및 목소리 정보를 사용합니다. <a href="${0}" target="_blank">자세히 알아보고</a>, 동의 및 계속하려면 아래를 누르세요.`),
+        legalPromptAccept: `동의함`,
+        legalPromptReject: `취소`,
+        legalPromptTermsOfService: `이용 약관`,
+        legalPromptVariantGMessage: `이 기능은 카메라와 마이크가 감지한 얼굴, 손, 음성에 대한 정보를 사용하여 작동합니다. 이 기능을 사용하면 셀카 및 이미지에 재미있고 유용한 증강 현실 효과를 적용할 수 있습니다. Snapchat 카메라는 특정 특징(예: 손, 눈 및 코의 위치)을 찾아내는 기술을 사용하며, 해당 정보를 바탕으로 카메라가 감지한 이미지에서 특징의 위치를 정확하게 파악합니다. 수집된 모든 정보는 가능한 한 빨리(일반적으로 앱 종료 직후) 삭제되며, 항상 3년 이내에 삭제됩니다.<br/><br/>동의하고 계속하려면 아래를 누르세요.`,
+        legalPromptVariantGAdultOrChild: `성인인가요, 아동인가요?`,
+        legalPromptVariantGFindYourParent: `부모님 또는 법적 보호자와 함께 진행하세요.`,
+        legalPromptVariantGIAmGuardian: `아동의 보호자입니다`,
+        legalPromptVariantGCancel: `취소`,
+        legalPromptVariantGAdult: `성인`,
+        legalPromptVariantGChild: `아동`,
+    },
+    "ml-IN": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `ലെൻസുകൾ ഉപയോഗിക്കുന്നതിലൂടെ നിങ്ങൾ Snap-ന്റെ <a href="${0}" target="_blank">സ്വകാര്യതാ നയം</a> വായിച്ചുവെന്ന് സമ്മതിക്കുകയും Snap-ന്റെ <a href="${0}" target="_blank">സേവന നിബന്ധനകൾ</a> അംഗീകരിക്കുകയും ചെയ്യുന്നു. പ്രവർത്തിക്കുന്നതിന് ചില ലെൻസുകൾ നിങ്ങളുടെ മുഖം, കൈകൾ, ശബ്ദം എന്നിവയേക്കുറിച്ചുള്ള വിവരങ്ങൾ ഉപയോഗിക്കുന്നു. <a href="${0}" target="_blank">കൂടുതലറിയുക</a>, അംഗീകരിച്ച് തുടരണമെങ്കിൽ ചുവടെ ടാപ്പ് ചെയ്യുക.`),
+        legalPromptAccept: `ഞാൻ അംഗീകരിക്കുന്നു`,
+        legalPromptReject: `ഡിസ്‌മിസ് ചെയ്യുക`,
+        legalPromptTermsOfService: `സേവന വ്യവസ്ഥകൾ`,
+        legalPromptVariantGMessage: `ഈ ആപ്പ് അതിന്റെ പ്രവർത്തനത്തിന്, ക്യാമറയും മൈക്രോഫോണും കണ്ടെത്തുന്ന മുഖം(ങ്ങൾ), കൈകളും ശബ്ദവും(ങ്ങളും) എന്നിവയുമായി ബന്ധപ്പെട്ട വിവരങ്ങൾ ഉപയോഗിക്കുന്നു. ഈ ഫീച്ചർ ഉപയോഗിച്ച് നിങ്ങളുടെ സെൽഫികൾക്കും ചിത്രങ്ങൾക്കും മുകളിൽ, ഉപയോഗപ്രദമായ ഓഗ്‌മെന്റഡ് റിയാലിറ്റി ഇഫക്റ്റുകൾ നൽകാനാകും. ഞങ്ങളുടെ ക്യാമറ ചില ഫീച്ചറുകൾ ലൊക്കേറ്റ് ചെയ്യാൻ (ഉദാഹരണത്തിന് നിങ്ങളുടെ കൈകൾ, കണ്ണുകൾ, മൂക്ക് എന്നിവ എവിടെയാണ്) സാങ്കേതികവിദ്യ ഉപയോഗിക്കുന്നു, ക്യാമറ സെൻസ് ചെയ്ത ചിത്രത്തിൽ ഈ ഫീച്ചർ കൃത്യമായി പൊസിഷൻ ചെയ്യാൻ ഈ വിവരങ്ങൾ ഉപയോഗിക്കുകയും ചെയ്യുന്നു. ശേഖരിക്കുന്ന എല്ലാ വിവരങ്ങളും എത്രയും വേഗവും (സാധാരണയായി ആപ്പ് അടച്ചാൽ ഉടൻ) മൂന്ന് വർഷത്തിനുള്ളിലും (എല്ലായ്‌പ്പോഴും) ഇല്ലാതാക്കുന്നു.<br/><br/>അംഗീകരിച്ച് തുടരണമെന്നുണ്ടെങ്കിൽ ചുവടെ ടാപ്പ് ചെയ്യുക.`,
+        legalPromptVariantGAdultOrChild: `നിങ്ങൾ ഒരു കുട്ടിയാണോ അതോ മുതിർന്ന വ്യക്തിയാണോ?`,
+        legalPromptVariantGFindYourParent: `നിങ്ങളുടെ രക്ഷിതാവിനെയോ നിയമപരമായ രക്ഷിതാവിനെയോ കണ്ടെത്തുക.`,
+        legalPromptVariantGIAmGuardian: `ഞാൻ കുട്ടിയുടെ നിയമപരമായ രക്ഷിതാവാണ്`,
+        legalPromptVariantGCancel: `റദ്ദാക്കുക`,
+        legalPromptVariantGAdult: `മുതിർന്നവ്യക്തി`,
+        legalPromptVariantGChild: `കുട്ടി`,
+    },
+    "mr-IN": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `लेन्सेस वापरून, तुम्ही मान्य करता की तुम्ही Snap चे <a href="${0}" target="_blank">गोपनीयता धोरण</a> वाचले आहे आणि Snap च्या <a href="${0}" target="_blank">सेवा अटींना</a> सहमती देता. काही लेन्सेस कार्य करण्यासाठी तुमचा चेहरा, हात आणि आवाज याविषयी माहिती वापरतात. <a href="${0}" target="_blank">अधिक जाणून घ्या</a> आणि तुम्हाला सहमती देऊन चालू ठेवायचे असल्यास खाली टॅप करा.`),
+        legalPromptAccept: `मी सहमत आहे`,
+        legalPromptReject: `दुर्लक्ष करा`,
+        legalPromptTermsOfService: `सेवा अटी`,
+        legalPromptVariantGMessage: `हे वैशिष्ट्य कार्य करण्यासाठी कॅमेरा आणि मायक्रोफोनद्वारे तपासलेली चेहरा(चेहरे), हात आणि आवाजाची माहिती वापरते. या वैशिष्ट्यासह, तुम्ही सेल्फी आणि इमेजवर मजेशीर आणि उपयोगी ऑग्मेंटेड रिॲलिटी प्रभाव लागू करू शकता. आमचा कॅमेरा काही फीचर्स (जसे की तुमचे हात, डोळे आणि नाक कुठे आहेत) शोधण्यासाठी तंत्रज्ञान वापरतो आणि कॅमेऱ्याद्वारे ओळखलेल्या इमेजसह फीचर नेमक्या ठिकाणी दाखवण्यासाठी ती माहिती वापरतो. गोळा केलेली कोणतीही माहिती शक्य तितक्या लवकर (सहसा ॲप बंद केल्यावर लगेच) आणि नेहमी तीन वर्षांच्या आत हटवली जाईल.<br/><br/>तुम्हाला सहमती देऊन पुढे चालू ठेवायचे असेल तर, खाली टॅप करा.`,
+        legalPromptVariantGAdultOrChild: `तुम्ही प्रौढ आहात किंवा लहान मूल आहात?`,
+        legalPromptVariantGFindYourParent: `कृपया तुमचे आईवडील किंवा कायदेशीर पालकांना शोधा.`,
+        legalPromptVariantGIAmGuardian: `मी मुलाचा पालक आहे`,
+        legalPromptVariantGCancel: `रद्द करा`,
+        legalPromptVariantGAdult: `प्रौढ`,
+        legalPromptVariantGChild: `मूल`,
+    },
+    "ms-MY": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `Dengan menggunakan Lensa, anda mengakui membaca <a href="${0}" target="_blank">Dasar Privasi</a> Snap dan bersetuju dengan <a href="${0}" target="_blank">Syarat Perkhidmatan</a> Snap. Sesetengan lensa menggunakan maklumat tentang muka anda, tangan dan suara untuk berfungsi. <a href="${0}" target="_blank">Ketahui Lebih Lanjut</a>, dan jika anda mahu bersetuju dan teruskan, ketik di bawah.`),
+        legalPromptAccept: `Saya Setuju`,
+        legalPromptReject: `Abaikan`,
+        legalPromptTermsOfService: `Syarat Perkhidmatan`,
+        legalPromptVariantGMessage: `Ciri ini menggunakan maklumat muka, tangan dan suara yang dikesan oleh kamera dan mikrofon untuk berfungsi. Dengan ciri ini, anda boleh menggunakan kesan realiti tambahan yang menyeronokkan dan berguna selain swafoto dan gambar. Kamera kami menggunakan teknologi untuk mengesan ciri tertentu (seperti di mana tangan, mata dan hidung anda) dan menggunakan maklumat tersebut untuk meletakkan ciri dengan tepat dengan imej yang dikesan oleh kamera. Sebarang maklumat yang dikumpul akan dipadamkan dengan segera (kebiasaannya sejurus aplikasi ditutup) dan sentiasa dalam tempoh tidak lebih daripada tiga tahun.<br/><br/>Jika anda bersetuju dan ingin teruskan, ketik dibawah.`,
+        legalPromptVariantGAdultOrChild: `Adakah anda seorang dewasa atau kanak-kanak?`,
+        legalPromptVariantGFindYourParent: `Sila cari ibu bapa atau penjaga anda yang sah.`,
+        legalPromptVariantGIAmGuardian: `Saya penjaga kanak-kanak ini`,
+        legalPromptVariantGCancel: `Batal`,
+        legalPromptVariantGAdult: `Dewasa`,
+        legalPromptVariantGChild: `Kanak-kanak`,
+    },
+    "nb-NO": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `Ved å ta i bruk Linser bekrefter du at du har lest <a href="${0}" target="_blank">personvernbetingelsene</a> og at du godtar <a href="${0}" target="_blank">tjenestevilkårene</a> til Snap. Noen Linser bruker informasjon om ansiktet ditt, hendene dine og stemmen din for å fungere. <a href="${0}" target="_blank">Finn ut mer</a>. Hvis du godtar dette og vil gå videre, klikker du nedenfor.`),
+        legalPromptAccept: `Jeg godtar`,
+        legalPromptReject: `Avvis`,
+        legalPromptTermsOfService: `Tjenestevilkår`,
+        legalPromptVariantGMessage: `Denne funksjonen bruker informasjon om ansikter, hender og stemmer som oppdages av kameraet og mikrofonen, for å fungere. Med denne funksjonen kan du legge til artige og nyttige effekter i utvidet virkelighet på selfier og bilder. Kameraet vårt bruker teknologi for å oppdage visse trekk (som hvor hendene, øynene og nesen er), og bruker denne informasjonen til å plassere funksjonen oppå bildet som kameraet har fanget opp. All informasjon som samles inn, blir slettet så snart som mulig (vanligvis rett etter at appen lukkes) og alltid innen maks tre år.<br/><br/>Hvis du ønsker å godta og fortsette, trykker du nedenfor.`,
+        legalPromptVariantGAdultOrChild: `Er du en voksen eller et barn?`,
+        legalPromptVariantGFindYourParent: `Finn en forelder eller foresatt.`,
+        legalPromptVariantGIAmGuardian: `Jeg er barnets foresatt`,
+        legalPromptVariantGCancel: `Avbryt`,
+        legalPromptVariantGAdult: `Voksen`,
+        legalPromptVariantGChild: `Barn`,
+    },
+    "nl-NL": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `Door Lenzen te gebruiken, geef je aan dat je het <a href="${0}" target="_blank">Privacybeleid</a> van Snap hebt gelezen en dat je akkoord gaat met de <a href="${0}" target="_blank">Servicevoorwaarden</a> van Snap. Sommige Lenzen gebruiken informatie over je gezicht, handen en stem om te functioneren. Lees <a href="${0}" target="_blank">meer informatie</a> en tik hieronder als je akkoord gaat en wilt doorgaan.`),
+        legalPromptAccept: `Ik ga akkoord`,
+        legalPromptReject: `Annuleren`,
+        legalPromptTermsOfService: `Servicevoorwaarden`,
+        legalPromptVariantGMessage: `Voor de werking van deze functie wordt informatie over gezicht(en), handen en stem(men) gebruikt die door camera en microfoon worden gedetecteerd. Je kunt met deze functie leuke en nuttige augmented reality-effecten op selfies en afbeeldingen plaatsen. Onze camera gebruikt technologie om de locatie te bepalen van bepaalde kenmerken (bijvoorbeeld waar je handen, ogen en neus zich bevinden) en gebruikt die informatie om het kenmerk nauwkeurig te positioneren in de afbeelding die is gedetecteerd met de camera. De verzamelde informatie wordt zo snel mogelijk verwijderd (gewoonlijk kort nadat de app is gesloten) en altijd binnen een periode van maximaal drie jaar.<br/><br/>Tik hieronder als je hiermee akkoord gaat en wilt doorgaan.`,
+        legalPromptVariantGAdultOrChild: `Ben je een volwassene of een kind?`,
+        legalPromptVariantGFindYourParent: `Vraag toestemming aan een ouder of wettelijke voogd.`,
+        legalPromptVariantGIAmGuardian: `Ik ben de voogd van het kind`,
+        legalPromptVariantGCancel: `Annuleren`,
+        legalPromptVariantGAdult: `Volwassene`,
+        legalPromptVariantGChild: `Kind`,
+    },
+    pa: {
+        legalPromptMessage: legalPromptMessage((tag) => tag `ਲੈਂਜ਼ਾਂ ਦੀ ਵਰਤੋਂ ਕਰਕੇ, ਤੁਸੀਂ ਇਸ ਗੱਲ ਨੂੰ ਸਵੀਕਾਰ ਕਰਦੇ ਹੋ ਕਿ ਤੁਸੀਂ Snap ਦੀ <a href="${0}" target="_blank">ਪਰਦੇਦਾਰੀ ਬਾਰੇ ਨੀਤੀ</a> ਨੂੰ ਪੜ੍ਹ ਲਿਆ ਹੈ ਅਤੇ ਤੁਸੀਂ Snap ਦੀਆਂ <a href="${0}" target="_blank">ਸੇਵਾ ਦੀਆਂ ਮਦਾਂ</a> ਨਾਲ ਸਹਿਮਤ ਹੋ। ਕੁਝ ਲੈਂਜ਼ ਕੰਮ ਕਰਨ ਲਈ ਤੁਹਾਡੇ ਚਿਹਰੇ, ਹੱਥਾਂ ਅਤੇ ਆਵਾਜ਼ ਨਾਲ ਸੰਬੰਧਿਤ ਜਾਣਕਾਰੀ ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ। <a href="${0}" target="_blank">ਹੋਰ ਜਾਣੋ</a> ਅਤੇ ਜੇਕਰ ਤੁਸੀਂ ਸਹਿਮਤ ਹੋ ਅਤੇ ਜਾਰੀ ਰੱਖਣਾ ਚਾਹੁੰਦੇ ਹੋ, ਤਾਂ ਹੇਠਾਂ ਟੈਪ ਕਰੋ।`),
+        legalPromptAccept: `ਮੈਂ ਸਹਿਮਤ ਹਾਂ`,
+        legalPromptReject: `ਖ਼ਾਰਜ ਕਰੋ`,
+        legalPromptTermsOfService: `ਸੇਵਾ ਦੀਆਂ ਮਦਾਂ`,
+        legalPromptVariantGMessage: `ਕੰਮ ਕਰਨ ਲਈ ਇਹ ਸੁਵਿਧਾ ਕੈਮਰੇ ਅਤੇ ਮਾਈਕ੍ਰੋਫ਼ੋਨ ਨਾਲ ਚਿਹਰੇ(ਚਿਹਰਿਆਂ), ਹੱਥਾਂ ਅਤੇ ਆਵਾਜ਼(ਆਵਾਜ਼ਾਂ) ਬਾਰੇ ਲਈ ਗਈ ਜਾਣਕਾਰੀ ਦੀ ਵਰਤੋਂ ਕਰਦੀ ਹੈ। ਇਸ ਸੁਵਿਧਾ ਨਾਲ, ਤੁਸੀਂ ਸੈਲਫ਼ੀਆਂ ਅਤੇ ਚਿੱਤਰਾਂ ਉੱਪਰ ਮਜ਼ੇਦਾਰ ਅਤੇ ਲਾਭਕਾਰੀ ਵਧਾਈ ਗਈ ਹਕੀਕਤ ਵਾਲੇ ਪ੍ਰਭਾਵ ਲਾਗੂ ਕਰ ਸਕਦੇ ਹੋ। ਸਾਡਾ ਕੈਮਰਾ ਕੁਝ ਸੁਵਿਧਾਵਾਂ (ਜਿਵੇਂ ਕਿ ਤੁਹਾਡੇ ਹੱਥ, ਅੱਖਾਂ ਅਤੇ ਨੱਕ ਕਿੱਥੇ ਹਨ) ਦਾ ਪਤਾ ਲਗਾਉਣ ਲਈ ਤਕਨਾਲੋਜੀ ਦੀ ਵਰਤੋਂ ਕਰਦਾ ਹੈ ਅਤੇ ਕੈਮਰੇ ਦੁਆਰਾ ਸੰਵੇਦਿਤ ਚਿੱਤਰ ਦੇ ਨਾਲ ਸੁਵਿਧਾ ਦੀ ਸਹੀ ਸਥਿਤੀ ਲਈ ਉਸ ਜਾਣਕਾਰੀ ਦੀ ਵਰਤੋਂ ਕਰਦਾ ਹੈ। ਇਕੱਠੀ ਕੀਤੀ ਜਾਣ ਵਾਲੀ ਕੋਈ ਵੀ ਜਾਣਕਾਰੀ ਜਿੰਨੀ ਜਲਦੀ ਹੋ ਸਕੇ ਮਿਟਾ ਦਿੱਤੀ ਜਾਵੇਗੀ (ਆਮ ਤੌਰ \'ਤੇ ਐਪ ਬੰਦ ਹੋਣ ਤੋਂ ਤੁਰੰਤ ਬਾਅਦ) ਅਤੇ ਹਮੇਸ਼ਾ ਤਿੰਨ ਸਾਲਾਂ ਦੇ ਅੰਦਰ।<br/><br/>ਜੇਕਰ ਤੁਸੀਂ ਸਹਿਮਤ ਹੋਣਾ ਅਤੇ ਜਾਰੀ ਰੱਖਣਾ ਚਾਹੁੰਦੇ ਹੋ, ਤਾਂ ਹੇਠਾਂ ਟੈਪ ਕਰੋ।`,
+        legalPromptVariantGAdultOrChild: `ਕੀ ਤੁਸੀਂ ਬਾਲਗ ਹੋ ਜਾਂ ਬੱਚਾ ਹੋ?`,
+        legalPromptVariantGFindYourParent: `ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੇ ਮਾਤਾ-ਪਿਤਾ ਜਾਂ ਕਾਨੂੰਨੀ ਸਰਪ੍ਰਸਤ ਲੱਭੋ।`,
+        legalPromptVariantGIAmGuardian: `ਮੈਂ ਬੱਚੇ ਦਾ ਸਰਪ੍ਰਸਤ ਹਾਂ`,
+        legalPromptVariantGCancel: `ਰੱਦ ਕਰੋ`,
+        legalPromptVariantGAdult: `ਬਾਲਗ`,
+        legalPromptVariantGChild: `ਬੱਚਾ`,
+    },
+    "pl-PL": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `Korzystając z nakładek, potwierdzasz zapoznanie się z <a href="${0}" target="_blank">Polityką prywatności</a> i akceptujesz <a href="${0}" target="_blank">Regulamin usługi</a>. Niektóre nakładki wykorzystują informacje o Twojej twarzy, dłoniach i głosie, aby działać poprawnie. <a href="${0}" target="_blank">Dowiedz się więcej</a>, a jeśli chcesz wyrazić zgodę i kontynuować, stuknij poniżej.`),
+        legalPromptAccept: `Zgadzam się`,
+        legalPromptReject: `Odrzuć`,
+        legalPromptTermsOfService: `Regulamin`,
+        legalPromptVariantGMessage: `Ta funkcja wykorzystuje do działania informacje o twarzy (twarzach), rękach i głosie (głosach) wykrytych przez kamerę i mikrofon. Dzięki niej możesz nakładać na selfie i zdjęcia zabawne i przydatne efekty rozszerzonej rzeczywistości. Nasza kamera wykorzystuje technologię do lokalizowania określonych cech (takich jak miejsce, w którym znajdują się Twoje ręce, oczy i nos) i wykorzystuje te informacje do dokładnego umiejscowienia danej cechy na obrazie wykrywanym przez kamerę. Wszelkie zebrane informacje zostaną usunięte możliwie jak najszybciej (zazwyczaj wkrótce po zamknięciu aplikacji) i zawsze nie później niż w ciągu trzech lat.<br/><br/>Jeśli chcesz wyrazić zgodę i kontynuować, stuknij poniżej.`,
+        legalPromptVariantGAdultOrChild: `Jesteś osobą dorosłą czy dzieckiem?`,
+        legalPromptVariantGFindYourParent: `Zwróć się do swojego rodzica lub opiekuna prawnego.`,
+        legalPromptVariantGIAmGuardian: `Jestem opiekunem prawnym dziecka`,
+        legalPromptVariantGCancel: `Anuluj`,
+        legalPromptVariantGAdult: `Osoba dorosła`,
+        legalPromptVariantGChild: `Dziecko`,
+    },
+    "pt-BR": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `Ao usar as Lentes, você reconhece ter lido a <a href="${0}" target="_blank">Política de Privacidade</a> da Snap e concorda com os <a href="${0}" target="_blank">Termos de Serviço</a> da Snap. Algumas Lentes usam informações sobre seu rosto, mãos e voz para funcionar. <a href="${0}" target="_blank">Saiba mais</a> e, se quiser concordar e continuar, toque abaixo.`),
+        legalPromptAccept: `Eu concordo`,
+        legalPromptReject: `Recusar`,
+        legalPromptTermsOfService: `Termos de Serviço`,
+        legalPromptVariantGMessage: `Este recurso usa informações sobre rosto(s), mãos e voz(es) detectados pela câmera e pelo microfone para funcionar. Com este recurso, você pode aplicar efeitos divertidos e úteis de realidade aumentada em selfies e imagens. Nossa câmera usa tecnologia para localizar certos recursos (como onde estão suas mãos, olhos e nariz) e usa esta informação para posicionar corretamente o recurso na imagem detectada pela câmera. Qualquer informação coletada será apagada o mais rápido possível (geralmente logo depois que o aplicativo é fechado) e sempre antes de três dias.<br/><br/>Se você quiser concordar e continuar, toque abaixo.`,
+        legalPromptVariantGAdultOrChild: `Você é adulto ou criança?`,
+        legalPromptVariantGFindYourParent: `Localize seu pai/mãe ou representante legal.`,
+        legalPromptVariantGIAmGuardian: `Sou representante da criança`,
+        legalPromptVariantGCancel: `Cancelar`,
+        legalPromptVariantGAdult: `Adulto`,
+        legalPromptVariantGChild: `Criança`,
+    },
+    "pt-PT": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `Ao utilizares as Lentes, confirmas a leitura da <a href="${0}" target="_blank">Política de Privacidade</a> da Snap e aceitas as <a href="${0}" target="_blank">Condições de Serviço</a> da Snap. Algumas Lentes utilizam informações sobre a tua cara, mãos e voz para funcionarem. <a href="${0}" target="_blank">Obtém mais informações</a> e, se quiseres aceitar e continuar, toca abaixo.`),
+        legalPromptAccept: `Aceito`,
+        legalPromptReject: `Fechar`,
+        legalPromptTermsOfService: `Condições de Serviço`,
+        legalPromptVariantGMessage: `Esta funcionalidade utiliza informações relacionadas com caras, mãos e vozes detetadas pela câmara e o microfone para poder funcionar. Com esta funcionalidade, pode aplicar efeitos de realidade aumentada de forma divertida e útil a selfies e imagens. A nossa câmara recorre a tecnologia para localizar determinadas caraterísticas (como a localização das tuas mãos, dos olhos e do nariz) e utiliza essas informações para posicionar de forma precisa a caraterística na imagem captada pela câmara. Quaisquer informações recolhidas serão eliminadas logo que possível (normalmente pouco depois de a app ser fechada) e nunca após um máximo de três anos. <br/><br/>Se quiser aceitar e continuar, toque abaixo.`,
+        legalPromptVariantGAdultOrChild: `És um adulto ou uma criança?`,
+        legalPromptVariantGFindYourParent: `Recorre ao teus pais ou ao(à) teu(tua) representante legal`,
+        legalPromptVariantGIAmGuardian: `Sou o(a) representante da criança`,
+        legalPromptVariantGCancel: `Cancelar`,
+        legalPromptVariantGAdult: `Adulto`,
+        legalPromptVariantGChild: `Criança`,
+    },
+    "ro-RO": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `Dacă folosești lentile, confirmi că ai citit <a href="${0}" target="_blank">Politica de confidențialitate</a> Snap și că ești de acord cu <a href="${0}" target="_blank">Condițiile de utilizare</a> Snap. Unele lentile folosesc informații despre fața ta, despre mâinile tale și despre vocea ta pentru a funcționa. <a href="${0}" target="_blank">Află mai multe</a>, iar dacă dorești să accepți și să continui, atinge dedesubt.`),
+        legalPromptAccept: `Accept`,
+        legalPromptReject: `Respinge`,
+        legalPromptTermsOfService: `Termeni de utilizare`,
+        legalPromptVariantGMessage: `Pentru a rula, funcția utilizează informații despre chipul tău, mâinile tale și vocea ta detectate de cameră și microfon. Cu ajutorul acestei funcții, poți să aplici efecte de realitate augumentată amuzante și utile peste selfie-uri și imagini. Camera noastră folosește tehnologia pentru a găsi anumite caracteristici (de exemplu, unde se află mâinile, ochii și nasul tău) și utilizează aceste informații pentru a poziționa corect funcția în imaginea detectată de cameră. Toate informațiile colectate sunt șterse cât mai curând posibil (de obicei, la scurt timp după ce se închide aplicația), limita maximă fiind de trei ani.<br/><br/>Dacă ești de acord și dorești să continui, atinge mai jos.`,
+        legalPromptVariantGAdultOrChild: `Ești adult sau copil?`,
+        legalPromptVariantGFindYourParent: `Este necesară prezența părintelui sau a tutorelui.`,
+        legalPromptVariantGIAmGuardian: `Sunt tutorele copilului`,
+        legalPromptVariantGCancel: `Anulează`,
+        legalPromptVariantGAdult: `Adult`,
+        legalPromptVariantGChild: `Copil`,
+    },
+    "ru-RU": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `Используя линзы, вы подтверждаете, что прочитали <a href="${0}" target="_blank">Политику конфиденциальности</a> Snap и принимаете <a href="${0}" target="_blank">Условия оказания услуг</a>. Для работы некоторых линз необходимы сведения о вашем лице, руках и голосе. <a href="${0}" target="_blank">Подробнее</a>. Если вы согласны продолжать, нажмите ниже.`),
+        legalPromptAccept: `Принимаю`,
+        legalPromptReject: `Закрыть`,
+        legalPromptTermsOfService: `Условия оказания услуг`,
+        legalPromptVariantGMessage: `Для работы этой функции используется регистрируемая камерой и микрофоном информация о лицах, руках и голосах. С её помощью к селфи и изображениям можно применять забавные и полезные эффекты дополненной реальности. Наша камера использует технологию, чтобы определять расположение конкретных элементов (например, ваших рук, глаз и носа), и использует эту информацию для точного наложения функции на изображение, которое уловила камера. Вся полученная информация удаляется в кратчайшие сроки (как правило, вскоре после закрытия приложения), но не позднее, чем через три года.<br/><br/>Если вы согласны и хотите продолжить, нажмите ниже.`,
+        legalPromptVariantGAdultOrChild: `Вы ― взрослый или ребёнок?`,
+        legalPromptVariantGFindYourParent: `Позовите родителя или законного опекуна.`,
+        legalPromptVariantGIAmGuardian: `Я ― законный опекун ребёнка`,
+        legalPromptVariantGCancel: `Отмена`,
+        legalPromptVariantGAdult: `Взрослый`,
+        legalPromptVariantGChild: `Ребёнок`,
+    },
+    "sv-SE": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `Genom att använda linser intygar du att du har läst Snaps <a href="${0}" target="_blank">sekretessvillkor</a> och godkänner Snaps <a href="${0}" target="_blank">användarvillkor</a>. Vissa linser använder information om ditt ansikte, dina händer och din röst för att fungera. <a href="${0}" target="_blank">Läs mer</a> och om du vill godkänna och fortsätta så trycker du nedan.`),
+        legalPromptAccept: `Jag godkänner`,
+        legalPromptReject: `Avvisa`,
+        legalPromptTermsOfService: `Användarvillkor`,
+        legalPromptVariantGMessage: `För att fungera använder funktionen information om ansikte(n), händer och röst(er) som upptäckts av kameran och mikrofonen. Funktionen gör att du kan tillämpa roliga och användbara AR-effekter över selfies och bilder. Med hjälp av teknik kan vår kamera lokalisera vissa särdrag (som dina händer, ögon och din näsa). Informationen används sedan för att korrekt positionera funktionen över bilden som kameran fångat upp. All information som samlats in raderas så snart som möjligt (vanligtvis inom kort efter att appen stängts) och alltid inom tre år.<br/><br/>Tryck nedan om du vill godkänna och fortsätta.`,
+        legalPromptVariantGAdultOrChild: `Är du vuxen eller ett barn?`,
+        legalPromptVariantGFindYourParent: `Leta upp din förälder eller vårdnadshavare`,
+        legalPromptVariantGIAmGuardian: `Jag är barnets vårdnadshavare`,
+        legalPromptVariantGCancel: `Avbryt`,
+        legalPromptVariantGAdult: `Vuxen`,
+        legalPromptVariantGChild: `Barn`,
+    },
+    "ta-IN": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `லென்ஸஸைப் பயன்படுத்துவதன் மூலம், நீங்கள் Snap இன் <a href="${0}" target="_blank">தனியுரிமைக் கொள்கையைப்</a> படித்துவிட்டதாக ஒப்புக்கொள்கிறீர்கள் மற்றும் Snap இன் <a href="${0}" target="_blank">சேவை நிபந்தனைகளை</a> ஏற்றுக்கொள்கிறீர்கள். சில லென்ஸஸ் வேலை செய்வதற்கு உங்கள் முகம், கைகள் மற்றும் குரலைப் பற்றிய தகவல்களைப் பயன்படுத்துகின்றன. <a href="${0}" target="_blank">மேலும் அறிக</a>, நீங்கள் ஒப்புக்கொண்டு தொடர விரும்பினால், கீழே தட்டுங்கள்.`),
+        legalPromptAccept: `ஏற்கிறேன்`,
+        legalPromptReject: `நிராகரி`,
+        legalPromptTermsOfService: `சேவை நிபந்தனைகள்`,
+        legalPromptVariantGMessage: `இந்த அம்சம் வேலை செய்ய கேமரா மற்றும் மைக்ரோஃபோனால் கண்டறியப்படும் முகம் (முகங்கள்), கைகள் மற்றும் குரல்(கள்) பற்றிய தகவல்களைப் பயன்படுத்துகிறது. இந்த அம்சத்தின் மூலம் நீங்கள் செல்ஃபிக்கள் மற்றும் படங்களில் வேடிக்கையான மற்றும் பயனுள்ள இணைப்பு நிஜமாக்கத்தைப் பயன்படுத்தலாம். எங்கள் கேமரா சில அம்சங்களைக் கண்டறிய (எடுத்துக்காட்டாக, உங்கள் கைகள், கண்கள், மூக்கு போன்றவை எங்கு உள்ளன என்று கண்டறிய) தொழில்நுட்பத்தைப் பயன்படுத்துகிறது, கேமராவால் கண்காணிக்கப்படும் படத்தில் அம்சத்தைத் துல்லியமாக வைக்க அந்தத் தகவல்களைப் பயன்படுத்துகிறது. திரட்டப்படும் எந்தத் தகவலும் இயன்றவரை விரைவாக நீக்கப்படும் (பொதுவாக, செயலி மூடப்பட்டவுடன்). மேலும், இது எப்போதும் மூன்று ஆண்டுகளுக்கு மேல் சேமிக்கப்படுவதில்லை.<br/><br/>நீங்கள் ஏற்றுக்கொண்டு தொடர விரும்பினால், கீழே தட்டுங்கள்.`,
+        legalPromptVariantGAdultOrChild: `நீங்கள் வயதுவந்தவரா அல்லது சிறுவரா?`,
+        legalPromptVariantGFindYourParent: `உங்கள் பெற்றோர் அல்லது சட்டப்பூர்வப் பாதுகாவலரைக் கண்டறியுங்கள்.`,
+        legalPromptVariantGIAmGuardian: `நான் குழந்தையின் பாதுகாவலர்`,
+        legalPromptVariantGCancel: `ரத்துசெய்`,
+        legalPromptVariantGAdult: `வயதுவந்தவர்`,
+        legalPromptVariantGChild: `சிறுவர்`,
+    },
+    "te-IN": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `లెన్సెస్‌ను ఉపయోగించడం ద్వారా, మీరు Snap యొక్క <a href="${0}" target="_blank">గోప్యతా విధానాన్ని</a> చదివినట్లు అంగీకరిస్తున్నారు మరియు Snap <a href="${0}" target="_blank">సేవా నిబంధనలకు</a> అంగీకరిస్తున్నారు. కొన్ని లెన్సెస్ పని చేయడానికి మీ ముఖం, చేతులు మరియు వాయిస్ గురించిన సమాచారాన్ని ఉపయోగిస్తాయి. <a href="${0}" target="_blank">మరింత తెలుసుకోండి</a>, మీరు అంగీకరించి కొనసాగించాలనుకుంటే, దిగువన ట్యాప్ చేయండి.`),
+        legalPromptAccept: `నేను అంగీకరిస్తున్నాను`,
+        legalPromptReject: `డిస్మిస్ చేయండి`,
+        legalPromptTermsOfService: `సేవా నిబంధనలు`,
+        legalPromptVariantGMessage: `ఈ ఫీచర్ పని చేయడానికి కెమెరా మరియు మైక్రోఫోన్ ద్వారా గుర్తించబడిన ముఖం(లు), చేతులు మరియు వాయిస్(ల) గురించిన సమాచారాన్ని ఉపయోగిస్తుంది. ఈ ఫీచర్‌తో, మీరు సెల్ఫీలు, చిత్రాల పైన ఆహ్లాదకరమైన మరియు ఉపయోగకరమైన ఆగ్మెంటేడ్ రియాలిటీ ప్రభావాలను వర్తింపజేసుకోవచ్చు. మా కెమెరా నిర్దిష్ట ఫీచర్‌లను (మీ చేతులు, కళ్ళు మరియు ముక్కు ఎక్కడ ఉన్నాయో) గుర్తించడానికి సాంకేతికతను ఉపయోగిస్తుంది మరియు కెమెరా ద్వారా గ్రహించబడిన చిత్రంతో ఫీచర్‌ను ఖచ్చితంగా ఉంచడానికి ఆ సమాచారాన్ని ఉపయోగిస్తుంది. సేకరించిన ఏదైనా సమాచారం వీలైనంత త్వరగా (సాధారణంగా యాప్ మూసివేయబడిన వెంటనే) మరియు ఎల్లప్పుడూ మూడు సంవత్సరాలలోపు డిలీట్ చేయబడుతుంది.<br/><br/>మీరు అంగీకరించి కొనసాగించాలనుకుంటే, దిగువున ట్యాప్ చేయండి.`,
+        legalPromptVariantGAdultOrChild: `మీరు పెద్దవారా లేదా చిన్నవారా?`,
+        legalPromptVariantGFindYourParent: `దయచేసి మీ తల్లిదండ్రులు లేదా చట్టపరమైన సంరక్షకుడిని కనుగొనండి.`,
+        legalPromptVariantGIAmGuardian: `నేను పిల్లవాడి సంరక్షకుడిని`,
+        legalPromptVariantGCancel: `రద్దు`,
+        legalPromptVariantGAdult: `వయోజనుడు`,
+        legalPromptVariantGChild: `పిల్లవాడు`,
+    },
+    "th-TH": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `การใช้เลนส์แสดงว่าคุณยอมรับว่าคุณได้อ่าน <a href="${0}" target="_blank">นโยบายความเป็นส่วนตัว</a> ของ Snap และตกลงยอมรับ <a href="${0}" target="_blank">ข้อกำหนดการให้บริการ</a> ของ Snap เลนส์บางรายการต้องใช้ข้อมูลเกี่ยวกับใบหน้า มือ และเสียงของคุณจึงจะสามารถทำงานได้ <a href="${0}" target="_blank">เรียนรู้เพิ่มเติม</a> และหากคุณต้องการตกลงยอมรับและดำเนินการต่อ ให้แตะที่ด้านล่าง`),
+        legalPromptAccept: `ฉันตกลงยอมรับ`,
+        legalPromptReject: `เพิกเฉย`,
+        legalPromptTermsOfService: `ข้อกำหนดการให้บริการ`,
+        legalPromptVariantGMessage: `ฟีเจอร์นี้ใช้ข้อมูลเกี่ยวกับใบหน้า มือ และเสียงซึ่งตรวจจับโดยใช้กล้องและไมโครโฟน เมื่อใช้ฟีเจอร์นี้ คุณสามารถใช้เอฟเฟกต์ความเป็นจริงเสริม (AR) ที่ทั้งสนุกและมีประโยชน์เมื่อใช้กับภาพเซลฟีและรูปภาพ กล้องของเราใช้เทคโนโลยีเพื่อระบุตำแหน่งของฟีเจอร์บางอย่าง (เช่น ตำแหน่งของมือ ตา และจมูกของคุณ) และใช้ข้อมูลดังกล่าวเพื่อให้วางตำแหน่งฟีเจอร์ได้อย่างถูกต้องลงบนรูปภาพที่ตรวจจับโดยใช้กล้อง เราจะลบข้อมูลต่าง ๆ ที่รวบรวมไว้โดยเร็วที่สุดเท่าที่จะทำได้ (ส่วนใหญ่จะเป็นช่วงหลังจากที่ปิดแอปแล้วไม่นาน) และจะไม่เกินกว่าระยะเวลาสามปี<br/><br/>หากคุณต้องการตกลงยอมรับและดำเนินการต่อ ให้แตะที่ด้านล่างนี้`,
+        legalPromptVariantGAdultOrChild: `คุณเป็นผู้ใหญ่หรือเด็ก?`,
+        legalPromptVariantGFindYourParent: `โปรดค้นหาพ่อแม่หรือผู้ปกครองตามกฎหมายของคุณ`,
+        legalPromptVariantGIAmGuardian: `ฉันเป็นผู้ปกครองของเด็ก`,
+        legalPromptVariantGCancel: `ยกเลิก`,
+        legalPromptVariantGAdult: `ผู้ใหญ่`,
+        legalPromptVariantGChild: `เด็ก`,
+    },
+    "tr-TR": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `Lensleri kullanarak, Snap\'in <a href="${0}" target="_blank">Gizlilik Politikası</a> içeriğini okuduğunu doğrulamış ve Snap\'in <a href="${0}" target="_blank">Kullanım Şartları</a> içeriğini kabul etmiş olursun. Bazı lenslerin çalışması için yüzün, ellerin ve sesinle ilgili bilgiler kullanılır. <a href="${0}" target="_blank">Daha Fazlasını Öğren</a> ve kabul edip devam etmek istiyorsan aşağıya dokun.`),
+        legalPromptAccept: `Kabul Ediyorum`,
+        legalPromptReject: `Yoksay`,
+        legalPromptTermsOfService: `Kullanım Şartları`,
+        legalPromptVariantGMessage: `Bu özelliğin çalışması için kamera ve mikrofon tarafından algılanan yüzler, eller ve sesler hakkındaki bilgiler kullanılır. Bu özellik sayesinde selfie\'lerin ve görüntülerin üzerine eğlenceli ve kullanışlı artırılmış gerçeklik efektleri uygulayabilirsin. Kameramız, belirli özellikleri (ellerinin, gözlerinin ve burnunun nerede olduğu gibi) bulmak için teknolojiden yararlanır ve bu bilgileri, kamera tarafından algılanan görüntüyle özelliği doğru şekilde konumlandırmak için kullanır. Toplanan tüm bilgiler mümkün olan en kısa sürede (genellikle uygulama kapatıldıktan kısa süre sonra) ve mutlaka en fazla üç yıl içinde silinir.<br/><br/>Kabul edip devam etmek istiyorsan aşağıya dokun.`,
+        legalPromptVariantGAdultOrChild: `Yetişkin mi yoksa çocuk musun?`,
+        legalPromptVariantGFindYourParent: `Lütfen ebeveynini veya yasal vasini bul.`,
+        legalPromptVariantGIAmGuardian: `Ben çocuğun vasisiyim`,
+        legalPromptVariantGCancel: `İptal Et`,
+        legalPromptVariantGAdult: `Yetişkin`,
+        legalPromptVariantGChild: `Çocuk`,
+    },
+    "ur-PK": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `لینزز استعمال کرنے کا مطلب ہے کہ آپ Snap کی <a href="${0}" target="_blank">پرائیویسی پالیسی</a> پڑھنے کا اعتراف کرتے ہیں اور Snap کی <a href="${0}" target="_blank">سروس کی شرائط</a> سے متفق ہیں۔ کچھ لینزز کام کرنے کیلئے آپ کے چہرے، ہاتھوں اور آواز کے بارے میں معلومات استعمال کرتے ہیں۔ <a href="${0}" target="_blank">مزید جانیں</a> اور اگر آپ متفق ہیں اور جاری رکھنا چاہتے ہیں تو ذیل میں ٹیپ کریں۔`),
+        legalPromptAccept: `میں متفق ہوں`,
+        legalPromptReject: `برخاست کریں`,
+        legalPromptTermsOfService: `سروس کی شرائط`,
+        legalPromptVariantGMessage: `یہ خصوصیت کام کرنے کیلئے چہرہ (چہرے)، ہاتھوں اور آوازوں کے بارے میں معلومات استعمال کرتی ہے جن کا پتا کیمرے اور مائیکرو فون کے ذریعے لگایا جاتا ہے۔ اس خصوصیت کے ساتھ، آپ سیلفیز اور تصاویر پر دلچسپ اور کارآمد افزودہ حقیقت کے ایفیکٹس کا اطلاق کر سکتے ہیں۔ ہمارا کیمرا مخصوص خصوصیات کے لوکیشن کا تعین کرنے (جیسے کہ آپ کے ہاتھ، آنکھیں اور ناک کہاں ہیں) کیلئے ٹیکنالوجی استعمال کرتا ہے اور ان معلومات کی مدد سے خصوصیت کو کیمرا کی جانب سے محسوس کی گئی تصویر کے ساتھ درست طور پر پوزیشن کرتا ہے۔ اکٹھی کی گئی کوئی بھی معلومات جلد از جلد ڈیلیٹ ہو جائیں گی (عموماً ایپ بند ہونے کے فوراً بعد) نیز ہر صورت میں تین سال کے اندر ڈیلیٹ ہو جائیں گی۔<br/><br/>اگر آپ اتفاق کرنا اور جاری رکھنا چاہتے ہیں تو ذیل میں ٹیپ کریں۔`,
+        legalPromptVariantGAdultOrChild: `کیا آپ ایک بالغ یا بچہ ہیں؟`,
+        legalPromptVariantGFindYourParent: `براہ کرم اپنے والد/والدہ یا قانونی سرپرست کو تلاش کریں۔`,
+        legalPromptVariantGIAmGuardian: `میں بچہ کا/کی سرپرست ہوں`,
+        legalPromptVariantGCancel: `منسوخ کریں`,
+        legalPromptVariantGAdult: `بالغ`,
+        legalPromptVariantGChild: `بچہ`,
+    },
+    "vi-VN": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `Bằng cách sử dụng Ống Kính, bạn xác nhận đã đọc <a href="${0}" target="_blank">Chính Sách Bảo Mật</a> của Snap và đồng ý với <a href="${0}" target="_blank">Điều Khoản Dịch Vụ</a>của Snap. Một số ống kính sử dụng thông tin về khuôn mặt, bàn tay và giọng nói của bạn để hoạt động. Bạn có thể <a href="${0}" target="_blank">Tìm Hiểu Thêm</a>, còn nếu bạn muốn đồng ý và tiếp tục, hãy chạm vào bên dưới.`),
+        legalPromptAccept: `Tôi Đồng Ý`,
+        legalPromptReject: `Bỏ Qua`,
+        legalPromptTermsOfService: `Điều Khoản Dịch Vụ`,
+        legalPromptVariantGMessage: `Tính năng này hoạt động dựa trên việc sử dụng thông tin về khuôn mặt, bàn tay và giọng nói mà camera và micrô phát hiện được. Bạn có thể sử dụng tính năng này để áp dụng các hiệu ứng thực tế tăng cường thú vị và hữu ích lên ảnh tự sướng và hình ảnh. Camera của chúng tôi áp dụng công nghệ để tìm những đặc điểm nhất định (chẳng hạn như vị trí bàn tay, mắt và mũi của bạn), rồi sử dụng thông tin đó để xác định chính xác vị trí của đặc điểm trong hình ảnh mà camera chụp được. Chúng tôi sẽ xóa mọi thông tin được thu thập sớm nhất có thể (thường ngay sau khi bạn đóng ứng dụng) và luôn xóa trong khoảng thời gian không quá ba năm.<br/><br/>Nếu bạn muốn đồng ý và tiếp tục, hãy chạm vào bên dưới.`,
+        legalPromptVariantGAdultOrChild: `Bạn là người lớn hay trẻ em?`,
+        legalPromptVariantGFindYourParent: `Vui lòng tìm phụ huynh hoặc người giám hộ hợp pháp.`,
+        legalPromptVariantGIAmGuardian: `Tôi là người giám hộ của trẻ`,
+        legalPromptVariantGCancel: `Hủy Bỏ`,
+        legalPromptVariantGAdult: `Người lớn`,
+        legalPromptVariantGChild: `Trẻ em`,
+    },
+    "zh-Hans": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `使用特效镜头，即表示你确认已经阅读 Snap 的<a href="${0}" target="_blank">隐私政策</a>，并同意 Snap 的<a href="${0}" target="_blank">服务条款</a>。一些特效镜头需要使用有关你的脸、手和声音的信息才能正常工作。<a href="${0}" target="_blank">了解更多</a>，如果你同意并继续，请点击下面。`),
+        legalPromptAccept: `我同意`,
+        legalPromptReject: `忽略`,
+        legalPromptTermsOfService: `服务条款`,
+        legalPromptVariantGMessage: `此功能会使用相机和麦克风检测到的面部、手部和声音信息。使用此功能，你可以对自拍照和图片应用有趣和有用的增强现实效果。我们的相机会使用技术，定位某些特征信息（例如：你的手、眼睛和鼻子的位置），并使用这些信息和相机感知到的图像来准确定位这些特征。收集的所有信息都将尽快删除（通常在应用关闭后不久），最久不会超过三年。<br/><br/>如果你同意并想继续，请点击下方。`,
+        legalPromptVariantGAdultOrChild: `你是成人还是儿童？`,
+        legalPromptVariantGFindYourParent: `请通知你的家长或法定监护人。`,
+        legalPromptVariantGIAmGuardian: `我是这名儿童的监护人`,
+        legalPromptVariantGCancel: `取消`,
+        legalPromptVariantGAdult: `成人`,
+        legalPromptVariantGChild: `儿童`,
+    },
+    "zh-Hant": {
+        legalPromptMessage: legalPromptMessage((tag) => tag `使用特效鏡頭，代表你已閱讀 Snap 的<a href="${0}" target="_blank">隱私政策</a>並同意 Snap 的<a href="${0}" target="_blank">服務條款</a>。有些特效鏡頭需使用你的臉部、手部和聲音資訊才能運作。<a href="${0}" target="_blank">請按這裡以了解更多資訊</a>，如果你同意並想繼續使用功能，請點按下方。`),
+        legalPromptAccept: `我同意`,
+        legalPromptReject: `略過`,
+        legalPromptTermsOfService: `服務條款`,
+        legalPromptVariantGMessage: `這個功能會使用相機和麥克風偵測到的臉部、手部和聲音資訊來進行運作。使用這個功能，你可以針對自拍照和圖片套用好玩和有作用的擴增實境效果。我們的相機會使用科技技術，定位某些特徵資訊 (例如：你的手、眼睛和鼻子的位置)，並使用這些資訊和相機感應到的影像來正確地定位這些特徵。所收集的資訊將盡快刪除 (通常會在應用程式關閉後)，最久不會超過三年。<br/><br/>如果你同意並想繼續使用此功能，請點按下方。`,
+        legalPromptVariantGAdultOrChild: `你是成人或兒童？`,
+        legalPromptVariantGFindYourParent: `請通知你的父母或法定監護人。`,
+        legalPromptVariantGIAmGuardian: `我是這個兒童的監護人`,
+        legalPromptVariantGCancel: `取消`,
+        legalPromptVariantGAdult: `成人`,
+        legalPromptVariantGChild: `兒童`,
+    },
 };
 /**
  * --- end of string definitions ---
  */
-const allStrings = {
-    en_US,
+/**
+ * Language codes with a mapping to a corresponding default locale.
+ */
+const languageDefaultLocale = {
+    bn: "bn-BD",
+    da: "da-DK",
+    de: "de-DE",
+    el: "el-GR",
+    en: "en-US",
+    es: "es-ES",
+    fi: "fi-FI",
+    fil: "fil-PH",
+    fr: "fr-FR",
+    gu: "gu-IN",
+    hi: "hi-IN",
+    id: "id-ID",
+    it: "it-IT",
+    ja: "ja-JP",
+    kn: "kn-IN",
+    ko: "ko-KR",
+    ml: "ml-IN",
+    mr: "mr-IN",
+    ms: "ms-MY",
+    nb: "nb-NO",
+    nl: "nl-NL",
+    pl: "pl-PL",
+    pt: "pt-BR",
+    ro: "ro-RO",
+    ru: "ru-RU",
+    sv: "sv-SE",
+    ta: "ta-IN",
+    te: "te-IN",
+    th: "th-TH",
+    tr: "tr-TR",
+    ur: "ur-PK",
+    vi: "vi-VN",
+    zh: "zh-Hans",
 };
-const localizedStrings = (_a = allStrings[cameraKitUserAgent.locale]) !== null && _a !== void 0 ? _a : en_US;
+/**
+ * Some locale synonyms that require mapping.
+ */
+const synonyms = {
+    "zh-TW": "zh-Hant",
+    "zh-CN": "zh-Hans",
+};
+// Default locale in case a user locale cannot be found.
+const defaultLocale = "en-US";
+/**
+ * Gets browser locale and maps it to the closest locale that has a translation.
+ */
+function getSupportedLocale() {
+    const lang = navigator.languages[0];
+    // Safety: "in" operator ensures that lang is in allStrings, i.e. is of Locale type.
+    if (lang in allStrings)
+        return lang;
+    const synonym = synonyms[lang];
+    if (synonym && synonym in allStrings)
+        return synonym;
+    const langCode = lang.split("-")[0];
+    // Safety: "in" operator ensures that langCode is in allStrings, i.e. is of Locale type.
+    if (langCode && langCode in allStrings)
+        return langCode;
+    // Safety: "in" operator ensures that langCode is in languageDefaultLocale.
+    if (langCode && langCode in languageDefaultLocale)
+        return languageDefaultLocale[langCode];
+    return defaultLocale;
+}
+/**
+ * The most closest locale with a translation.
+ */
+const supportedLocale = getSupportedLocale();
+/**
+ * Returns localized string by its ID.
+ */
 function localizedString(stringId) {
-    return localizedStrings[stringId];
+    return allStrings[supportedLocale][stringId];
 }
 //# sourceMappingURL=localization.js.map
+;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/common/dialog.js
+
+const stylesCss = `
+dialog {
+    display: flex;
+    flex-direction: column;
+
+    background-color: #fff;
+    border: #efefef 1px solid;
+    border-radius: 20px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+
+    max-width: 80vw;
+    max-height: 80vh;
+    padding: 44px 0 24px 0;
+
+    font-size: 16px;
+    font-family: sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 24px;
+}
+
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.title {
+    color: #16191C;
+    padding: 0 32px;
+    text-align: center;
+}
+
+.body {
+    color: #656D78;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 16px;
+    max-width: 350px;
+    padding: 0 32px;
+    overflow: auto;
+}
+
+a {
+    color: rgb(78, 171, 248);
+}
+
+button {
+    cursor: pointer;
+}
+
+button.dismiss {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    padding: 0;
+    height: 36px;
+    width: 36px;
+    margin: 0;
+    background-color: transparent;
+    border: 0;
+}
+
+button.dismiss svg {
+    fill: black;
+}
+
+.buttons {
+    margin-top: 8px;
+    padding: 0 32px;
+}
+
+.buttons button {
+    background: #0FADFF;
+    border: 0;
+    border-radius: 25px;
+
+    width: 100%;
+    padding: 1rem;
+    margin-top: 8px;
+
+    color: #fff;
+    font-weight: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    font-style: inherit;
+}
+
+.buttons button.secondary {
+    background-color: transparent;
+    color: #656D78;
+}
+
+// Proper filling of X button in High Contrast themes
+@media (forced-colors: active) {
+    button.dismiss svg {
+        fill: ButtonText;
+    }
+}
+`;
+function getDismissButtonHtml(button) {
+    /* eslint-disable max-len */
+    return `
+        <button class="dismiss" autofocus data-key=${button.key}>
+            <svg xmlns="http://www.w3.org/2000/svg" role="img" width="36" height="36" viewBox="0 0 36 36">
+                <title>${button.text}</title>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12.6763 11.2621C12.2858 10.8716 11.6527 10.8716 11.2621 11.2621C10.8716 11.6527 10.8716 12.2858 11.2621 12.6763L16.5858 18L11.2621 23.3237C10.8716 23.7142 10.8716 24.3474 11.2621 24.7379C11.6527 25.1284 12.2858 25.1284 12.6764 24.7379L18 19.4142L23.3237 24.7379C23.7142 25.1284 24.3474 25.1284 24.7379 24.7379C25.1284 24.3474 25.1284 23.7142 24.7379 23.3237L19.4142 18L24.7379 12.6763C25.1284 12.2858 25.1284 11.6527 24.7379 11.2621C24.3474 10.8716 23.7142 10.8716 23.3237 11.2621L18 16.5858L12.6763 11.2621Z" fill-opacity="0.4"/>
+            </svg>
+        </button>`;
+    /* eslint-enable */
+}
+function getTitleHtml(title) {
+    return title ? `<div class="title" role="heading">${title}</div>` : "";
+}
+function getBodyHtml(body) {
+    return body ? `<div class="body">${body}</div>` : "";
+}
+function getButtonHtml(button) {
+    return `<button data-key="${button.key}"${button.isSecondary ? ` class="secondary"` : ""}>${button.text}</button>`;
+}
+function getButtonsHtml(buttons) {
+    if (buttons.length === 0)
+        return "";
+    return `
+        <div class="buttons">
+        ${buttons.map((b) => getButtonHtml(b)).join("\n")}
+        </div>`;
+}
+function setAttribute(element, attr, value) {
+    if (value)
+        element.setAttribute(attr, value);
+}
+function showDialog(options) {
+    return new Promise((res) => {
+        var _a, _b, _c;
+        const element = document.createElement("div");
+        setAttribute(element, "data-testid", options.dataTestId);
+        const shadow = element.attachShadow({ mode: "open" });
+        const style = document.createElement("style");
+        shadow.appendChild(style);
+        style.innerHTML = stylesCss;
+        const prompt = document.createElement("dialog");
+        setAttribute(prompt, "aria-label", (_a = options.titleText) !== null && _a !== void 0 ? _a : options.title);
+        setAttribute(prompt, "lang", options.lang);
+        setAttribute(prompt, "dir", "auto");
+        shadow.appendChild(prompt);
+        prompt.innerHTML = `
+            ${getDismissButtonHtml({ key: "dismiss", text: (_b = options.dismissButtonText) !== null && _b !== void 0 ? _b : "Dismiss" })}
+            ${getTitleHtml(options.title)}
+            ${getBodyHtml(options.body)}
+            ${getButtonsHtml((_c = options.buttons) !== null && _c !== void 0 ? _c : [])}
+        `;
+        const buttonsElements = Array.from(prompt.querySelectorAll("button"));
+        merge(...buttonsElements.map((b) => fromEvent(b, "click").pipe(map(() => b.dataset.key))), fromEvent(prompt, "cancel").pipe(map(() => "dismiss")))
+            .pipe(take(1))
+            .subscribe({ next: res, complete: () => element.remove() });
+        options.container.appendChild(element);
+        prompt.showModal();
+    });
+}
+//# sourceMappingURL=dialog.js.map
+;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/common/hash.js
+/**
+ * Fast, simple hashing function from github.com/bryc
+ * https://github.com/bryc/code/blob/master/jshash/experimental/cyrb53.js
+ */
+const computeHash = (str) => {
+    let h1 = 0xdeadbeef;
+    let h2 = 0x41c6ce57;
+    for (let i = 0; i < str.length; i++) {
+        const ch = str.charCodeAt(i);
+        h1 = Math.imul(h1 ^ ch, 2654435761);
+        h2 = Math.imul(h2 ^ ch, 1597334677);
+    }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(16);
+};
+//# sourceMappingURL=hash.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/legal/legalPrompt.js
 
 
 
-function createCameraKitLegalPrompt(privacyPolicyUrl, termsOfServiceUrl, learnMoreUrl) {
-    const element = document.createElement("div");
-    element.id = "tos-popup";
-    const shadow = element.attachShadow({ mode: "open" });
-    const prompt = document.createElement("div");
-    prompt.id = "content";
-    /* eslint-disable max-len */
-    prompt.innerHTML = `
-        <button id="reject">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <title>${localizedString("legalPromptReject")}</title>
-            <path
-                d="M 14.356 12.5 L 17.803 15.947 C 18.316 16.46 18.316 17.291 17.803 17.803 C 17.291 18.316 16.46 18.316 15.947 17.803 L 12.5 14.356 L 9.053 17.803 C 8.54 18.316 7.709 18.316 7.197 17.803 C 6.684 17.291 6.684 16.46 7.197 15.947 L 10.644 12.5 L 7.197 9.053 C 6.684 8.54 6.684 7.709 7.197 7.197 C 7.709 6.684 8.54 6.684 9.053 7.197 L 12.5 10.644 L 15.947 7.197 C 16.46 6.684 17.291 6.684 17.803 7.197 C 18.316 7.709 18.316 8.54 17.803 9.053 Z"
-                fill="#a0a0a0"
-            />
-        </svg>
-        </button>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-            <g>
-                <path
-                    d="M 30.898 23.477 C 30.77 23.045 30.148 22.743 30.148 22.743 C 30.092 22.71 30.039 22.684 29.994 22.663 C 28.962 22.161 28.048 21.561 27.277 20.876 C 26.659 20.325 26.128 19.719 25.701 19.074 C 25.182 18.288 24.937 17.632 24.831 17.275 C 24.773 17.043 24.782 16.951 24.831 16.832 C 24.873 16.731 24.99 16.632 25.049 16.588 C 25.397 16.341 25.96 15.976 26.303 15.75 C 26.602 15.556 26.859 15.389 27.009 15.283 C 27.494 14.944 27.824 14.596 28.02 14.223 C 28.275 13.74 28.303 13.208 28.107 12.684 C 27.84 11.978 27.184 11.556 26.35 11.556 C 26.163 11.556 25.974 11.577 25.785 11.62 C 25.308 11.723 24.852 11.894 24.474 12.042 C 24.446 12.054 24.416 12.032 24.418 12.002 C 24.457 11.059 24.502 9.79 24.399 8.584 C 24.306 7.493 24.082 6.576 23.717 5.776 C 23.351 4.972 22.874 4.376 22.5 3.947 C 22.143 3.536 21.519 2.936 20.577 2.394 C 19.251 1.631 17.742 1.244 16.09 1.244 C 14.443 1.244 12.934 1.631 11.605 2.394 C 10.607 2.966 9.97 3.614 9.678 3.947 C 9.304 4.376 8.827 4.972 8.46 5.776 C 8.096 6.576 7.872 7.496 7.778 8.584 C 7.673 9.792 7.715 10.96 7.76 11.999 C 7.762 12.03 7.732 12.051 7.704 12.039 C 7.325 11.892 6.87 11.72 6.393 11.617 C 6.204 11.575 6.012 11.554 5.828 11.554 C 4.994 11.554 4.337 11.976 4.071 12.682 C 3.875 13.205 3.903 13.738 4.157 14.221 C 4.354 14.594 4.685 14.941 5.169 15.281 C 5.318 15.387 5.575 15.553 5.874 15.748 C 6.211 15.968 6.758 16.323 7.108 16.569 C 7.152 16.599 7.299 16.712 7.346 16.827 C 7.397 16.951 7.404 17.045 7.341 17.289 C 7.234 17.648 6.989 18.298 6.479 19.069 C 6.052 19.715 5.522 20.32 4.902 20.871 C 4.132 21.556 3.218 22.157 2.186 22.658 C 2.137 22.682 2.078 22.712 2.015 22.748 C 2.015 22.748 1.399 23.064 1.282 23.472 C 1.109 24.075 1.567 24.64 2.036 24.943 C 2.8 25.438 3.732 25.703 4.272 25.849 C 4.421 25.889 4.559 25.926 4.683 25.964 C 4.76 25.989 4.956 26.062 5.038 26.17 C 5.143 26.306 5.155 26.473 5.192 26.66 C 5.253 26.977 5.384 27.373 5.774 27.643 C 6.204 27.941 6.75 27.962 7.444 27.99 C 8.168 28.018 9.07 28.054 10.1 28.394 C 10.579 28.553 11.011 28.818 11.514 29.128 C 12.56 29.773 13.864 30.578 16.09 30.578 C 18.318 30.578 19.629 29.768 20.685 29.119 C 21.183 28.811 21.612 28.546 22.08 28.391 C 23.11 28.049 24.011 28.014 24.735 27.988 C 25.427 27.962 25.974 27.941 26.404 27.641 C 26.822 27.35 26.943 26.918 26.997 26.59 C 27.027 26.428 27.046 26.285 27.14 26.165 C 27.219 26.064 27.399 25.992 27.483 25.964 C 27.609 25.924 27.751 25.886 27.906 25.844 C 28.445 25.698 29.123 25.527 29.945 25.061 C 30.933 24.511 31.001 23.82 30.898 23.477"
-                    fill="#ffffff"
-                    stroke="#00000000"
-                    stroke-width="1"
-                />
-            </g>
-            <g>
-                <path
-                    d="M 29.56 24.299 C 28.21 25.045 27.312 24.965 26.613 25.414 C 26.021 25.795 26.37 26.618 25.939 26.915 C 25.411 27.279 23.843 26.889 21.822 27.555 C 20.155 28.107 19.09 29.689 16.089 29.689 C 13.081 29.689 12.047 28.114 10.357 27.555 C 8.335 26.889 6.768 27.279 6.24 26.915 C 5.809 26.618 6.16 25.795 5.566 25.414 C 4.869 24.965 3.969 25.045 2.619 24.299 C 1.758 23.825 2.247 23.53 2.532 23.393 C 7.426 21.027 8.204 17.372 8.24 17.096 C 8.282 16.769 8.328 16.509 7.966 16.175 C 7.615 15.853 6.066 14.895 5.636 14.593 C 4.925 14.098 4.612 13.6 4.841 12.99 C 5 12.569 5.395 12.41 5.812 12.41 C 5.94 12.41 6.071 12.426 6.2 12.452 C 6.981 12.623 7.741 13.013 8.179 13.118 C 8.24 13.132 8.293 13.139 8.34 13.139 C 8.574 13.139 8.656 13.022 8.639 12.754 C 8.59 11.9 8.469 10.234 8.602 8.677 C 8.787 6.536 9.477 5.476 10.298 4.538 C 10.693 4.087 12.543 2.133 16.082 2.133 C 19.633 2.133 21.474 4.087 21.867 4.538 C 22.688 5.478 23.378 6.536 23.563 8.677 C 23.698 10.234 23.581 11.898 23.525 12.754 C 23.506 13.034 23.591 13.139 23.825 13.139 C 23.872 13.139 23.925 13.132 23.986 13.118 C 24.426 13.013 25.184 12.62 25.965 12.452 C 26.091 12.424 26.222 12.41 26.353 12.41 C 26.77 12.41 27.165 12.569 27.324 12.99 C 27.555 13.6 27.242 14.095 26.529 14.593 C 26.098 14.892 24.547 15.85 24.199 16.175 C 23.836 16.509 23.883 16.767 23.925 17.096 C 23.96 17.372 24.739 21.025 29.633 23.393 C 29.932 23.53 30.421 23.825 29.56 24.299 M 31.709 23.12 C 31.489 22.523 31.07 22.203 30.594 21.939 C 30.505 21.887 30.423 21.845 30.355 21.812 C 30.212 21.74 30.067 21.667 29.922 21.592 C 28.435 20.806 27.275 19.812 26.469 18.635 C 26.198 18.238 26.008 17.88 25.877 17.587 C 25.809 17.391 25.811 17.281 25.86 17.178 C 25.898 17.101 25.996 17.019 26.05 16.979 C 26.305 16.811 26.57 16.64 26.748 16.525 C 27.067 16.319 27.317 16.156 27.481 16.043 C 28.093 15.617 28.519 15.164 28.786 14.658 C 29.163 13.945 29.21 13.131 28.919 12.363 C 28.517 11.301 27.509 10.642 26.291 10.642 C 26.038 10.642 25.783 10.67 25.527 10.726 C 25.46 10.74 25.394 10.756 25.328 10.773 C 25.34 10.05 25.324 9.278 25.258 8.524 C 25.029 5.872 24.099 4.48 23.129 3.371 C 22.724 2.908 22.021 2.232 20.964 1.628 C 19.491 0.781 17.821 0.356 16 0.356 C 14.185 0.356 12.518 0.781 11.044 1.623 C 9.983 2.229 9.278 2.905 8.875 3.366 C 7.905 4.475 6.975 5.867 6.746 8.52 C 6.68 9.273 6.663 10.045 6.675 10.768 C 6.61 10.752 6.544 10.735 6.476 10.721 C 6.221 10.665 5.965 10.637 5.713 10.637 C 4.494 10.637 3.487 11.297 3.084 12.359 C 2.794 13.126 2.841 13.94 3.218 14.654 C 3.485 15.159 3.911 15.613 4.522 16.039 C 4.686 16.153 4.937 16.314 5.256 16.52 C 5.427 16.633 5.68 16.794 5.926 16.958 C 5.963 16.984 6.097 17.082 6.141 17.173 C 6.193 17.279 6.195 17.393 6.118 17.604 C 5.987 17.891 5.801 18.242 5.535 18.631 C 4.747 19.782 3.62 20.757 2.18 21.536 C 1.419 21.941 0.54 22.355 0.29 23.118 C 0.039 23.88 0.203 24.582 0.842 25.239 C 1.053 25.466 1.318 25.665 1.653 25.85 C 2.438 26.283 3.105 26.496 3.63 26.641 C 3.721 26.669 3.937 26.736 4.031 26.819 C 4.265 27.022 4.23 27.331 4.543 27.78 C 4.731 28.061 4.949 28.25 5.129 28.374 C 5.783 28.826 6.516 28.854 7.294 28.881 C 7.997 28.908 8.793 28.94 9.702 29.24 C 10.079 29.364 10.47 29.605 10.922 29.883 C 12.011 30.552 13.501 31.467 15.998 31.467 C 18.493 31.467 19.995 30.547 21.091 29.876 C 21.541 29.6 21.93 29.361 22.297 29.242 C 23.206 28.942 24.003 28.912 24.706 28.884 C 25.483 28.854 26.216 28.826 26.87 28.377 C 27.076 28.234 27.331 28.004 27.535 27.651 C 27.76 27.272 27.753 27.003 27.964 26.821 C 28.05 26.746 28.238 26.68 28.338 26.65 C 28.868 26.505 29.545 26.292 30.344 25.852 C 30.697 25.658 30.976 25.443 31.192 25.2 C 31.194 25.197 31.196 25.192 31.199 25.19 C 31.805 24.544 31.955 23.787 31.709 23.12"
-                    fill="#000000"
-                    stroke="#00000000"
-                    stroke-width="1"
-                />
-            </g>
-        </svg>
-        <p>${localizedString("legalPromptMessage")({ privacyPolicyUrl, termsOfServiceUrl, learnMoreUrl })}</p>
-        <button id="accept">${localizedString("legalPromptAccept")}</button>
-    `;
-    /* eslint-enable */
-    const style = document.createElement("style");
-    style.innerHTML = `
-        div#content {
-            display: flex;
-            flex-direction: column;
 
-            position: fixed;
-            top: 25%;
-            left: 50%;
-            transform: translate(-50%, -25%);
 
-            background-color: #fff;
-            border: #efefef 1px solid;
-            border-radius: 1.5rem;
-            box-shadow: rgba(0, 0, 0, 0.25) 0 1.5rem 2rem;
 
-            min-width: 16rem;
-            max-width: 20rem;
-            padding: 2rem;
-
-            text-align: center;
-            font-family: sans-serif;
-        }
-
-        div > svg {
-            height: 3rem;
-        }
-
-        div > p {
-            margin: 1rem 0;
-        }
-
-        div > p > a {
-            color: rgb(78, 171, 248);
-        }
-
-        div > button {
-            cursor: pointer;
-        }
-
-        div > button#reject {
-            align-self: flex-end;
-
-            position: absolute;
-
-            background-color: transparent;
-            border: 0;
-
-            width: 3rem;
-            margin: -1.5rem;
-        }
-
-        div > button#accept {
-            align-self: center;
-
-            background-color: rgb(78, 171, 248);
-            border: 0;
-            border-radius: 1.5rem;
-
-            width: 80%;
-            padding: 1rem;
-            margin-top: 1rem;
-
-            color: #fff;
-            font-size: 1.5rem;
-            font-weight: 700;
-            font-family: inherit;
-        }
-
-        div#overlay {
-            position: fixed;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-    `;
-    const overlay = document.createElement("div");
-    overlay.id = "overlay";
-    shadow.appendChild(overlay);
-    shadow.appendChild(style);
-    shadow.appendChild(prompt);
-    const acceptBtn = prompt.querySelector("#accept");
-    const rejectBtn = prompt.querySelector("#reject");
-    const result = fromEvent(acceptBtn, "click").pipe(map(() => true), mergeWith(fromEvent(rejectBtn, "click").pipe(map(() => false))), take(1));
-    result.subscribe({ complete: element.remove.bind(element) });
-    return { element, result, focus: () => rejectBtn.focus() };
+/* eslint-disable max-len */
+const snapIcon = `
+<svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 32 32" height="48px">
+    <g>
+        <path
+            d="M 30.898 23.477 C 30.77 23.045 30.148 22.743 30.148 22.743 C 30.092 22.71 30.039 22.684 29.994 22.663 C 28.962 22.161 28.048 21.561 27.277 20.876 C 26.659 20.325 26.128 19.719 25.701 19.074 C 25.182 18.288 24.937 17.632 24.831 17.275 C 24.773 17.043 24.782 16.951 24.831 16.832 C 24.873 16.731 24.99 16.632 25.049 16.588 C 25.397 16.341 25.96 15.976 26.303 15.75 C 26.602 15.556 26.859 15.389 27.009 15.283 C 27.494 14.944 27.824 14.596 28.02 14.223 C 28.275 13.74 28.303 13.208 28.107 12.684 C 27.84 11.978 27.184 11.556 26.35 11.556 C 26.163 11.556 25.974 11.577 25.785 11.62 C 25.308 11.723 24.852 11.894 24.474 12.042 C 24.446 12.054 24.416 12.032 24.418 12.002 C 24.457 11.059 24.502 9.79 24.399 8.584 C 24.306 7.493 24.082 6.576 23.717 5.776 C 23.351 4.972 22.874 4.376 22.5 3.947 C 22.143 3.536 21.519 2.936 20.577 2.394 C 19.251 1.631 17.742 1.244 16.09 1.244 C 14.443 1.244 12.934 1.631 11.605 2.394 C 10.607 2.966 9.97 3.614 9.678 3.947 C 9.304 4.376 8.827 4.972 8.46 5.776 C 8.096 6.576 7.872 7.496 7.778 8.584 C 7.673 9.792 7.715 10.96 7.76 11.999 C 7.762 12.03 7.732 12.051 7.704 12.039 C 7.325 11.892 6.87 11.72 6.393 11.617 C 6.204 11.575 6.012 11.554 5.828 11.554 C 4.994 11.554 4.337 11.976 4.071 12.682 C 3.875 13.205 3.903 13.738 4.157 14.221 C 4.354 14.594 4.685 14.941 5.169 15.281 C 5.318 15.387 5.575 15.553 5.874 15.748 C 6.211 15.968 6.758 16.323 7.108 16.569 C 7.152 16.599 7.299 16.712 7.346 16.827 C 7.397 16.951 7.404 17.045 7.341 17.289 C 7.234 17.648 6.989 18.298 6.479 19.069 C 6.052 19.715 5.522 20.32 4.902 20.871 C 4.132 21.556 3.218 22.157 2.186 22.658 C 2.137 22.682 2.078 22.712 2.015 22.748 C 2.015 22.748 1.399 23.064 1.282 23.472 C 1.109 24.075 1.567 24.64 2.036 24.943 C 2.8 25.438 3.732 25.703 4.272 25.849 C 4.421 25.889 4.559 25.926 4.683 25.964 C 4.76 25.989 4.956 26.062 5.038 26.17 C 5.143 26.306 5.155 26.473 5.192 26.66 C 5.253 26.977 5.384 27.373 5.774 27.643 C 6.204 27.941 6.75 27.962 7.444 27.99 C 8.168 28.018 9.07 28.054 10.1 28.394 C 10.579 28.553 11.011 28.818 11.514 29.128 C 12.56 29.773 13.864 30.578 16.09 30.578 C 18.318 30.578 19.629 29.768 20.685 29.119 C 21.183 28.811 21.612 28.546 22.08 28.391 C 23.11 28.049 24.011 28.014 24.735 27.988 C 25.427 27.962 25.974 27.941 26.404 27.641 C 26.822 27.35 26.943 26.918 26.997 26.59 C 27.027 26.428 27.046 26.285 27.14 26.165 C 27.219 26.064 27.399 25.992 27.483 25.964 C 27.609 25.924 27.751 25.886 27.906 25.844 C 28.445 25.698 29.123 25.527 29.945 25.061 C 30.933 24.511 31.001 23.82 30.898 23.477"
+            fill="#ffffff"
+            stroke="#00000000"
+            stroke-width="1"
+        />
+    </g>
+    <g>
+        <path
+            d="M 29.56 24.299 C 28.21 25.045 27.312 24.965 26.613 25.414 C 26.021 25.795 26.37 26.618 25.939 26.915 C 25.411 27.279 23.843 26.889 21.822 27.555 C 20.155 28.107 19.09 29.689 16.089 29.689 C 13.081 29.689 12.047 28.114 10.357 27.555 C 8.335 26.889 6.768 27.279 6.24 26.915 C 5.809 26.618 6.16 25.795 5.566 25.414 C 4.869 24.965 3.969 25.045 2.619 24.299 C 1.758 23.825 2.247 23.53 2.532 23.393 C 7.426 21.027 8.204 17.372 8.24 17.096 C 8.282 16.769 8.328 16.509 7.966 16.175 C 7.615 15.853 6.066 14.895 5.636 14.593 C 4.925 14.098 4.612 13.6 4.841 12.99 C 5 12.569 5.395 12.41 5.812 12.41 C 5.94 12.41 6.071 12.426 6.2 12.452 C 6.981 12.623 7.741 13.013 8.179 13.118 C 8.24 13.132 8.293 13.139 8.34 13.139 C 8.574 13.139 8.656 13.022 8.639 12.754 C 8.59 11.9 8.469 10.234 8.602 8.677 C 8.787 6.536 9.477 5.476 10.298 4.538 C 10.693 4.087 12.543 2.133 16.082 2.133 C 19.633 2.133 21.474 4.087 21.867 4.538 C 22.688 5.478 23.378 6.536 23.563 8.677 C 23.698 10.234 23.581 11.898 23.525 12.754 C 23.506 13.034 23.591 13.139 23.825 13.139 C 23.872 13.139 23.925 13.132 23.986 13.118 C 24.426 13.013 25.184 12.62 25.965 12.452 C 26.091 12.424 26.222 12.41 26.353 12.41 C 26.77 12.41 27.165 12.569 27.324 12.99 C 27.555 13.6 27.242 14.095 26.529 14.593 C 26.098 14.892 24.547 15.85 24.199 16.175 C 23.836 16.509 23.883 16.767 23.925 17.096 C 23.96 17.372 24.739 21.025 29.633 23.393 C 29.932 23.53 30.421 23.825 29.56 24.299 M 31.709 23.12 C 31.489 22.523 31.07 22.203 30.594 21.939 C 30.505 21.887 30.423 21.845 30.355 21.812 C 30.212 21.74 30.067 21.667 29.922 21.592 C 28.435 20.806 27.275 19.812 26.469 18.635 C 26.198 18.238 26.008 17.88 25.877 17.587 C 25.809 17.391 25.811 17.281 25.86 17.178 C 25.898 17.101 25.996 17.019 26.05 16.979 C 26.305 16.811 26.57 16.64 26.748 16.525 C 27.067 16.319 27.317 16.156 27.481 16.043 C 28.093 15.617 28.519 15.164 28.786 14.658 C 29.163 13.945 29.21 13.131 28.919 12.363 C 28.517 11.301 27.509 10.642 26.291 10.642 C 26.038 10.642 25.783 10.67 25.527 10.726 C 25.46 10.74 25.394 10.756 25.328 10.773 C 25.34 10.05 25.324 9.278 25.258 8.524 C 25.029 5.872 24.099 4.48 23.129 3.371 C 22.724 2.908 22.021 2.232 20.964 1.628 C 19.491 0.781 17.821 0.356 16 0.356 C 14.185 0.356 12.518 0.781 11.044 1.623 C 9.983 2.229 9.278 2.905 8.875 3.366 C 7.905 4.475 6.975 5.867 6.746 8.52 C 6.68 9.273 6.663 10.045 6.675 10.768 C 6.61 10.752 6.544 10.735 6.476 10.721 C 6.221 10.665 5.965 10.637 5.713 10.637 C 4.494 10.637 3.487 11.297 3.084 12.359 C 2.794 13.126 2.841 13.94 3.218 14.654 C 3.485 15.159 3.911 15.613 4.522 16.039 C 4.686 16.153 4.937 16.314 5.256 16.52 C 5.427 16.633 5.68 16.794 5.926 16.958 C 5.963 16.984 6.097 17.082 6.141 17.173 C 6.193 17.279 6.195 17.393 6.118 17.604 C 5.987 17.891 5.801 18.242 5.535 18.631 C 4.747 19.782 3.62 20.757 2.18 21.536 C 1.419 21.941 0.54 22.355 0.29 23.118 C 0.039 23.88 0.203 24.582 0.842 25.239 C 1.053 25.466 1.318 25.665 1.653 25.85 C 2.438 26.283 3.105 26.496 3.63 26.641 C 3.721 26.669 3.937 26.736 4.031 26.819 C 4.265 27.022 4.23 27.331 4.543 27.78 C 4.731 28.061 4.949 28.25 5.129 28.374 C 5.783 28.826 6.516 28.854 7.294 28.881 C 7.997 28.908 8.793 28.94 9.702 29.24 C 10.079 29.364 10.47 29.605 10.922 29.883 C 12.011 30.552 13.501 31.467 15.998 31.467 C 18.493 31.467 19.995 30.547 21.091 29.876 C 21.541 29.6 21.93 29.361 22.297 29.242 C 23.206 28.942 24.003 28.912 24.706 28.884 C 25.483 28.854 26.216 28.826 26.87 28.377 C 27.076 28.234 27.331 28.004 27.535 27.651 C 27.76 27.272 27.753 27.003 27.964 26.821 C 28.05 26.746 28.238 26.68 28.338 26.65 C 28.868 26.505 29.545 26.292 30.344 25.852 C 30.697 25.658 30.976 25.443 31.192 25.2 C 31.194 25.197 31.196 25.192 31.199 25.19 C 31.805 24.544 31.955 23.787 31.709 23.12"
+            fill="#000000"
+            stroke="#00000000"
+            stroke-width="1"
+        />
+    </g>
+</svg>`;
+/* eslint-enable */
+function showTosDialog(title, titleText, body) {
+    return tslib_es6_awaiter(this, void 0, void 0, function* () {
+        const result = yield showDialog({
+            container: document.body,
+            dataTestId: "tos-dialog",
+            lang: supportedLocale,
+            title,
+            titleText,
+            body,
+            dismissButtonText: localizedString("legalPromptReject"),
+            buttons: [
+                {
+                    text: localizedString("legalPromptAccept"),
+                    key: "accept",
+                },
+            ],
+        });
+        return result === "accept";
+    });
+}
+function showAdultOrChildDialog() {
+    return showDialog({
+        container: document.body,
+        dataTestId: "adult-or-child-dialog",
+        lang: supportedLocale,
+        title: localizedString("legalPromptVariantGAdultOrChild"),
+        buttons: [
+            {
+                text: localizedString("legalPromptVariantGAdult"),
+                key: "adult",
+            },
+            {
+                text: localizedString("legalPromptVariantGChild"),
+                key: "child",
+            },
+        ],
+    });
+}
+function showFindGuardianDialog() {
+    return showDialog({
+        container: document.body,
+        dataTestId: "find-guardian-dialog",
+        lang: supportedLocale,
+        title: localizedString("legalPromptVariantGFindYourParent"),
+        buttons: [
+            {
+                text: localizedString("legalPromptVariantGIAmGuardian"),
+                key: "guardian",
+            },
+            {
+                text: localizedString("legalPromptVariantGCancel"),
+                key: "cancel",
+                isSecondary: true,
+            },
+        ],
+    });
 }
 /**
  * @internal
  */
 const legalPromptFactory = Injectable("legalPrompt", () => {
-    return function legalPrompt(privacyPolicy, termsOfService, learnMore, container = document.body) {
-        const prompt = createCameraKitLegalPrompt(privacyPolicy.webUrl, termsOfService.webUrl, learnMore.webUrl);
-        container.appendChild(prompt.element);
-        prompt.focus();
-        return prompt.result;
+    return function legalPrompt(privacyPolicy, termsOfService, learnMore, childrenProtectionActRestricted) {
+        const legalMessage = childrenProtectionActRestricted
+            ? localizedString("legalPromptVariantGMessage")
+            : localizedString("legalPromptMessage")({
+                privacyPolicyUrl: privacyPolicy.webUrl,
+                termsOfServiceUrl: termsOfService.webUrl,
+                learnMoreUrl: learnMore.webUrl,
+            });
+        const legalTitleText = localizedString("legalPromptTermsOfService");
+        const legalTitle = childrenProtectionActRestricted ? legalTitleText : snapIcon;
+        return {
+            contentHash: computeHash(legalMessage),
+            show() {
+                return tslib_es6_awaiter(this, void 0, void 0, function* () {
+                    if (!childrenProtectionActRestricted) {
+                        return showTosDialog(legalTitle, legalTitleText, legalMessage);
+                    }
+                    while (true) {
+                        const adultOrChild = yield showAdultOrChildDialog();
+                        switch (adultOrChild) {
+                            case "child": {
+                                const findGuardian = yield showFindGuardianDialog();
+                                switch (findGuardian) {
+                                    case "cancel":
+                                        continue;
+                                    case "guardian":
+                                        return showTosDialog(legalTitle, legalTitleText, legalMessage);
+                                    case "dismiss":
+                                        return false;
+                                    default:
+                                        assertUnreachable(findGuardian);
+                                }
+                            }
+                            case "adult":
+                                return showTosDialog(legalTitle, legalTitleText, legalMessage);
+                            case "dismiss":
+                                return false;
+                            default:
+                                assertUnreachable(adultOrChild);
+                        }
+                    }
+                });
+            },
+        };
     };
 });
 //# sourceMappingURL=legalPrompt.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/legal/legalState.js
+
 
 
 
@@ -19708,27 +22251,17 @@ const legalState_logger = getLogger("LegalState");
  */
 const tosContentHashExpiry = 12 * 60 * 60;
 const tosContentHashKey = "lastAcceptedTosContentHash";
-/**
- * Fast, simple hashing function from github.com/bryc
- * https://github.com/bryc/code/blob/master/jshash/experimental/cyrb53.js
- */
-const computeHash = (str) => {
-    let h1 = 0xdeadbeef;
-    let h2 = 0x41c6ce57;
-    for (let i = 0; i < str.length; i++) {
-        const ch = str.charCodeAt(i);
-        h1 = Math.imul(h1 ^ ch, 2654435761);
-        h2 = Math.imul(h2 ^ ch, 1597334677);
-    }
-    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-    return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(16);
-};
 const createLegalState = () => {
     const states = defineStates(defineState("unknown")(), defineState("accepted")(), defineState("rejected")());
     const actions = defineActions(defineAction("requestLegalPrompt")(), defineAction("accept")(), defineAction("reject")());
     return new StateMachine(actions, states, states.unknown(), (actions) => {
-        return merge(actions.pipe(inStates("unknown"), forActions("accept"), map(() => states.accepted())), actions.pipe(inStates("unknown"), forActions("reject"), map(() => states.rejected())), actions.pipe(forActions("requestLegalPrompt"), map(() => states.unknown())));
+        return merge(actions.pipe(inStates("unknown"), forActions("accept"), map(() => states.accepted())), actions.pipe(inStates("unknown"), forActions("reject"), map(() => states.rejected())), 
+        // We don't treat "rejected" as a terminal state -- if we get another request to display the legal prompt,
+        // even though we're in the rejected state, we'll transition back to unknown and the prompt will be shown.
+        //
+        // Conversely, we do treat "accepted" as a terminal state -- we will not transition back to unknown or
+        // show the legal prompt if we're already in accepted state, even if we get a request to display the prompt.
+        actions.pipe(inStates("rejected"), forActions("requestLegalPrompt"), map(() => states.unknown())));
     });
 };
 const defaultLegalDocumentDate = new Date("2021-09-30T00:00:00+00:00");
@@ -19753,8 +22286,13 @@ const defaultLegalPrompt = LegalPrompt.fromPartial({
             timestamp: defaultLegalDocumentDate,
         }),
     ],
-    disabled: false,
+    // By default, we adopt a fail-open approach, which means that if COF fails,
+    // we do not display ToS for the following reasons:
+    // 1. It provides better experince for big partners with ToS disabled
+    // 2. It has minimal risk
+    disabled: true,
 });
+const defaultInitConfig = GetInitializationConfigResponse.fromPartial({});
 const hasAnyValue = (c) => {
     var _a, _b;
     return ((_b = (_a = c.value) === null || _a === void 0 ? void 0 : _a.anyValue) === null || _b === void 0 ? void 0 : _b.value) instanceof Uint8Array;
@@ -19808,37 +22346,258 @@ const legalStateFactory = Injectable("legalState", [remoteConfigurationFactory.t
     const setLastAcceptedTosContentHash = (hash) => persistance.store(tosContentHashKey, hash).catch((error) => legalState_logger.warn(error));
     const legalState = createLegalState();
     legalState.events
-        .pipe(inStates("unknown", "rejected"), forActions("requestLegalPrompt"), switchMap(() => remoteConfig.get("CAMERA_KIT_LEGAL_PROMPT").pipe(map((configResults) => {
-        const config = configResults.find(hasAnyValue);
-        if (!config)
-            return defaultLegalPrompt;
-        return LegalPrompt.decode(config.value.anyValue.value);
-    }), catchError((error) => {
-        legalState_logger.error(error);
-        return of(defaultLegalPrompt);
-    }))), switchMap((config) => {
-        if (config.disabled)
+        .pipe(inStates("unknown"), forActions("requestLegalPrompt"), switchMap(() => forkJoin({
+        cofConfig: remoteConfig.get("CAMERA_KIT_LEGAL_PROMPT").pipe(map((configResults) => {
+            const config = configResults.find(hasAnyValue);
+            if (!config)
+                return defaultLegalPrompt;
+            return LegalPrompt.decode(config.value.anyValue.value);
+        }), catchError((error) => {
+            legalState_logger.error(error);
+            return of(defaultLegalPrompt);
+        })),
+        initConfig: remoteConfig.getIntializationConfig().pipe(catchError((error) => {
+            legalState_logger.error(error);
+            return of(defaultInitConfig);
+        })),
+    })), switchMap(({ cofConfig, initConfig }) => {
+        // NOTE: Currently, we check two sources to determine whether ToS is disabled or not:
+        // COF and initConfig. Legal document links are pulled only from COF (or defaults),
+        // because initConfig has not been implemented yet. In the future, we may choose
+        // to exclusively use initConfig, which could incorporate the COF call internally:
+        // https://jira.sc-corp.net/browse/CAMKIT-4791
+        var _a;
+        if ((_a = initConfig.legalPrompt) === null || _a === void 0 ? void 0 : _a.disabled) {
             return of(legalState.actions.accept("disabled"));
-        const currentTosContentHash = computeHash(JSON.stringify(config.documents));
+        }
+        if (cofConfig.disabled) {
+            return of(legalState.actions.accept("disabled"));
+        }
+        const documentOfType = getDocumentOrDefault(cofConfig.documents);
+        const prompt = legalPrompt(documentOfType(LegalDocument_Type.PRIVACY_POLICY), documentOfType(LegalDocument_Type.TERMS_OF_SERVICE), documentOfType(LegalDocument_Type.LEARN_MORE), initConfig.childrenProtectionActRestricted);
         return getLastAcceptedTosContentHash().pipe(switchMap((lastAcceptedTosContentHash) => {
-            if (currentTosContentHash === lastAcceptedTosContentHash)
+            if (prompt.contentHash === lastAcceptedTosContentHash)
                 return of(true);
             // Delegate prompting the end-user to accept/reject the legal documents. This returns with
-            // an Observable<boolean> indicating accept/reject.
-            const documentOfType = getDocumentOrDefault(config.documents);
-            return legalPrompt(documentOfType(LegalDocument_Type.PRIVACY_POLICY), documentOfType(LegalDocument_Type.TERMS_OF_SERVICE), documentOfType(LegalDocument_Type.LEARN_MORE));
+            // a Promise<boolean> indicating accept/reject.
+            return prompt.show();
         }), map((didAccept) => {
             if (!didAccept)
-                return legalState.actions.reject(currentTosContentHash);
-            setLastAcceptedTosContentHash(currentTosContentHash);
-            return legalState.actions.accept(currentTosContentHash);
+                return legalState.actions.reject(prompt.contentHash);
+            setLastAcceptedTosContentHash(prompt.contentHash);
+            return legalState.actions.accept(prompt.contentHash);
         }));
     }), dispatch(legalState))
-        .subscribe();
+        .subscribe({
+        error: legalState_logger.error,
+    });
     return legalState;
 });
 //# sourceMappingURL=legalState.js.map
+;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/metrics/operational/Metric.js
+const nameDelimiter = "_";
+const dimensionDelimiter = ".";
+const delimiterRegex = new RegExp(`^${nameDelimiter}+|${nameDelimiter}+$`, "g");
+/** @internal */
+class Metric {
+    constructor(name, dimensions = {}) {
+        this.name = name;
+        this.dimensions = dimensions;
+    }
+    child(constructor, name, dimensions = {}) {
+        return new constructor(`${this.name}${nameDelimiter}${name}`, dimensions);
+    }
+}
+/** @internal */
+function joinMetricNames(names) {
+    return names.join(nameDelimiter).replace(delimiterRegex, "");
+}
+/** @internal */
+function serializeMetricDimensions(dimensions) {
+    if (Object.keys(dimensions).length === 0)
+        return "";
+    return `${dimensionDelimiter}${Array.from(Object.entries(dimensions))
+        .map((d) => d.join(dimensionDelimiter))
+        .join(dimensionDelimiter)}`;
+}
+//# sourceMappingURL=Metric.js.map
+;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/metrics/operational/Timer.js
+
+
+
+/** @internal */
+class Timer extends Metric {
+    constructor(name, dimensions = {}) {
+        super(name, dimensions);
+        this.name = name;
+        this.startTime = getTimeMs();
+        this.stopped = false;
+        this.marks = new Set();
+        this.measures = new Set();
+    }
+    /**
+     * Return all measures created by this Timer and any child timers.
+     */
+    getMeasures() {
+        return Array.from(this.measures.values()).concat(...Array.from(this.marks.values()).map((mark) => mark.getMeasures()));
+    }
+    /**
+     * Create a child Timer, using this Timer's name as a prefix when naming the new Timer. Any measures made with the
+     * child Timer will be included when calling `getMeasures()` on this Timer, or when calling `toOperationalMetric`
+     * on this Timer.
+     *
+     * @example
+     * ```ts
+     * const parent = new Timer('parent')
+     * const child = parent.mark('child') // child metric name is parent_child.
+     *
+     * child.measure()
+     * const measures = parent.getMeasures() // has one element.
+     * ```
+     *
+     * @param name
+     * @param dimensions If omitted, the child timer will NOT inherit dimensions from the parent -- if the child timer
+     * should re-use the parent's dimensions, this must be done explicitly by passing the parent's dimensions as an
+     * argument here.
+     * @returns A child Timer.
+     */
+    mark(name, dimensions = {}) {
+        const mark = new Timer(joinMetricNames([this.name, name]), dimensions);
+        if (this.stopped)
+            mark.stop();
+        this.marks.add(mark);
+        return mark;
+    }
+    /**
+     * Measure the time (in milliseconds) since this Timer was created.
+     *
+     * If a name is provided, the measure's name will be prefixed with the name of this Timer. Otherwise the name of
+     * the measure will be the name of this Timer.
+     *
+     * @example
+     * ```ts
+     * const timer = new Timer('a')
+     * timer.measure('b')
+     * const measures = timer.getMeasures()
+     * // measure[0].name === 'a_b'
+     * ```
+     *
+     * @param name
+     * @returns
+     */
+    measure(name = "") {
+        if (this.stopped)
+            return;
+        const fullName = joinMetricNames([this.name, name]);
+        const measure = {
+            name: fullName,
+            duration: getTimeMs() - this.startTime,
+            dimensions: this.dimensions,
+        };
+        this.measures.add(measure);
+    }
+    /**
+     * Remove all measures from this Timer and any child timers previously created by calls to `mark()`.
+     */
+    clear() {
+        this.measures.clear();
+        this.marks.forEach((mark) => mark.clear());
+    }
+    /**
+     * Prevent any future measures from being created by this Timer or any child timers.
+     */
+    stop() {
+        this.stopped = true;
+        this.marks.forEach((mark) => mark.stop());
+    }
+    /**
+     * Report this metric using {@link OperationalMetricsReporter}.
+     *
+     * After reporting, the Timer can longer be used. Its internal state is cleared and cannot be updated. Calling this
+     * method a second time will no-op.
+     *
+     * @param reporter All measurements will be reported using the given reporter.
+     */
+    stopAndReport(reporter) {
+        return tslib_es6_awaiter(this, void 0, void 0, function* () {
+            reporter.report(this);
+            this.stop();
+            this.clear();
+        });
+    }
+    /**
+     * Convert all measures from this Timer and from any child timers into an array of {@link OperationalMeric} objects,
+     * which can be sent to the backend.
+     *
+     * @returns
+     */
+    toOperationalMetric() {
+        const timestamp = new Date();
+        return this.getMeasures().map((measure) => ({
+            name: `${measure.name}${serializeMetricDimensions(measure.dimensions)}`,
+            timestamp,
+            metric: {
+                $case: "latencyMillis",
+                latencyMillis: measure.duration,
+            },
+        }));
+    }
+}
+//# sourceMappingURL=Timer.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/observable/defer.js
+
+
+function defer(observableFactory) {
+    return new Observable_Observable(function (subscriber) {
+        innerFrom_innerFrom(observableFactory()).subscribe(subscriber);
+    });
+}
+//# sourceMappingURL=defer.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/finalize.js
+
+function finalize(callback) {
+    return operate(function (source, subscriber) {
+        try {
+            source.subscribe(subscriber);
+        }
+        finally {
+            subscriber.add(callback);
+        }
+    });
+}
+//# sourceMappingURL=finalize.js.map
+;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/observable-operators/unsubscribed.js
+
+/**
+ * Returns an Observable that mirrors the source Observable, but will call a specified function when the source has no
+ * more subscribers.
+ *
+ * This is exactly like the `finalize` operator, exept that the specified function will be called only when the source
+ * is explicitly unsubscribed.
+ *
+ * @param callback Called when the source Observable has no more subscribers.
+ * @returns
+ */
+function unsubscribed(callback) {
+    return (source) => defer(() => {
+        // We can tell if the source is completed or errored -- if neither has happened, we know the source is being
+        // finalized because all subscribers have left.
+        let completedOrErrored = false;
+        return source.pipe(tap({
+            complete: () => (completedOrErrored = true),
+            error: () => (completedOrErrored = true),
+        }), finalize(() => {
+            if (completedOrErrored)
+                return;
+            callback();
+        }));
+    });
+}
+//# sourceMappingURL=unsubscribed.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/session/lensState.js
+
+
+
 
 
 
@@ -19853,7 +22612,7 @@ const legalStateFactory = Injectable("legalState", [remoteConfigurationFactory.t
 
 const lensState_logger = getLogger("LensState");
 const createLensState = () => {
-    const actions = defineActions(defineAction("applyLens")(), defineAction("downloadComplete")(), defineAction("turnedOn")(), defineAction("resourcesLoaded")(), defineAction("firstFrameProcessed")(), defineAction("applyLensComplete")(), defineAction("applyLensFailed")(), defineAction("removeLens")(), defineAction("turnedOff")(), defineAction("removeLensComplete")(), defineAction("removeLensFailed")());
+    const actions = defineActions(defineAction("applyLens")(), defineAction("downloadComplete")(), defineAction("turnedOn")(), defineAction("resourcesLoaded")(), defineAction("firstFrameProcessed")(), defineAction("applyLensComplete")(), defineAction("applyLensFailed")(), defineAction("applyLensAborted")(), defineAction("removeLens")(), defineAction("turnedOff")(), defineAction("removeLensComplete")(), defineAction("removeLensFailed")());
     const states = defineStates(defineState("noLensApplied")(), defineState("applyingLens")(), defineState("lensApplied")());
     return new StateMachine(actions, states, states.noLensApplied(), (events) => merge(events.pipe(
     // We allow a new lens to be applied at any time, no matter the state.
@@ -19865,8 +22624,10 @@ const lensStateFactory = Injectable("lensState", [
     lensAssetRepositoryFactory.token,
     lensPersistenceStoreFactory.token,
     legalStateFactory.token,
-], (lensCore, lensRepository, lensAssetRepository, lensPersistence, legalState) => {
+    operationalMetricReporterFactory.token,
+], (lensCore, lensRepository, lensAssetRepository, lensPersistence, legalState, operationalMetricsReporter) => {
     const lensState = createLensState();
+    let firstLensApply = true;
     /**
      * Apply lens
      */
@@ -19879,8 +22640,7 @@ const lensStateFactory = Injectable("lensState", [
         if (name === "accepted")
             return a;
         return lensState.actions.applyLensFailed({
-            error: legalError(`Failed to apply lens ${a.data.lens.id}. Required legal terms were not ` +
-                `accepted.`),
+            error: legalError(`Failed to apply lens ${a.data.lens.id}. Required legal terms were not accepted.`),
             lens: a.data.lens,
         });
     }))), 
@@ -19892,7 +22652,14 @@ const lensStateFactory = Injectable("lensState", [
             return of(a);
         const { lens } = a.data;
         // Convenience method making dispatching an action with Lens data less verbose.
-        const dispatch = (action) => lensState.dispatch(action, lens);
+        const dispatch = (action) => {
+            lensState.dispatch(action, lens);
+        };
+        // We record if this was the first lens apply for this page load, since there may be additional
+        // sources of latency (e.g. remote configuration that needs to be loaded) on the first apply that
+        // are not present for subsequent applies.
+        const applyTimer = new Timer("lens").mark("apply", { first: `${firstLensApply}` });
+        firstLensApply = false;
         return of(a.data).pipe(mergeMap(({ lens, launchParams }) => 
         // If retrieval throws an error, we still want to proceed with the lens
         // because persisted data is not a necessity.
@@ -19903,59 +22670,85 @@ const lensStateFactory = Injectable("lensState", [
             });
             const lensDetails = lensRepository.getLensMetadata(lens.id);
             if (!lensDetails) {
-                throw new Error(`Cannot apply lens ${lens.id}. It has not been loaded by the Lens repository. ` +
-                    `Use CameraKit.lenses.repository.loadLens (or loadLensGroups) to load lens ` +
-                    `metadata before calling CameraKitSession.applyLens.`);
+                throw new Error(`Cannot apply lens ${lens.id}. It has not been loaded by the Lens ` +
+                    `repository. Use CameraKit.lensRepository.loadLens (or loadLensGroups) ` +
+                    `to load lens metadata before calling CameraKitSession.applyLens.`);
             }
             const { content } = lensDetails;
             if (!content) {
-                throw new Error(`Cannot apply lens ${lens.id}. Metadata retrieved for this lens does not include ` +
-                    `the lens content URL.`);
+                throw new Error(`Cannot apply lens ${lens.id}. Metadata retrieved for this lens does not ` +
+                    `include the lens content URL.`);
             }
             return { lens, launchData, content };
         }), 
         // Load lens assets and the lens itself in parallel. Both count toward lens download time.
         // TODO: use RxJS fetch utilities so that these requests can be cancelled on unsubscribe.
-        mergeMap(({ lens, launchData, content }) => from_from(Promise.all([
-            lensRepository.getLensContent(lens),
-            lensAssetRepository.cacheAssets(content.assetManifest, lens),
-        ])).pipe(tap(() => lensState.dispatch("downloadComplete", lens)), map(([{ lensBuffer, lensChecksum }]) => {
-            // NOTE: cached array buffer has to be copied each time in order to be reused,
-            // otherwise the original cached copy would be detached by LensCore
-            // One optimization can be done here: do not copy the array if getLensContent()
-            // returned uncached buffer
-            const lensDataBuffer = lensBuffer.slice(0);
-            // LensCore chokes trying if launchData is set to undefined; we must omit it.
-            return launchData === undefined
-                ? { lensId: lens.id, lensDataBuffer, lensChecksum }
-                : { lensId: lens.id, lensDataBuffer, lensChecksum, launchData };
-        }))), 
+        mergeMap(({ lens, launchData, content }) => {
+            const networkTimer = applyTimer.mark("network");
+            return from_from(Promise.all([
+                lensRepository.getLensContent(lens).finally(() => networkTimer.measure("lens")),
+                content.assetManifest.length > 0
+                    ? lensAssetRepository
+                        .cacheAssets(content.assetManifest, lens)
+                        .finally(() => networkTimer.measure("assets"))
+                    : Promise.resolve(),
+            ])).pipe(tap(() => {
+                networkTimer.measure();
+                lensState.dispatch("downloadComplete", lens);
+            }), map(([{ lensBuffer, lensChecksum }]) => {
+                // NOTE: cached array buffer has to be copied each time in order to be reused,
+                // otherwise the original cached copy would be detached by LensCore
+                // One optimization can be done here: do not copy the array if getLensContent()
+                // returned uncached buffer
+                const lensDataBuffer = lensBuffer.slice(0);
+                // LensCore chokes trying if launchData is set to undefined; we must omit it.
+                return launchData === undefined
+                    ? { lensId: lens.id, lensDataBuffer, lensChecksum }
+                    : { lensId: lens.id, lensDataBuffer, lensChecksum, launchData };
+            }));
+        }), 
         // If removeLens is dispatched while downloading, cancel download, don't apply the lens.
         takeUntil(lensState.events.pipe(forActions("removeLens"))), 
-        // Once the lens has downloaded, we can call replaceLenses. We're not concerned about waiting
-        // for prior in-progress calls to replaceLenses to complete, because LensCore guarantees that
-        // calls to replaceLenses will always be processed sequentially in the order they are received.
+        // Once the lens has downloaded, we can call replaceLenses. We're not concerned about
+        // waiting for prior in-progress calls to replaceLenses to complete, because LensCore
+        // guarantees that calls to replaceLenses will always be processed sequentially in the order
+        // they are received.
         mergeMap((lensInput) => new Observable_Observable((subscriber) => {
+            const coreTimer = applyTimer.mark("core");
             // replaceLenses has the property that if it fails, LensCore guarantees that no
-            // lenses are active – so we can safely dispatch applyLensFailed and transition to
-            // noLensApplied state.
+            // lenses are active – so we can safely dispatch applyLensFailed and transition
+            // to noLensApplied state.
             lensCore.replaceLenses({
                 lenses: [
-                    Object.assign(Object.assign({}, lensInput), { onTurnOn: () => dispatch("turnedOn"), onResourcesLoaded: () => dispatch("resourcesLoaded"), onFirstFrameProcessed: () => dispatch("firstFrameProcessed"), onTurnOff: () => dispatch("turnedOff") }),
+                    Object.assign(Object.assign({}, lensInput), { onTurnOn: () => dispatch("turnedOn"), onResourcesLoaded: () => dispatch("resourcesLoaded"), 
+                        // onFirstFrameProcessed marks the end of the lens application for
+                        // the end-user -- this is when they see the newly applied lens
+                        // begin to render. As such, this is where we stop our overall
+                        // latency measurement and report latency metrics.
+                        onFirstFrameProcessed: () => {
+                            coreTimer.measure("first-frame");
+                            applyTimer.measure("success");
+                            applyTimer.stopAndReport(operationalMetricsReporter);
+                            dispatch("firstFrameProcessed");
+                        }, onTurnOff: () => dispatch("turnedOff") }),
                 ],
                 onSuccess: () => {
-                    // We emit applyLensComplete (and applyLensFailed, below) on an Observable,
-                    // which is piped to `dispatch` – this allows `switchMap` to properly cancel
-                    // the dispatch of these actions if a new applyLens arrives while we're
-                    // waiting for onSuccess/onFailure.
+                    coreTimer.measure("success");
+                    // We emit applyLensComplete (and applyLensFailed, below) on an
+                    // Observable, which is piped to `dispatch` – this allows `switchMap` to
+                    // properly cancel the dispatch of these actions if a new applyLens
+                    // arrives while we're waiting for onSuccess/onFailure.
                     //
-                    // That's desirable behavior, because we don't want the applyingLens state
-                    // due to a *subsequent applyLens action* to be transitioned to lensApplied
-                    // by this action.
+                    // That's desirable behavior, because we don't want the applyingLens
+                    // state due to a *subsequent applyLens action* to be transitioned to
+                    // lensApplied by this action.
                     subscriber.next(lensState.actions.applyLensComplete(lens));
                     subscriber.complete();
                 },
                 onFailure: (reason) => {
+                    coreTimer.measure("failure");
+                    applyTimer.measure("failure");
+                    applyTimer.stopAndReport(operationalMetricsReporter);
                     const lensCoreError = errorHelpers_ensureError(reason);
                     const message = `Failed to apply lens ${lensInput.lensId}.`;
                     const error = /validation failed/.test(lensCoreError.message)
@@ -19965,9 +22758,22 @@ const lensStateFactory = Injectable("lensState", [
                     subscriber.complete();
                 },
             });
-        })), catchError((error) => of(lensState.actions.applyLensFailed({ error, lens }))));
+        })), catchError((error) => {
+            applyTimer.measure("failure");
+            applyTimer.stopAndReport(operationalMetricsReporter);
+            return of(lensState.actions.applyLensFailed({ error, lens }));
+        }), 
+        // If a new applyLens is received, `switchMap` will unsubscribe from this inner observable,
+        // which stops the current lens application. When this happens we can record a separate metric
+        // to measure aborted lens applications.
+        unsubscribed(() => {
+            applyTimer.measure("abort");
+            applyTimer.stopAndReport(operationalMetricsReporter);
+        }));
     }), dispatch(lensState))
-        .subscribe();
+        .subscribe({
+        error: lensState_logger.error,
+    });
     /**
      * Remove lens
      */
@@ -19985,7 +22791,9 @@ const lensStateFactory = Injectable("lensState", [
             },
         });
     })), dispatch(lensState))
-        .subscribe();
+        .subscribe({
+        error: lensState_logger.error,
+    });
     lensState.events
         .pipe(inStates("applyingLens"), forActions("removeLens"), switchMap(([a]) => lensState.events.pipe(
     // Wait to remove the lens until it has been applied.
@@ -19993,7 +22801,9 @@ const lensStateFactory = Injectable("lensState", [
     // But cancel the removal if a new applyLens supercedes the current lens. The goal here is to
     // make sure the latest apply/remove pre-empts any previous request to apply/remove.
     takeUntil(lensState.events.pipe(forActions("applyLens"))), map(() => a))), dispatch(lensState))
-        .subscribe();
+        .subscribe({
+        error: lensState_logger.error,
+    });
     // Log transitions
     lensState.events.subscribe(([a, s]) => lensState_logger.debug(`Action: "${a.name}", state: "${s.name}"`));
     return lensState;
@@ -20184,7 +22994,7 @@ class CameraKitSession {
     /**
      * Use this to interact with lenses which require text input.
      */
-    keyboard, lensCore, sessionState, lensState, logEntries) {
+    keyboard, lensCore, sessionState, lensState, logEntries, pageVisibility) {
         this.keyboard = keyboard;
         this.lensCore = lensCore;
         this.sessionState = sessionState;
@@ -20213,8 +23023,8 @@ class CameraKitSession {
         };
         this.playing = false;
         this.metrics = new LensPerformanceMetrics(this.lensCore);
-        const removeOnHidden = onPageHidden(() => this.sessionState.dispatch("suspend", this));
-        const removeOnVisible = onPageVisible(() => this.sessionState.dispatch("resume", this));
+        const removeOnHidden = pageVisibility.onPageHidden(() => this.sessionState.dispatch("suspend", this));
+        const removeOnVisible = pageVisibility.onPageVisible(() => this.sessionState.dispatch("resume", this));
         this.removePageVisibilityHandlers = () => {
             removeOnHidden();
             removeOnVisible();
@@ -20429,7 +23239,7 @@ class CameraKitSession {
             // The source will provide its data to LensCore, and use other LensCore APIs (e.g. setRenderSize,
             // setInputTransform) to render the source correctly.
             yield cameraKitSource.attach(this.lensCore, (error) => {
-                CameraKitSession_logger.error(cameraKitSourceError("Error happened during source attachment.", error));
+                CameraKitSession_logger.error(cameraKitSourceError("Error occurred during source attachment.", error));
             });
             // If attachment is successful, we'll update our source so that we can detach it later.
             this.source = cameraKitSource;
@@ -20486,13 +23296,13 @@ class CameraKitSession {
             if (this.source) {
                 try {
                     yield this.source.detach((error) => {
-                        CameraKitSession_logger.error(cameraKitSourceError("Error happened during source detachment.", error));
+                        CameraKitSession_logger.error(cameraKitSourceError("Error occurred during source detachment.", error));
                     });
                     // If there's a failure to detach, we will report the error and proceed. Failure to detach may lead to a
                     // memory leak, but it shouldn't prevent us from switching to the new source.
                 }
                 catch (error) {
-                    CameraKitSession_logger.error(cameraKitSourceError(`Detaching prior source of type ${typeof this.source} failed.`, error));
+                    CameraKitSession_logger.error(cameraKitSourceError(`Detaching prior source of type ${getTypeName(this.source)} failed.`, error));
                 }
             }
         });
@@ -20568,7 +23378,8 @@ const cameraKitSessionFactory = Injectable("CameraKitSession", [
     lensKeyboardFactory.token,
     sessionStateFactory.token,
     lensStateFactory.token,
-], (lensCore, logEntries, keyboard, sessionState, lensState) => new CameraKitSession(keyboard, lensCore, sessionState, lensState, logEntries));
+    pageVisibilityFactory.token,
+], (lensCore, logEntries, keyboard, sessionState, lensState, pageVisibility) => new CameraKitSession(keyboard, lensCore, sessionState, lensState, logEntries, pageVisibility));
 //# sourceMappingURL=CameraKitSession.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/lens/assets/LensAssetsProvider.js
 
@@ -20580,6 +23391,7 @@ const cameraKitSessionFactory = Injectable("CameraKitSession", [
 
 
 const LensAssetsProvider_logger = getLogger("LensAssetProvider");
+const maxConsecutiveErrors = 3;
 /**
  * Registers a remote asset provider function with a given instance of LensCore.
  *
@@ -20589,15 +23401,20 @@ const LensAssetsProvider_logger = getLogger("LensAssetProvider");
  * @internal
  */
 const registerLensAssetsProvider = Injectable("registerLensAssetsProvider", [lensCoreFactory.token, lensRepositoryFactory.token, lensAssetRepositoryFactory.token], (lensCore, lensRepository, lensAssetRepository) => {
+    const consecutiveErrorsPerAsset = new Map();
     lensCore.setRemoteAssetsProvider((assetDescriptor) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
-        var _a;
+        var _a, _b, _c;
         // Fetch an asset and provide it to LensCore. If fetching the asset fails we give LensCore
         // an empty response (which it may handle in a variety of ways, e.g. retry, gracefully
         // degrade lens behavior, throw error) and then reject.
         const { assetId, assetType, effectId } = assetDescriptor;
         try {
+            if (((_a = consecutiveErrorsPerAsset.get(assetId)) !== null && _a !== void 0 ? _a : 0) > maxConsecutiveErrors) {
+                throw new Error(`Maximum consecutive asset load errors reached for asset ${assetId}`);
+            }
             const lens = effectId ? lensRepository.getLensMetadata(effectId) : undefined;
-            yield lensAssetRepository.loadAsset(assetDescriptor, lens && toPublicLens(lens), (_a = lens === null || lens === void 0 ? void 0 : lens.content) === null || _a === void 0 ? void 0 : _a.assetManifest);
+            yield lensAssetRepository.loadAsset(assetDescriptor, lens && toPublicLens(lens), (_b = lens === null || lens === void 0 ? void 0 : lens.content) === null || _b === void 0 ? void 0 : _b.assetManifest);
+            consecutiveErrorsPerAsset.set(assetId, 0);
         }
         catch (error) {
             // if an error occurs, LensCore handles things in different ways
@@ -20607,7 +23424,16 @@ const registerLensAssetsProvider = Injectable("registerLensAssetsProvider", [len
                 assetId,
                 assetType,
             });
-            LensAssetsProvider_logger.error(lensAssetError(`Unable to handle lens asset "${assetId}" request.`, error));
+            const consecutiveErrors = ((_c = consecutiveErrorsPerAsset.get(assetId)) !== null && _c !== void 0 ? _c : 0) + 1;
+            consecutiveErrorsPerAsset.set(assetId, consecutiveErrors);
+            // We've already reported `maxConsecutiveErrors` number of errors for this asset, so we can skip
+            // logging additional errors.
+            if (consecutiveErrors <= maxConsecutiveErrors) {
+                LensAssetsProvider_logger.error(lensAssetError(`Error occurred while handling lens asset ${assetId} request.`, error));
+            }
+            else {
+                LensAssetsProvider_logger.warn(`Maximum consecutive asset load errors reached for asset ${assetId}`);
+            }
         }
     }));
 });
@@ -20634,8 +23460,8 @@ function isUri(value) {
 function isUriHandler(value) {
     return (isRecord(value) &&
         (isUri(value.uri) || isArrayOfType(isUri, value.uri)) &&
-        isFunction(value.handleRequest) &&
-        (isUndefined(value.cancelRequest) || isFunction(value.cancelRequest)));
+        typeguards_isFunction(value.handleRequest) &&
+        (isUndefined(value.cancelRequest) || typeguards_isFunction(value.cancelRequest)));
 }
 function isUriHandlers(value) {
     return isArrayOfType(isUriHandler, value);
@@ -20736,1618 +23562,6 @@ function scan(accumulator, seed) {
     return operate(scanInternals(accumulator, seed, arguments.length >= 2, true));
 }
 //# sourceMappingURL=scan.js.map
-;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/handlers/mappingHandler.js
-
-
-/**
- * Map from one request type to another, potentially asynchronously.
- *
- * **NOTE:** If `maxMapConcurrency` is set to some finite number, and more requests are handled than are allowed to
- * be concurrently mapped, the waiting requests will be placed into a unbounded buffer. If, for example, requests are
- * handled with high frequency, `maxMapConcurrency` is low, and the `map` function returns a long-running Promise, this
- * buffer could use a large amount of memory. Keep this in mind when using this handler.
- *
- * @param map Transform each request, may be sync or async.
- * @param maxMapConcurrency If the `map` function is async, it will be invoked at most this number of times
- * concurrently. Setting this to 1 could be useful if it's important for `map` to be called in serial.
- * @returns {@link ChainableHandler}, suitable for use in {@link HandlerChainBuilder.map}
- */
-const createMappingHandler = (map, maxMapConcurrency = Number.POSITIVE_INFINITY, flushOnPageHidden = true) => {
-    const buffer = [];
-    let mapConcurrency = 0;
-    const processRequest = (request) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
-        try {
-            mapConcurrency++;
-            const mapped = request.map();
-            // We want to make sure that if the mapping operation is not async, we don't introduce asynchronicity here
-            // (which unfortunately happens even if you `await` a non-Promise value). This is important so that e.g.
-            // handlers which run when the page is terminated can send requests synchronously, since the browser may
-            // not pick up any async handlers registered to run on the following event loop.
-            if (mapped instanceof Promise)
-                request.next(yield mapped);
-            else if (mapped)
-                request.next(mapped);
-        }
-        catch (error) {
-            request.reject(error);
-        }
-        finally {
-            mapConcurrency--;
-        }
-        while (buffer.length > 0 && mapConcurrency < maxMapConcurrency) {
-            // Safety: we just checked for `buffer.length > 0`, so the shifted value will never be undefined.
-            processRequest(buffer.shift());
-        }
-    });
-    // This may indicate that the page is being unloaded, in which case we may want to flush any buffered requests
-    // regardless of our max concurrency – otherwise those requests will be lost when the page terminates.
-    if (flushOnPageHidden) {
-        onPageHidden(() => {
-            while (buffer.length > 0)
-                processRequest(buffer.shift());
-        });
-    }
-    return (next) => (request, metadata) => {
-        return new Promise((resolve, reject) => {
-            const mappableRequest = {
-                map: () => map(request),
-                next: (mappedRequest) => next(mappedRequest, metadata).then(resolve).catch(reject),
-                reject,
-            };
-            if (mapConcurrency < maxMapConcurrency)
-                processRequest(mappableRequest);
-            else
-                buffer.push(mappableRequest);
-        });
-    };
-};
-//# sourceMappingURL=mappingHandler.js.map
-;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/handlers/batchingHandler.js
-
-
-
-/**
- * Accumulate requests into batches, which are then sent to the next handler in the chain. Batches are sent when either:
- * - the given `isBatchComplete` function returns true, closing the current batch and sending it down the chain.
- * - an optional `maxBatchAge` time has elapsed since the first request in the batch was received.
- * - the page terminates.
- *
- * When handling a request, the Promise returned will resolve when that request has been successfully added to the
- * current batch – **NOT** when that batch has been successfully processed by the rest of the handler chain.
- *
- * The `next` handler in the chain will receive the batch and should handle any errors arising from further processing
- * on the batch (e.g. sending it to a server).
- *
- * **Note:** This handler does not support aborting handled requests via AbortSignal.
- *
- * @param options
- * @returns {@link ChainableHandler}, suitable for use in {@link HandlerChainBuilder.map}
- */
-const createBatchingHandler = ({ batchReduce, isBatchComplete, maxBatchAge, flushOnPageHidden, }) => {
-    // Flush batches when the page is hidden by default.
-    const doFlushOnPageHidden = flushOnPageHidden !== null && flushOnPageHidden !== void 0 ? flushOnPageHidden : true;
-    // TODO: this should just be `number`, but we're picking up NodeJS types (@types/node) when building, so setTimeout
-    // gets a different return type than what it should have in the browser. We should build without NodeJS types, but
-    // that will require some fixes across the codebase.
-    let batchTimeout;
-    let currentBatch = undefined;
-    let clearOnHidden = () => { };
-    const reducingHandler = createMappingHandler((request) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
-        currentBatch = yield batchReduce(currentBatch, request);
-        return currentBatch;
-    }), 1);
-    const batchAndSend = (next, request, metadata) => {
-        const batch = request ? batchReduce(currentBatch, request) : currentBatch;
-        if (!batch)
-            return;
-        // `next` should handle its own errors – that is, the batchingHandler is meant to be placed in a handler chain
-        // prior to any error logging, retrying, etc. handlers.
-        const complete = batch instanceof Promise
-            ? batch.then((b) => next(b, metadata)).catch(() => { })
-            : next(batch, metadata).catch(() => { });
-        currentBatch = undefined;
-        clearTimeout(batchTimeout);
-        clearOnHidden();
-        return complete;
-    };
-    return (next) => (request, metadata) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
-        // Requests may be made while the page is transitioning to hidden – for example, the page is being unloaded and
-        // we're reporting final metrics. In this case, we need to skip batching and synchronously call `next` so that
-        // the request is not lost.
-        if (isDuringVisibilityTransition("hidden") && doFlushOnPageHidden) {
-            yield batchAndSend(next, request, metadata);
-            return;
-        }
-        // If this is the first request in a batch, we need to set up some callbacks to flush the batch when certain
-        // events occur:
-        //
-        // - maxBatchAge time passes.
-        // - page visibility transitions to hidden (which could indicate the page is being unloaded).
-        //
-        if (currentBatch === undefined) {
-            const sendBatch = () => batchAndSend(next, undefined, metadata);
-            if (maxBatchAge !== undefined)
-                batchTimeout = setTimeout(sendBatch, maxBatchAge);
-            if (doFlushOnPageHidden)
-                clearOnHidden = onPageHidden(sendBatch);
-        }
-        const handle = reducingHandler(() => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
-            if (!currentBatch)
-                return;
-            if (!isBatchComplete(currentBatch))
-                return;
-            yield batchAndSend(next, undefined, metadata);
-        }));
-        return handle(request, metadata);
-    });
-};
-//# sourceMappingURL=batchingHandler.js.map
-;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/camera_kit/v3/ranking.js
-/* eslint-disable */
-
-
-const ranking_protobufPackage = "com.snap.camerakit.v3";
-/** Operating System type. */
-var RankingData_OSType;
-(function (RankingData_OSType) {
-    /** OS_TYPE_UNSET - Unset or unknown Operating System. */
-    RankingData_OSType["OS_TYPE_UNSET"] = "OS_TYPE_UNSET";
-    /** OS_TYPE_ANDROID - Android. */
-    RankingData_OSType["OS_TYPE_ANDROID"] = "OS_TYPE_ANDROID";
-    /** OS_TYPE_IOS - iOS. */
-    RankingData_OSType["OS_TYPE_IOS"] = "OS_TYPE_IOS";
-    /** OS_TYPE_IPAD_OS - iPadOS. */
-    RankingData_OSType["OS_TYPE_IPAD_OS"] = "OS_TYPE_IPAD_OS";
-    /** OS_TYPE_MAC_OS - MacOS. */
-    RankingData_OSType["OS_TYPE_MAC_OS"] = "OS_TYPE_MAC_OS";
-    /** OS_TYPE_WINDOWS - Windows. */
-    RankingData_OSType["OS_TYPE_WINDOWS"] = "OS_TYPE_WINDOWS";
-    /** OS_TYPE_LINUX - Linux. */
-    RankingData_OSType["OS_TYPE_LINUX"] = "OS_TYPE_LINUX";
-    RankingData_OSType["UNRECOGNIZED"] = "UNRECOGNIZED";
-})(RankingData_OSType || (RankingData_OSType = {}));
-function rankingData_OSTypeFromJSON(object) {
-    switch (object) {
-        case 0:
-        case "OS_TYPE_UNSET":
-            return RankingData_OSType.OS_TYPE_UNSET;
-        case 1:
-        case "OS_TYPE_ANDROID":
-            return RankingData_OSType.OS_TYPE_ANDROID;
-        case 2:
-        case "OS_TYPE_IOS":
-            return RankingData_OSType.OS_TYPE_IOS;
-        case 3:
-        case "OS_TYPE_IPAD_OS":
-            return RankingData_OSType.OS_TYPE_IPAD_OS;
-        case 4:
-        case "OS_TYPE_MAC_OS":
-            return RankingData_OSType.OS_TYPE_MAC_OS;
-        case 5:
-        case "OS_TYPE_WINDOWS":
-            return RankingData_OSType.OS_TYPE_WINDOWS;
-        case 6:
-        case "OS_TYPE_LINUX":
-            return RankingData_OSType.OS_TYPE_LINUX;
-        case -1:
-        case "UNRECOGNIZED":
-        default:
-            return RankingData_OSType.UNRECOGNIZED;
-    }
-}
-function rankingData_OSTypeToJSON(object) {
-    switch (object) {
-        case RankingData_OSType.OS_TYPE_UNSET:
-            return "OS_TYPE_UNSET";
-        case RankingData_OSType.OS_TYPE_ANDROID:
-            return "OS_TYPE_ANDROID";
-        case RankingData_OSType.OS_TYPE_IOS:
-            return "OS_TYPE_IOS";
-        case RankingData_OSType.OS_TYPE_IPAD_OS:
-            return "OS_TYPE_IPAD_OS";
-        case RankingData_OSType.OS_TYPE_MAC_OS:
-            return "OS_TYPE_MAC_OS";
-        case RankingData_OSType.OS_TYPE_WINDOWS:
-            return "OS_TYPE_WINDOWS";
-        case RankingData_OSType.OS_TYPE_LINUX:
-            return "OS_TYPE_LINUX";
-        default:
-            return "UNKNOWN";
-    }
-}
-function rankingData_OSTypeToNumber(object) {
-    switch (object) {
-        case RankingData_OSType.OS_TYPE_UNSET:
-            return 0;
-        case RankingData_OSType.OS_TYPE_ANDROID:
-            return 1;
-        case RankingData_OSType.OS_TYPE_IOS:
-            return 2;
-        case RankingData_OSType.OS_TYPE_IPAD_OS:
-            return 3;
-        case RankingData_OSType.OS_TYPE_MAC_OS:
-            return 4;
-        case RankingData_OSType.OS_TYPE_WINDOWS:
-            return 5;
-        case RankingData_OSType.OS_TYPE_LINUX:
-            return 6;
-        default:
-            return 0;
-    }
-}
-/** Camera kit connectivity type. */
-var RankingData_ConnectivityType;
-(function (RankingData_ConnectivityType) {
-    /** CONNECTIVITY_TYPE_UNSET - Unset or unknown connectivity type. */
-    RankingData_ConnectivityType["CONNECTIVITY_TYPE_UNSET"] = "CONNECTIVITY_TYPE_UNSET";
-    /** CONNECTIVITY_TYPE_WIFI - Wifi connectivity type. */
-    RankingData_ConnectivityType["CONNECTIVITY_TYPE_WIFI"] = "CONNECTIVITY_TYPE_WIFI";
-    /** CONNECTIVITY_TYPE_MOBILE - Mobile connectivity type. */
-    RankingData_ConnectivityType["CONNECTIVITY_TYPE_MOBILE"] = "CONNECTIVITY_TYPE_MOBILE";
-    /** CONNECTIVITY_TYPE_UNREACHABLE - Unreachable connectivity type. */
-    RankingData_ConnectivityType["CONNECTIVITY_TYPE_UNREACHABLE"] = "CONNECTIVITY_TYPE_UNREACHABLE";
-    /** CONNECTIVITY_TYPE_BLUETOOTH - Bluetooth connectivity type. */
-    RankingData_ConnectivityType["CONNECTIVITY_TYPE_BLUETOOTH"] = "CONNECTIVITY_TYPE_BLUETOOTH";
-    RankingData_ConnectivityType["UNRECOGNIZED"] = "UNRECOGNIZED";
-})(RankingData_ConnectivityType || (RankingData_ConnectivityType = {}));
-function rankingData_ConnectivityTypeFromJSON(object) {
-    switch (object) {
-        case 0:
-        case "CONNECTIVITY_TYPE_UNSET":
-            return RankingData_ConnectivityType.CONNECTIVITY_TYPE_UNSET;
-        case 1:
-        case "CONNECTIVITY_TYPE_WIFI":
-            return RankingData_ConnectivityType.CONNECTIVITY_TYPE_WIFI;
-        case 2:
-        case "CONNECTIVITY_TYPE_MOBILE":
-            return RankingData_ConnectivityType.CONNECTIVITY_TYPE_MOBILE;
-        case 3:
-        case "CONNECTIVITY_TYPE_UNREACHABLE":
-            return RankingData_ConnectivityType.CONNECTIVITY_TYPE_UNREACHABLE;
-        case 4:
-        case "CONNECTIVITY_TYPE_BLUETOOTH":
-            return RankingData_ConnectivityType.CONNECTIVITY_TYPE_BLUETOOTH;
-        case -1:
-        case "UNRECOGNIZED":
-        default:
-            return RankingData_ConnectivityType.UNRECOGNIZED;
-    }
-}
-function rankingData_ConnectivityTypeToJSON(object) {
-    switch (object) {
-        case RankingData_ConnectivityType.CONNECTIVITY_TYPE_UNSET:
-            return "CONNECTIVITY_TYPE_UNSET";
-        case RankingData_ConnectivityType.CONNECTIVITY_TYPE_WIFI:
-            return "CONNECTIVITY_TYPE_WIFI";
-        case RankingData_ConnectivityType.CONNECTIVITY_TYPE_MOBILE:
-            return "CONNECTIVITY_TYPE_MOBILE";
-        case RankingData_ConnectivityType.CONNECTIVITY_TYPE_UNREACHABLE:
-            return "CONNECTIVITY_TYPE_UNREACHABLE";
-        case RankingData_ConnectivityType.CONNECTIVITY_TYPE_BLUETOOTH:
-            return "CONNECTIVITY_TYPE_BLUETOOTH";
-        default:
-            return "UNKNOWN";
-    }
-}
-function rankingData_ConnectivityTypeToNumber(object) {
-    switch (object) {
-        case RankingData_ConnectivityType.CONNECTIVITY_TYPE_UNSET:
-            return 0;
-        case RankingData_ConnectivityType.CONNECTIVITY_TYPE_WIFI:
-            return 1;
-        case RankingData_ConnectivityType.CONNECTIVITY_TYPE_MOBILE:
-            return 2;
-        case RankingData_ConnectivityType.CONNECTIVITY_TYPE_UNREACHABLE:
-            return 3;
-        case RankingData_ConnectivityType.CONNECTIVITY_TYPE_BLUETOOTH:
-            return 4;
-        default:
-            return 0;
-    }
-}
-function createBaseRankingData() {
-    return {
-        sessionId: "",
-        locale: "",
-        osType: RankingData_OSType.OS_TYPE_UNSET,
-        connectivityType: RankingData_ConnectivityType.CONNECTIVITY_TYPE_UNSET,
-    };
-}
-const RankingData = {
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseRankingData();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.sessionId = reader.string();
-                    break;
-                case 2:
-                    message.locale = reader.string();
-                    break;
-                case 3:
-                    message.osType = rankingData_OSTypeFromJSON(reader.int32());
-                    break;
-                case 4:
-                    message.connectivityType = rankingData_ConnectivityTypeFromJSON(reader.int32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(object) {
-        return {
-            sessionId: ranking_isSet(object.sessionId) ? String(object.sessionId) : "",
-            locale: ranking_isSet(object.locale) ? String(object.locale) : "",
-            osType: ranking_isSet(object.osType) ? rankingData_OSTypeFromJSON(object.osType) : RankingData_OSType.OS_TYPE_UNSET,
-            connectivityType: ranking_isSet(object.connectivityType)
-                ? rankingData_ConnectivityTypeFromJSON(object.connectivityType)
-                : RankingData_ConnectivityType.CONNECTIVITY_TYPE_UNSET,
-        };
-    },
-    toJSON(message) {
-        const obj = {};
-        message.sessionId !== undefined && (obj.sessionId = message.sessionId);
-        message.locale !== undefined && (obj.locale = message.locale);
-        message.osType !== undefined && (obj.osType = rankingData_OSTypeToJSON(message.osType));
-        message.connectivityType !== undefined &&
-            (obj.connectivityType = rankingData_ConnectivityTypeToJSON(message.connectivityType));
-        return obj;
-    },
-    fromPartial(object) {
-        var _a, _b, _c, _d;
-        const message = createBaseRankingData();
-        message.sessionId = (_a = object.sessionId) !== null && _a !== void 0 ? _a : "";
-        message.locale = (_b = object.locale) !== null && _b !== void 0 ? _b : "";
-        message.osType = (_c = object.osType) !== null && _c !== void 0 ? _c : RankingData_OSType.OS_TYPE_UNSET;
-        message.connectivityType = (_d = object.connectivityType) !== null && _d !== void 0 ? _d : RankingData_ConnectivityType.CONNECTIVITY_TYPE_UNSET;
-        return message;
-    },
-};
-if ((minimal_default()).util.Long !== (long_default())) {
-    (minimal_default()).util.Long = (long_default());
-    minimal_default().configure();
-}
-function ranking_isSet(value) {
-    return value !== null && value !== undefined;
-}
-//# sourceMappingURL=ranking.js.map
-;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/camera_kit/v3/operational_metrics.js
-/* eslint-disable */
-
-
-
-const operational_metrics_protobufPackage = "com.snap.camerakit.v3";
-function createBaseOperationalMetric() {
-    return { name: "", timestamp: undefined, metric: undefined };
-}
-const OperationalMetric = {
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseOperationalMetric();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.name = reader.string();
-                    break;
-                case 2:
-                    message.timestamp = operational_metrics_fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-                    break;
-                case 3:
-                    message.metric = { $case: "count", count: operational_metrics_longToNumber(reader.uint64()) };
-                    break;
-                case 4:
-                    message.metric = { $case: "latencyMillis", latencyMillis: operational_metrics_longToNumber(reader.uint64()) };
-                    break;
-                case 5:
-                    message.metric = { $case: "histogram", histogram: operational_metrics_longToNumber(reader.int64()) };
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(object) {
-        return {
-            name: operational_metrics_isSet(object.name) ? String(object.name) : "",
-            timestamp: operational_metrics_isSet(object.timestamp) ? fromJsonTimestamp(object.timestamp) : undefined,
-            metric: operational_metrics_isSet(object.count)
-                ? { $case: "count", count: Number(object.count) }
-                : operational_metrics_isSet(object.latencyMillis)
-                    ? { $case: "latencyMillis", latencyMillis: Number(object.latencyMillis) }
-                    : operational_metrics_isSet(object.histogram)
-                        ? { $case: "histogram", histogram: Number(object.histogram) }
-                        : undefined,
-        };
-    },
-    toJSON(message) {
-        var _a, _b, _c, _d, _e, _f;
-        const obj = {};
-        message.name !== undefined && (obj.name = message.name);
-        message.timestamp !== undefined && (obj.timestamp = message.timestamp.toISOString());
-        ((_a = message.metric) === null || _a === void 0 ? void 0 : _a.$case) === "count" && (obj.count = Math.round((_b = message.metric) === null || _b === void 0 ? void 0 : _b.count));
-        ((_c = message.metric) === null || _c === void 0 ? void 0 : _c.$case) === "latencyMillis" && (obj.latencyMillis = Math.round((_d = message.metric) === null || _d === void 0 ? void 0 : _d.latencyMillis));
-        ((_e = message.metric) === null || _e === void 0 ? void 0 : _e.$case) === "histogram" && (obj.histogram = Math.round((_f = message.metric) === null || _f === void 0 ? void 0 : _f.histogram));
-        return obj;
-    },
-    fromPartial(object) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
-        const message = createBaseOperationalMetric();
-        message.name = (_a = object.name) !== null && _a !== void 0 ? _a : "";
-        message.timestamp = (_b = object.timestamp) !== null && _b !== void 0 ? _b : undefined;
-        if (((_c = object.metric) === null || _c === void 0 ? void 0 : _c.$case) === "count" && ((_d = object.metric) === null || _d === void 0 ? void 0 : _d.count) !== undefined && ((_e = object.metric) === null || _e === void 0 ? void 0 : _e.count) !== null) {
-            message.metric = { $case: "count", count: object.metric.count };
-        }
-        if (((_f = object.metric) === null || _f === void 0 ? void 0 : _f.$case) === "latencyMillis" &&
-            ((_g = object.metric) === null || _g === void 0 ? void 0 : _g.latencyMillis) !== undefined &&
-            ((_h = object.metric) === null || _h === void 0 ? void 0 : _h.latencyMillis) !== null) {
-            message.metric = { $case: "latencyMillis", latencyMillis: object.metric.latencyMillis };
-        }
-        if (((_j = object.metric) === null || _j === void 0 ? void 0 : _j.$case) === "histogram" &&
-            ((_k = object.metric) === null || _k === void 0 ? void 0 : _k.histogram) !== undefined &&
-            ((_l = object.metric) === null || _l === void 0 ? void 0 : _l.histogram) !== null) {
-            message.metric = { $case: "histogram", histogram: object.metric.histogram };
-        }
-        return message;
-    },
-};
-function createBaseOperationalMetricsBundle() {
-    return { metrics: [] };
-}
-const OperationalMetricsBundle = {
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseOperationalMetricsBundle();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.metrics.push(OperationalMetric.decode(reader, reader.uint32()));
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(object) {
-        return {
-            metrics: Array.isArray(object === null || object === void 0 ? void 0 : object.metrics) ? object.metrics.map((e) => OperationalMetric.fromJSON(e)) : [],
-        };
-    },
-    toJSON(message) {
-        const obj = {};
-        if (message.metrics) {
-            obj.metrics = message.metrics.map((e) => (e ? OperationalMetric.toJSON(e) : undefined));
-        }
-        else {
-            obj.metrics = [];
-        }
-        return obj;
-    },
-    fromPartial(object) {
-        var _a;
-        const message = createBaseOperationalMetricsBundle();
-        message.metrics = ((_a = object.metrics) === null || _a === void 0 ? void 0 : _a.map((e) => OperationalMetric.fromPartial(e))) || [];
-        return message;
-    },
-};
-var operational_metrics_globalThis = (() => {
-    if (typeof operational_metrics_globalThis !== "undefined")
-        return operational_metrics_globalThis;
-    if (typeof self !== "undefined")
-        return self;
-    if (typeof window !== "undefined")
-        return window;
-    if (typeof __webpack_require__.g !== "undefined")
-        return __webpack_require__.g;
-    throw "Unable to locate global object";
-})();
-// @ts-ignore
-function operational_metrics_toTimestamp(date) {
-    const seconds = date.getTime() / 1000;
-    const nanos = (date.getTime() % 1000) * 1000000;
-    return { seconds, nanos };
-}
-function operational_metrics_fromTimestamp(t) {
-    let millis = t.seconds * 1000;
-    millis += t.nanos / 1000000;
-    return new Date(millis);
-}
-function fromJsonTimestamp(o) {
-    if (o instanceof Date) {
-        return o;
-    }
-    else if (typeof o === "string") {
-        return new Date(o);
-    }
-    else {
-        return operational_metrics_fromTimestamp(Timestamp.fromJSON(o));
-    }
-}
-function operational_metrics_longToNumber(long) {
-    if (long.gt(Number.MAX_SAFE_INTEGER)) {
-        throw new operational_metrics_globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
-    }
-    return long.toNumber();
-}
-if ((minimal_default()).util.Long !== (long_default())) {
-    (minimal_default()).util.Long = (long_default());
-    minimal_default().configure();
-}
-function operational_metrics_isSet(value) {
-    return value !== null && value !== undefined;
-}
-//# sourceMappingURL=operational_metrics.js.map
-;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/camera_kit/v3/business_events.js
-/* eslint-disable */
-
-
-const business_events_protobufPackage = "com.snap.camerakit.v3";
-/** Camera kit flavor to be used in to Blizzard event */
-var CameraKitFlavor;
-(function (CameraKitFlavor) {
-    /** CAMERA_KIT_FLAVOR_UNSET - Unset or unknown flavor */
-    CameraKitFlavor["CAMERA_KIT_FLAVOR_UNSET"] = "CAMERA_KIT_FLAVOR_UNSET";
-    /** CAMERA_KIT_FLAVOR_DEBUG - Debug flavor */
-    CameraKitFlavor["CAMERA_KIT_FLAVOR_DEBUG"] = "CAMERA_KIT_FLAVOR_DEBUG";
-    /** CAMERA_KIT_FLAVOR_RELEASE - Release flavor */
-    CameraKitFlavor["CAMERA_KIT_FLAVOR_RELEASE"] = "CAMERA_KIT_FLAVOR_RELEASE";
-    CameraKitFlavor["UNRECOGNIZED"] = "UNRECOGNIZED";
-})(CameraKitFlavor || (CameraKitFlavor = {}));
-function cameraKitFlavorFromJSON(object) {
-    switch (object) {
-        case 0:
-        case "CAMERA_KIT_FLAVOR_UNSET":
-            return CameraKitFlavor.CAMERA_KIT_FLAVOR_UNSET;
-        case 1:
-        case "CAMERA_KIT_FLAVOR_DEBUG":
-            return CameraKitFlavor.CAMERA_KIT_FLAVOR_DEBUG;
-        case 2:
-        case "CAMERA_KIT_FLAVOR_RELEASE":
-            return CameraKitFlavor.CAMERA_KIT_FLAVOR_RELEASE;
-        case -1:
-        case "UNRECOGNIZED":
-        default:
-            return CameraKitFlavor.UNRECOGNIZED;
-    }
-}
-function cameraKitFlavorToJSON(object) {
-    switch (object) {
-        case CameraKitFlavor.CAMERA_KIT_FLAVOR_UNSET:
-            return "CAMERA_KIT_FLAVOR_UNSET";
-        case CameraKitFlavor.CAMERA_KIT_FLAVOR_DEBUG:
-            return "CAMERA_KIT_FLAVOR_DEBUG";
-        case CameraKitFlavor.CAMERA_KIT_FLAVOR_RELEASE:
-            return "CAMERA_KIT_FLAVOR_RELEASE";
-        default:
-            return "UNKNOWN";
-    }
-}
-function cameraKitFlavorToNumber(object) {
-    switch (object) {
-        case CameraKitFlavor.CAMERA_KIT_FLAVOR_UNSET:
-            return 0;
-        case CameraKitFlavor.CAMERA_KIT_FLAVOR_DEBUG:
-            return 1;
-        case CameraKitFlavor.CAMERA_KIT_FLAVOR_RELEASE:
-            return 2;
-        default:
-            return 0;
-    }
-}
-/** Camera kit connectivity type to be used in Blizzard event */
-var CameraKitConnectivityType;
-(function (CameraKitConnectivityType) {
-    /** CAMERA_KIT_CONNECTIVITY_TYPE_UNSET - Unset or unknown connectivity type */
-    CameraKitConnectivityType["CAMERA_KIT_CONNECTIVITY_TYPE_UNSET"] = "CAMERA_KIT_CONNECTIVITY_TYPE_UNSET";
-    /** CAMERA_KIT_CONNECTIVITY_TYPE_WIFI - Wifi connectivity type */
-    CameraKitConnectivityType["CAMERA_KIT_CONNECTIVITY_TYPE_WIFI"] = "CAMERA_KIT_CONNECTIVITY_TYPE_WIFI";
-    /** CAMERA_KIT_CONNECTIVITY_TYPE_MOBILE - Mobile connectivity type */
-    CameraKitConnectivityType["CAMERA_KIT_CONNECTIVITY_TYPE_MOBILE"] = "CAMERA_KIT_CONNECTIVITY_TYPE_MOBILE";
-    /** CAMERA_KIT_CONNECTIVITY_TYPE_UNREACHABLE - Unreachable connectivity type */
-    CameraKitConnectivityType["CAMERA_KIT_CONNECTIVITY_TYPE_UNREACHABLE"] = "CAMERA_KIT_CONNECTIVITY_TYPE_UNREACHABLE";
-    /** CAMERA_KIT_CONNECTIVITY_TYPE_BLUETOOTH - Bluetooth connectivity type */
-    CameraKitConnectivityType["CAMERA_KIT_CONNECTIVITY_TYPE_BLUETOOTH"] = "CAMERA_KIT_CONNECTIVITY_TYPE_BLUETOOTH";
-    CameraKitConnectivityType["UNRECOGNIZED"] = "UNRECOGNIZED";
-})(CameraKitConnectivityType || (CameraKitConnectivityType = {}));
-function cameraKitConnectivityTypeFromJSON(object) {
-    switch (object) {
-        case 0:
-        case "CAMERA_KIT_CONNECTIVITY_TYPE_UNSET":
-            return CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_UNSET;
-        case 1:
-        case "CAMERA_KIT_CONNECTIVITY_TYPE_WIFI":
-            return CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_WIFI;
-        case 2:
-        case "CAMERA_KIT_CONNECTIVITY_TYPE_MOBILE":
-            return CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_MOBILE;
-        case 3:
-        case "CAMERA_KIT_CONNECTIVITY_TYPE_UNREACHABLE":
-            return CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_UNREACHABLE;
-        case 4:
-        case "CAMERA_KIT_CONNECTIVITY_TYPE_BLUETOOTH":
-            return CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_BLUETOOTH;
-        case -1:
-        case "UNRECOGNIZED":
-        default:
-            return CameraKitConnectivityType.UNRECOGNIZED;
-    }
-}
-function cameraKitConnectivityTypeToJSON(object) {
-    switch (object) {
-        case CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_UNSET:
-            return "CAMERA_KIT_CONNECTIVITY_TYPE_UNSET";
-        case CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_WIFI:
-            return "CAMERA_KIT_CONNECTIVITY_TYPE_WIFI";
-        case CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_MOBILE:
-            return "CAMERA_KIT_CONNECTIVITY_TYPE_MOBILE";
-        case CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_UNREACHABLE:
-            return "CAMERA_KIT_CONNECTIVITY_TYPE_UNREACHABLE";
-        case CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_BLUETOOTH:
-            return "CAMERA_KIT_CONNECTIVITY_TYPE_BLUETOOTH";
-        default:
-            return "UNKNOWN";
-    }
-}
-function cameraKitConnectivityTypeToNumber(object) {
-    switch (object) {
-        case CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_UNSET:
-            return 0;
-        case CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_WIFI:
-            return 1;
-        case CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_MOBILE:
-            return 2;
-        case CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_UNREACHABLE:
-            return 3;
-        case CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_BLUETOOTH:
-            return 4;
-        default:
-            return 0;
-    }
-}
-function createBaseExtensionEventBase() {
-    return {
-        extensionName: "",
-        extensionVersion: "",
-        deviceCluster: 0,
-        cameraKitVersion: "",
-        lensCoreVersion: "",
-        deviceModel: "",
-        cameraKitFlavor: CameraKitFlavor.CAMERA_KIT_FLAVOR_UNSET,
-        appId: "",
-        deviceConnectivity: CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_UNSET,
-        sessionId: "",
-    };
-}
-const ExtensionEventBase = {
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseExtensionEventBase();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.extensionName = reader.string();
-                    break;
-                case 2:
-                    message.extensionVersion = reader.string();
-                    break;
-                case 3:
-                    message.deviceCluster = business_events_longToNumber(reader.int64());
-                    break;
-                case 4:
-                    message.cameraKitVersion = reader.string();
-                    break;
-                case 5:
-                    message.lensCoreVersion = reader.string();
-                    break;
-                case 6:
-                    message.deviceModel = reader.string();
-                    break;
-                case 7:
-                    message.cameraKitFlavor = cameraKitFlavorFromJSON(reader.int32());
-                    break;
-                case 8:
-                    message.appId = reader.string();
-                    break;
-                case 9:
-                    message.deviceConnectivity = cameraKitConnectivityTypeFromJSON(reader.int32());
-                    break;
-                case 10:
-                    message.sessionId = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(object) {
-        return {
-            extensionName: business_events_isSet(object.extensionName) ? String(object.extensionName) : "",
-            extensionVersion: business_events_isSet(object.extensionVersion) ? String(object.extensionVersion) : "",
-            deviceCluster: business_events_isSet(object.deviceCluster) ? Number(object.deviceCluster) : 0,
-            cameraKitVersion: business_events_isSet(object.cameraKitVersion) ? String(object.cameraKitVersion) : "",
-            lensCoreVersion: business_events_isSet(object.lensCoreVersion) ? String(object.lensCoreVersion) : "",
-            deviceModel: business_events_isSet(object.deviceModel) ? String(object.deviceModel) : "",
-            cameraKitFlavor: business_events_isSet(object.cameraKitFlavor)
-                ? cameraKitFlavorFromJSON(object.cameraKitFlavor)
-                : CameraKitFlavor.CAMERA_KIT_FLAVOR_UNSET,
-            appId: business_events_isSet(object.appId) ? String(object.appId) : "",
-            deviceConnectivity: business_events_isSet(object.deviceConnectivity)
-                ? cameraKitConnectivityTypeFromJSON(object.deviceConnectivity)
-                : CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_UNSET,
-            sessionId: business_events_isSet(object.sessionId) ? String(object.sessionId) : "",
-        };
-    },
-    toJSON(message) {
-        const obj = {};
-        message.extensionName !== undefined && (obj.extensionName = message.extensionName);
-        message.extensionVersion !== undefined && (obj.extensionVersion = message.extensionVersion);
-        message.deviceCluster !== undefined && (obj.deviceCluster = Math.round(message.deviceCluster));
-        message.cameraKitVersion !== undefined && (obj.cameraKitVersion = message.cameraKitVersion);
-        message.lensCoreVersion !== undefined && (obj.lensCoreVersion = message.lensCoreVersion);
-        message.deviceModel !== undefined && (obj.deviceModel = message.deviceModel);
-        message.cameraKitFlavor !== undefined && (obj.cameraKitFlavor = cameraKitFlavorToJSON(message.cameraKitFlavor));
-        message.appId !== undefined && (obj.appId = message.appId);
-        message.deviceConnectivity !== undefined &&
-            (obj.deviceConnectivity = cameraKitConnectivityTypeToJSON(message.deviceConnectivity));
-        message.sessionId !== undefined && (obj.sessionId = message.sessionId);
-        return obj;
-    },
-    fromPartial(object) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
-        const message = createBaseExtensionEventBase();
-        message.extensionName = (_a = object.extensionName) !== null && _a !== void 0 ? _a : "";
-        message.extensionVersion = (_b = object.extensionVersion) !== null && _b !== void 0 ? _b : "";
-        message.deviceCluster = (_c = object.deviceCluster) !== null && _c !== void 0 ? _c : 0;
-        message.cameraKitVersion = (_d = object.cameraKitVersion) !== null && _d !== void 0 ? _d : "";
-        message.lensCoreVersion = (_e = object.lensCoreVersion) !== null && _e !== void 0 ? _e : "";
-        message.deviceModel = (_f = object.deviceModel) !== null && _f !== void 0 ? _f : "";
-        message.cameraKitFlavor = (_g = object.cameraKitFlavor) !== null && _g !== void 0 ? _g : CameraKitFlavor.CAMERA_KIT_FLAVOR_UNSET;
-        message.appId = (_h = object.appId) !== null && _h !== void 0 ? _h : "";
-        message.deviceConnectivity =
-            (_j = object.deviceConnectivity) !== null && _j !== void 0 ? _j : CameraKitConnectivityType.CAMERA_KIT_CONNECTIVITY_TYPE_UNSET;
-        message.sessionId = (_k = object.sessionId) !== null && _k !== void 0 ? _k : "";
-        return message;
-    },
-};
-var business_events_globalThis = (() => {
-    if (typeof business_events_globalThis !== "undefined")
-        return business_events_globalThis;
-    if (typeof self !== "undefined")
-        return self;
-    if (typeof window !== "undefined")
-        return window;
-    if (typeof __webpack_require__.g !== "undefined")
-        return __webpack_require__.g;
-    throw "Unable to locate global object";
-})();
-function business_events_longToNumber(long) {
-    if (long.gt(Number.MAX_SAFE_INTEGER)) {
-        throw new business_events_globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
-    }
-    return long.toNumber();
-}
-if ((minimal_default()).util.Long !== (long_default())) {
-    (minimal_default()).util.Long = (long_default());
-    minimal_default().configure();
-}
-function business_events_isSet(value) {
-    return value !== null && value !== undefined;
-}
-//# sourceMappingURL=business_events.js.map
-;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/generated-proto/pb_schema/camera_kit/v3/service.js
-/* eslint-disable */
-
-
-
-
-
-
-
-const service_protobufPackage = "com.snap.camerakit.v3";
-function createBaseGetGroupRequest() {
-    return { id: "", rankingData: undefined };
-}
-const GetGroupRequest = {
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseGetGroupRequest();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.id = reader.string();
-                    break;
-                case 2:
-                    message.rankingData = RankingData.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(object) {
-        return {
-            id: service_isSet(object.id) ? String(object.id) : "",
-            rankingData: service_isSet(object.rankingData) ? RankingData.fromJSON(object.rankingData) : undefined,
-        };
-    },
-    toJSON(message) {
-        const obj = {};
-        message.id !== undefined && (obj.id = message.id);
-        message.rankingData !== undefined &&
-            (obj.rankingData = message.rankingData ? RankingData.toJSON(message.rankingData) : undefined);
-        return obj;
-    },
-    fromPartial(object) {
-        var _a;
-        const message = createBaseGetGroupRequest();
-        message.id = (_a = object.id) !== null && _a !== void 0 ? _a : "";
-        message.rankingData =
-            object.rankingData !== undefined && object.rankingData !== null
-                ? RankingData.fromPartial(object.rankingData)
-                : undefined;
-        return message;
-    },
-};
-function createBaseGetGroupResponse() {
-    return { id: "", lenses: [] };
-}
-const GetGroupResponse = {
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseGetGroupResponse();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.id = reader.string();
-                    break;
-                case 2:
-                    message.lenses.push(Lens.decode(reader, reader.uint32()));
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(object) {
-        return {
-            id: service_isSet(object.id) ? String(object.id) : "",
-            lenses: Array.isArray(object === null || object === void 0 ? void 0 : object.lenses) ? object.lenses.map((e) => Lens.fromJSON(e)) : [],
-        };
-    },
-    toJSON(message) {
-        const obj = {};
-        message.id !== undefined && (obj.id = message.id);
-        if (message.lenses) {
-            obj.lenses = message.lenses.map((e) => (e ? Lens.toJSON(e) : undefined));
-        }
-        else {
-            obj.lenses = [];
-        }
-        return obj;
-    },
-    fromPartial(object) {
-        var _a, _b;
-        const message = createBaseGetGroupResponse();
-        message.id = (_a = object.id) !== null && _a !== void 0 ? _a : "";
-        message.lenses = ((_b = object.lenses) === null || _b === void 0 ? void 0 : _b.map((e) => Lens.fromPartial(e))) || [];
-        return message;
-    },
-};
-function createBaseGetGroupLensRequest() {
-    return { lensId: "", groupId: "" };
-}
-const GetGroupLensRequest = {
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseGetGroupLensRequest();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.lensId = reader.string();
-                    break;
-                case 2:
-                    message.groupId = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(object) {
-        return {
-            lensId: service_isSet(object.lensId) ? String(object.lensId) : "",
-            groupId: service_isSet(object.groupId) ? String(object.groupId) : "",
-        };
-    },
-    toJSON(message) {
-        const obj = {};
-        message.lensId !== undefined && (obj.lensId = message.lensId);
-        message.groupId !== undefined && (obj.groupId = message.groupId);
-        return obj;
-    },
-    fromPartial(object) {
-        var _a, _b;
-        const message = createBaseGetGroupLensRequest();
-        message.lensId = (_a = object.lensId) !== null && _a !== void 0 ? _a : "";
-        message.groupId = (_b = object.groupId) !== null && _b !== void 0 ? _b : "";
-        return message;
-    },
-};
-function createBaseGetGroupLensResponse() {
-    return { lens: undefined };
-}
-const GetGroupLensResponse = {
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseGetGroupLensResponse();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.lens = Lens.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(object) {
-        return {
-            lens: service_isSet(object.lens) ? Lens.fromJSON(object.lens) : undefined,
-        };
-    },
-    toJSON(message) {
-        const obj = {};
-        message.lens !== undefined && (obj.lens = message.lens ? Lens.toJSON(message.lens) : undefined);
-        return obj;
-    },
-    fromPartial(object) {
-        const message = createBaseGetGroupLensResponse();
-        message.lens = object.lens !== undefined && object.lens !== null ? Lens.fromPartial(object.lens) : undefined;
-        return message;
-    },
-};
-function createBaseGetPlaceholderConfigRequest() {
-    return {};
-}
-const GetPlaceholderConfigRequest = {
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseGetPlaceholderConfigRequest();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(_) {
-        return {};
-    },
-    toJSON(_) {
-        const obj = {};
-        return obj;
-    },
-    fromPartial(_) {
-        const message = createBaseGetPlaceholderConfigRequest();
-        return message;
-    },
-};
-function createBaseGetPlaceholderConfigResponse() {
-    return { configs: {} };
-}
-const GetPlaceholderConfigResponse = {
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseGetPlaceholderConfigResponse();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    const entry1 = GetPlaceholderConfigResponse_ConfigsEntry.decode(reader, reader.uint32());
-                    if (entry1.value !== undefined) {
-                        message.configs[entry1.key] = entry1.value;
-                    }
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(object) {
-        return {
-            configs: service_isObject(object.configs)
-                ? Object.entries(object.configs).reduce((acc, [key, value]) => {
-                    acc[key] = String(value);
-                    return acc;
-                }, {})
-                : {},
-        };
-    },
-    toJSON(message) {
-        const obj = {};
-        obj.configs = {};
-        if (message.configs) {
-            Object.entries(message.configs).forEach(([k, v]) => {
-                obj.configs[k] = v;
-            });
-        }
-        return obj;
-    },
-    fromPartial(object) {
-        var _a;
-        const message = createBaseGetPlaceholderConfigResponse();
-        message.configs = Object.entries((_a = object.configs) !== null && _a !== void 0 ? _a : {}).reduce((acc, [key, value]) => {
-            if (value !== undefined) {
-                acc[key] = String(value);
-            }
-            return acc;
-        }, {});
-        return message;
-    },
-};
-function createBaseGetPlaceholderConfigResponse_ConfigsEntry() {
-    return { key: "", value: "" };
-}
-const GetPlaceholderConfigResponse_ConfigsEntry = {
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseGetPlaceholderConfigResponse_ConfigsEntry();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.key = reader.string();
-                    break;
-                case 2:
-                    message.value = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(object) {
-        return {
-            key: service_isSet(object.key) ? String(object.key) : "",
-            value: service_isSet(object.value) ? String(object.value) : "",
-        };
-    },
-    toJSON(message) {
-        const obj = {};
-        message.key !== undefined && (obj.key = message.key);
-        message.value !== undefined && (obj.value = message.value);
-        return obj;
-    },
-    fromPartial(object) {
-        var _a, _b;
-        const message = createBaseGetPlaceholderConfigResponse_ConfigsEntry();
-        message.key = (_a = object.key) !== null && _a !== void 0 ? _a : "";
-        message.value = (_b = object.value) !== null && _b !== void 0 ? _b : "";
-        return message;
-    },
-};
-function createBaseGetInitializationConfigRequest() {
-    return {};
-}
-const GetInitializationConfigRequest = {
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseGetInitializationConfigRequest();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(_) {
-        return {};
-    },
-    toJSON(_) {
-        const obj = {};
-        return obj;
-    },
-    fromPartial(_) {
-        const message = createBaseGetInitializationConfigRequest();
-        return message;
-    },
-};
-function createBaseGetInitializationConfigResponse() {
-    return { appVendorUuidOptIn: false, watermarkEnabled: false };
-}
-const GetInitializationConfigResponse = {
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseGetInitializationConfigResponse();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.appVendorUuidOptIn = reader.bool();
-                    break;
-                case 2:
-                    message.watermarkEnabled = reader.bool();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(object) {
-        return {
-            appVendorUuidOptIn: service_isSet(object.appVendorUuidOptIn) ? Boolean(object.appVendorUuidOptIn) : false,
-            watermarkEnabled: service_isSet(object.watermarkEnabled) ? Boolean(object.watermarkEnabled) : false,
-        };
-    },
-    toJSON(message) {
-        const obj = {};
-        message.appVendorUuidOptIn !== undefined && (obj.appVendorUuidOptIn = message.appVendorUuidOptIn);
-        message.watermarkEnabled !== undefined && (obj.watermarkEnabled = message.watermarkEnabled);
-        return obj;
-    },
-    fromPartial(object) {
-        var _a, _b;
-        const message = createBaseGetInitializationConfigResponse();
-        message.appVendorUuidOptIn = (_a = object.appVendorUuidOptIn) !== null && _a !== void 0 ? _a : false;
-        message.watermarkEnabled = (_b = object.watermarkEnabled) !== null && _b !== void 0 ? _b : false;
-        return message;
-    },
-};
-function createBaseSetOperationalMetricsRequest() {
-    return { metrics: undefined };
-}
-const SetOperationalMetricsRequest = {
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseSetOperationalMetricsRequest();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.metrics = OperationalMetricsBundle.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(object) {
-        return {
-            metrics: service_isSet(object.metrics) ? OperationalMetricsBundle.fromJSON(object.metrics) : undefined,
-        };
-    },
-    toJSON(message) {
-        const obj = {};
-        message.metrics !== undefined &&
-            (obj.metrics = message.metrics ? OperationalMetricsBundle.toJSON(message.metrics) : undefined);
-        return obj;
-    },
-    fromPartial(object) {
-        const message = createBaseSetOperationalMetricsRequest();
-        message.metrics =
-            object.metrics !== undefined && object.metrics !== null
-                ? OperationalMetricsBundle.fromPartial(object.metrics)
-                : undefined;
-        return message;
-    },
-};
-function createBaseSetOperationalMetricsResponse() {
-    return {};
-}
-const SetOperationalMetricsResponse = {
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseSetOperationalMetricsResponse();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(_) {
-        return {};
-    },
-    toJSON(_) {
-        const obj = {};
-        return obj;
-    },
-    fromPartial(_) {
-        const message = createBaseSetOperationalMetricsResponse();
-        return message;
-    },
-};
-function createBaseSetBusinessEventsRequest() {
-    return { batchEvents: undefined };
-}
-const SetBusinessEventsRequest = {
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseSetBusinessEventsRequest();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.batchEvents = Any.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(object) {
-        return {
-            batchEvents: service_isSet(object.batchEvents) ? Any.fromJSON(object.batchEvents) : undefined,
-        };
-    },
-    toJSON(message) {
-        const obj = {};
-        message.batchEvents !== undefined &&
-            (obj.batchEvents = message.batchEvents ? Any.toJSON(message.batchEvents) : undefined);
-        return obj;
-    },
-    fromPartial(object) {
-        const message = createBaseSetBusinessEventsRequest();
-        message.batchEvents =
-            object.batchEvents !== undefined && object.batchEvents !== null ? Any.fromPartial(object.batchEvents) : undefined;
-        return message;
-    },
-};
-function createBaseSetBusinessEventsResponse() {
-    return {};
-}
-const SetBusinessEventsResponse = {
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseSetBusinessEventsResponse();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(_) {
-        return {};
-    },
-    toJSON(_) {
-        const obj = {};
-        return obj;
-    },
-    fromPartial(_) {
-        const message = createBaseSetBusinessEventsResponse();
-        return message;
-    },
-};
-function createBaseSetExtensionBusinessEventsRequest() {
-    return { events: [], extensionEventBase: undefined };
-}
-const SetExtensionBusinessEventsRequest = {
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseSetExtensionBusinessEventsRequest();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.events.push(Any.decode(reader, reader.uint32()));
-                    break;
-                case 2:
-                    message.extensionEventBase = ExtensionEventBase.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(object) {
-        return {
-            events: Array.isArray(object === null || object === void 0 ? void 0 : object.events) ? object.events.map((e) => Any.fromJSON(e)) : [],
-            extensionEventBase: service_isSet(object.extensionEventBase)
-                ? ExtensionEventBase.fromJSON(object.extensionEventBase)
-                : undefined,
-        };
-    },
-    toJSON(message) {
-        const obj = {};
-        if (message.events) {
-            obj.events = message.events.map((e) => (e ? Any.toJSON(e) : undefined));
-        }
-        else {
-            obj.events = [];
-        }
-        message.extensionEventBase !== undefined &&
-            (obj.extensionEventBase = message.extensionEventBase
-                ? ExtensionEventBase.toJSON(message.extensionEventBase)
-                : undefined);
-        return obj;
-    },
-    fromPartial(object) {
-        var _a;
-        const message = createBaseSetExtensionBusinessEventsRequest();
-        message.events = ((_a = object.events) === null || _a === void 0 ? void 0 : _a.map((e) => Any.fromPartial(e))) || [];
-        message.extensionEventBase =
-            object.extensionEventBase !== undefined && object.extensionEventBase !== null
-                ? ExtensionEventBase.fromPartial(object.extensionEventBase)
-                : undefined;
-        return message;
-    },
-};
-function createBaseSetExtensionBusinessEventsResponse() {
-    return {};
-}
-const SetExtensionBusinessEventsResponse = {
-    decode(input, length) {
-        const reader = input instanceof (minimal_default()).Reader ? input : new (minimal_default()).Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseSetExtensionBusinessEventsResponse();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(_) {
-        return {};
-    },
-    toJSON(_) {
-        const obj = {};
-        return obj;
-    },
-    fromPartial(_) {
-        const message = createBaseSetExtensionBusinessEventsResponse();
-        return message;
-    },
-};
-if ((minimal_default()).util.Long !== (long_default())) {
-    (minimal_default()).util.Long = (long_default());
-    minimal_default().configure();
-}
-function service_isObject(value) {
-    return typeof value === "object" && value !== null;
-}
-function service_isSet(value) {
-    return value !== null && value !== undefined;
-}
-//# sourceMappingURL=service.js.map
-;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/handlers/rateLimitingHandler.js
-
-
-
-const delay = (duration) => new Promise((resolve) => setTimeout(resolve, duration));
-/**
- * Limit the rate at which requests are passed to the next handler in the chain.
- *
- * During any page transitions to "hidden" – possibly indicating the page is about to terminate – requests will not be
- * rate limited, to ensure that they are not lost.
- *
- * TODO: If there are requests in the queue waiting to be sent when the page transitions to "hidden," these will not
- * be immediately sent. This means there still is an edge case in which a request may be lost on page termination. This
- * can be fixed with changes to `createMappingHandler`.
- *
- * **NOTE:** Under the hood, requests that come in faster than the set `duration` are placed in an unbounded buffer.
- * If many requests are made quickly and `duration` is long, this could result in high memory usage. Keep this in mind
- * when using this handler.
- *
- * @param duration In milliseconds. Requests will be passed to the next handler in the chain no faster than this. That
- * is, if `duration` is `1000`, the next handler will be called at most once per second.
- * @returns {@link ChainableHandler}, suitable for use in {@link HandlerChainBuilder.map}
- */
-const createRateLimitingHandler = (duration, flushOnPageHidden = true) => {
-    let mostRecentSendTime = undefined;
-    const mappingHandler = createMappingHandler((request) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
-        if (mostRecentSendTime !== undefined) {
-            const millisUntilNextSend = duration - (Date.now() - mostRecentSendTime);
-            if (millisUntilNextSend > 0)
-                yield delay(millisUntilNextSend);
-        }
-        mostRecentSendTime = Date.now();
-        return request;
-    }), 1, flushOnPageHidden);
-    return (next) => (request, metadata) => {
-        // Requests may be made while the page is transitioning to hidden – for example, the page is being unloaded and
-        // we're reporting final metrics. In this case, we need to skip rate limiting and synchronously call `next`
-        // so that the request is not lost.
-        if (isDuringVisibilityTransition("hidden") && flushOnPageHidden)
-            return next(request, metadata);
-        return mappingHandler(next)(request, metadata);
-    };
-};
-//# sourceMappingURL=rateLimitingHandler.js.map
-;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/metrics/metricsHandler.js
-
-
-
-
-const METRIC_REQUEST_RATE_LIMIT_MS = 1000; // send at most one metric request per second.
-/**
- * @internal
- */
-const metricsHandlerFactory = Injectable("metricsHandler", [cameraKitServiceFetchHandlerFactory.token], (fetchHandler) => {
-    return new HandlerChainBuilder(fetchHandler).map(createRateLimitingHandler(METRIC_REQUEST_RATE_LIMIT_MS))
-        .handler;
-});
-//# sourceMappingURL=metricsHandler.js.map
-;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/metrics/operationalMetricsReporter.js
-
-
-
-
-
-
-// CameraKit's prod metrics endpoint.
-// See: https://github.sc-corp.net/Snapchat/pb_schema/blob/c390b9c/proto/camera_kit/v3/service.proto#L126
-const OPERATIONAL_METRICS_ENDPOINT = "https://api-kit.snapchat.com/com.snap.camerakit.v3.Metrics/metrics/operational_metrics";
-const DIMENSION_DELIMITER = ".";
-// These values are (currently) arbitrarily selected.
-// TODO: Once we have gathered a sufficient quantity of metrics data, we should tune these numbers to ensure we're
-// operating with the right cost vs. alarming SLA vs. IDB storage size tradeoffs.
-const METRIC_BATCH_MAX_SIZE = 100;
-const METRIC_BATCH_MAX_AGE_MS = 5000;
-/**
- * Use this class to report operational metrics – these are metrics that describe aspects of the SDK's performance,
- * which may be used to assess and investigate operational issues.
- */
-/** @internal */
-class OperationalMetricsReporter {
-    constructor(metricsHandler) {
-        this.metricsHandler = metricsHandler;
-    }
-    /**
-     * Record a count.
-     *
-     * @param name
-     * @param count
-     * @param dimensions An optional Map containing dimensions which describe the metric.
-     * For example: `new Map([['status', '200']])`
-     * @returns Promise which resolves when the metric has been handled.
-     */
-    count(name, count, dimensions) {
-        return this.record(name, { $case: "count", count }, dimensions);
-    }
-    /**
-     * Record a duration in milliseconds.
-     *
-     * @param name
-     * @param latencyMillis
-     * @param dimensions An optional Map containing dimensions which describe the metric.
-     * For example: `new Map([['status', '200']])`
-     * @returns Promise which resolves when the metric has been handled.
-     */
-    timer(name, latencyMillis, dimensions) {
-        return this.record(name, { $case: "latencyMillis", latencyMillis }, dimensions);
-    }
-    /**
-     * Record a histogram.
-     *
-     * @param name
-     * @param histogram
-     * @param dimensions An optional Map containing dimensions which describe the metric.
-     * For example: `new Map([['status', '200']])`
-     * @returns Promise which resolves when the metric has been handled.
-     */
-    histogram(name, histogram, dimensions) {
-        return this.record(name, { $case: "histogram", histogram }, dimensions);
-    }
-    record(name, metric, dimensions) {
-        // The naming convention (metricName.dimensionName.dimensionValue.dimensionName.dimensionValue...) is mentioned
-        // the Graphene docs here https://wiki.sc-corp.net/display/METRICS/Graphene
-        // TODO: find explicit documentation of the API, if it exists.
-        const serializedDimensions = dimensions
-            ? `.${Array.from(dimensions.entries())
-                .map((d) => d.join(DIMENSION_DELIMITER))
-                .join(DIMENSION_DELIMITER)}`
-            : "";
-        return this.metricsHandler({
-            name: `${name}${serializedDimensions}`,
-            timestamp: new Date(),
-            metric,
-        });
-    }
-}
-/**
- * @internal
- */
-const operationalMetricReporterFactory = Injectable("operationalMetricsReporter", [metricsHandlerFactory.token], (metricsHandler) => {
-    const handler = new HandlerChainBuilder(metricsHandler)
-        .map(createMappingHandler((metrics) => {
-        const request = { metrics };
-        return new Request(OPERATIONAL_METRICS_ENDPOINT, {
-            method: "POST",
-            body: JSON.stringify(SetOperationalMetricsRequest.toJSON(request)),
-            credentials: "include",
-            // Setting this to true makes fetch behave like `Navigator.sendBeacon` – that is, the request
-            // will still be made even if the page terminates.
-            // https://developer.mozilla.org/en-US/docs/Web/API/fetch
-            keepalive: true,
-        });
-    }))
-        .map(createBatchingHandler({
-        // The batching logic here is very simple – it could be improved by e.g. combining counts with
-        // the same name, computing statistics to reduce overall data sent, etc. Right now this is
-        // premature optimization, but could become a good idea in the future.
-        batchReduce: (previousBundle, metric) => {
-            const bundle = previousBundle !== null && previousBundle !== void 0 ? previousBundle : { metrics: [] };
-            bundle.metrics.push(metric);
-            return bundle;
-        },
-        isBatchComplete: (bundle) => bundle.metrics.length >= METRIC_BATCH_MAX_SIZE,
-        maxBatchAge: METRIC_BATCH_MAX_AGE_MS,
-    })).handler;
-    return new OperationalMetricsReporter(handler);
-});
-//# sourceMappingURL=operationalMetricsReporter.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/metrics/reporters/reportGlobalException.js
 
 
@@ -22491,7 +23705,7 @@ const scan_scan = (seedState) => (source, eventTypes, accumulator) => {
     sink.addEventListener = new Proxy(sink.addEventListener, {
         apply: (target, thisArg, args) => {
             if (hasListener)
-                throw new Error("Cannot addEventListener. The TypedEventTarget returned by scan only " +
+                throw new Error("Cannot add another event listener. The TypedEventTarget returned by scan only " +
                     "supports a single listener, and one has already been added.");
             hasListener = true;
             eventTypes.forEach((eventType) => source.addEventListener(eventType, listener));
@@ -22522,7 +23736,11 @@ const isLensOrAssetRequest = (value) => {
     // Safety: the cast makes the type less specific so we can check if any string is present in the tuple.
     return typeof requestType === "string" && relevantRequestTypes.includes(requestType);
 };
-const reportLensAndAssetDownload = Injectable("reportLensAndAssetDownload", [metricsEventTargetFactory.token, operationalMetricReporterFactory.token], (metricsEventTarget, reporter) => {
+const reportLensAndAssetDownload = Injectable("reportLensAndAssetDownload", [
+    metricsEventTargetFactory.token,
+    operationalMetricReporterFactory.token,
+    requestStateEventTargetFactory.token,
+], (metricsEventTarget, reporter, requestStateEventTarget) => {
     scan_scan({ name: "inProgress", inProgress: new Map() })(requestStateEventTarget, ["started", "completed", "errored"], (state, event) => {
         const { inProgress } = state;
         const { dimensions, requestId, timeMs } = event.detail;
@@ -22644,7 +23862,7 @@ const getStatus = (event) => {
 const isRelevantRequest = (value) => {
     return isLensOrAssetRequest(value) || value["requestType"] === COF_REQUEST_TYPE;
 };
-const reportHttpMetrics = Injectable("reportHttpMetrics", [operationalMetricReporterFactory.token], (reporter) => {
+const reportHttpMetrics = Injectable("reportHttpMetrics", [operationalMetricReporterFactory.token, requestStateEventTargetFactory.token], (reporter, requestStateEventTarget) => {
     scan_scan({ name: "inProgress", inProgress: new Map() })(requestStateEventTarget, ["started", "completed", "errored"], (state, event) => {
         var _a, _b;
         const { inProgress } = state;
@@ -23343,6 +24561,12 @@ function maybeSchedule(scheduler, execute, subscription) {
     }
 }
 //# sourceMappingURL=combineLatest.js.map
+;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/util/argsOrArgArray.js
+var argsOrArgArray_isArray = Array.isArray;
+function argsOrArgArray_argsOrArgArray(args) {
+    return args.length === 1 && argsOrArgArray_isArray(args[0]) ? args[0] : args;
+}
+//# sourceMappingURL=argsOrArgArray.js.map
 ;// CONCATENATED MODULE: ./node_modules/rxjs/dist/esm5/internal/operators/combineLatest.js
 
 
@@ -23375,7 +24599,32 @@ function combineLatestWith() {
     return combineLatest_combineLatest.apply(void 0, __spreadArray([], __read(otherSources)));
 }
 //# sourceMappingURL=combineLatestWith.js.map
+;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/metrics/operational/Histogram.js
+
+/** @internal */
+class Histogram extends Metric {
+    static level(name, level, dimsensions = {}) {
+        const histogram = new Histogram(name, dimsensions);
+        histogram.add(level);
+        return histogram;
+    }
+    constructor(name, dimensions = {}) {
+        super(name, dimensions);
+        this.name = name;
+        this.levels = [];
+    }
+    add(level) {
+        this.levels.push(level);
+    }
+    toOperationalMetric() {
+        const timestamp = new Date();
+        const name = `${this.name}${serializeMetricDimensions(this.dimensions)}`;
+        return this.levels.map((level) => ({ name, timestamp, metric: { $case: "histogram", histogram: level } }));
+    }
+}
+//# sourceMappingURL=Histogram.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/metrics/reporters/reportLensView.js
+
 
 
 
@@ -23403,7 +24652,16 @@ const reportLensView = Injectable("reportLensView", [
     metricsEventTargetFactory.token,
     operationalMetricReporterFactory.token,
     configurationToken,
-], (session, lensState, sessionState, metricsEventTarget, operationalMetricsReporter, configuration) => {
+], (session, lensState, sessionState, metricsEventTarget, operationalMetricsReporter, configuration) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    // We need to do this await up front so that it won't interrupt reporting the metric when the session is
+    // suspended -- suspension could happen because the tab is closing, in which case we cannot perform await a
+    // Promise, because in the case of a tab close the browser will not schedule any work for future turns of the
+    // event loop.
+    const { cluster: performanceCluster, webglRendererInfo } = (_a = (yield configuration.lensPerformance)) !== null && _a !== void 0 ? _a : {
+        cluster: 0,
+        webglRendererInfo: "unknown",
+    };
     merge(
     // Begin measuring LensCore apply time once the lens has finished downloading and we actually add the lens
     // to LensCore (LensWait measures the full download + LensCore apply time i.e. perceived UX latency).
@@ -23438,14 +24696,9 @@ const reportLensView = Injectable("reportLensView", [
             lensId }, viewMetrics))));
     }))
         .subscribe({
-        next: ({ applyDelaySec, lensId, viewTimeSec, avgFps, lensFrameProcessingTimeMsAvg, lensFrameProcessingTimeMsStd, }) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
-            var _a;
+        next: ({ applyDelaySec, lensId, viewTimeSec, avgFps, lensFrameProcessingTimeMsAvg, lensFrameProcessingTimeMsStd, lensFrameProcessingTimeMsMedian, lensFrameProcessingN, }) => tslib_es6_awaiter(void 0, void 0, void 0, function* () {
             if (viewTimeSec < viewTimeThresholdSec)
                 return;
-            const { cluster: performanceCluster, webglRendererInfo } = (_a = (yield configuration.lensPerformance)) !== null && _a !== void 0 ? _a : {
-                cluster: 0,
-                webglRendererInfo: "unknown",
-            };
             const lensView = {
                 name: "lensView",
                 applyDelaySec,
@@ -23465,17 +24718,18 @@ const reportLensView = Injectable("reportLensView", [
                 webglRendererInfo,
             };
             metricsEventTarget.dispatchEvent(new TypedCustomEvent("lensView", lensView));
-            // Reporting operational metrics described here:
-            // https://docs.google.com/document/d/1g4PncAmKdyrLEFVp8ODp58oer2UJu9PIetRW035nnTo
-            //
-            // We ignore if applyDelaySec is 0, which will be the case if the session was suspended and then
-            // resumed - we only care about this metric when a new lens has been loaded.
-            if (applyDelaySec > 0)
-                operationalMetricsReporter.timer("lens.core_loading_latency", applyDelaySec * 1000);
-            operationalMetricsReporter.timer("lens.processing_time", lensFrameProcessingTimeMsAvg, new Map([["performance_cluster", performanceCluster.toString()]]));
+            operationalMetricsReporter.report(Histogram.level("lens_view", viewTimeSec * 1000));
+            // The first few frames will typically take much longer to process (as they might involve requesting
+            // remote assets to be downloaded, or other high-latency initialization steps) -- so we'll skip
+            // reporting views with a very small number of frames.
+            if (lensFrameProcessingN >= 30) {
+                operationalMetricsReporter.report(Histogram.level("lens_view_frame-processing-time", lensFrameProcessingTimeMsMedian, {
+                    performance_cluster: performanceCluster.toString(),
+                }));
+            }
         }),
     });
-});
+}));
 //# sourceMappingURL=reportLensView.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/metrics/reporters/reportLensWait.js
 
@@ -23623,7 +24877,8 @@ const reportUserSession = Injectable("reportUserSession", [metricsEventTargetFac
 const reportGloballyScopedMetrics = new PartialContainer_PartialContainer({})
     .provides(reportHttpMetrics)
     .provides(reportBenchmarks)
-    .provides(reportLensAndAssetDownload);
+    .provides(reportLensAndAssetDownload)
+    .provides(reportLegalState);
 /**
  * These metrics reporters must be run once for each CameraKitSession DI container created. They may depend on services
  * which are only available at the session scope (e.g. the CameraKitSession itself).
@@ -23633,8 +24888,7 @@ const reportSessionScopedMetrics = new PartialContainer_PartialContainer({})
     .provides(reportLensView)
     .provides(reportLensWait)
     .provides(reportSessionException)
-    .provides(reportLensValidationFailed)
-    .provides(reportLegalState);
+    .provides(reportLensValidationFailed);
 //# sourceMappingURL=reporters.js.map
 ;// CONCATENATED MODULE: ./node_modules/browser-fs-access/dist/index.modern.js
 const e=(()=>{if("undefined"==typeof self)return!1;if("top"in self&&self!==top)try{top}catch(e){return!1}else if("showOpenFilePicker"in self)return"showOpenFilePicker";return!1})(),t=e?Promise.resolve().then(function(){return l}):Promise.resolve().then(function(){return h});async function n(...e){return(await t).default(...e)}const r=e?Promise.resolve().then(function(){return y}):Promise.resolve().then(function(){return P});async function i(...e){return(await r).default(...e)}const a=e?Promise.resolve().then(function(){return m}):Promise.resolve().then(function(){return k});async function o(...e){return(await a).default(...e)}const s=async e=>{const t=await e.getFile();return t.handle=e,t};var c=async(e=[{}])=>{Array.isArray(e)||(e=[e]);const t=[];e.forEach((e,n)=>{t[n]={description:e.description||"Files",accept:{}},e.mimeTypes?e.mimeTypes.map(r=>{t[n].accept[r]=e.extensions||[]}):t[n].accept["*/*"]=e.extensions||[]});const n=await window.showOpenFilePicker({id:e[0].id,startIn:e[0].startIn,types:t,multiple:e[0].multiple||!1,excludeAcceptAllOption:e[0].excludeAcceptAllOption||!1}),r=await Promise.all(n.map(s));return e[0].multiple?r:r[0]},l={__proto__:null,default:c};function u(e){function t(e){if(Object(e)!==e)return Promise.reject(new TypeError(e+" is not an object."));var t=e.done;return Promise.resolve(e.value).then(function(e){return{value:e,done:t}})}return u=function(e){this.s=e,this.n=e.next},u.prototype={s:null,n:null,next:function(){return t(this.n.apply(this.s,arguments))},return:function(e){var n=this.s.return;return void 0===n?Promise.resolve({value:e,done:!0}):t(n.apply(this.s,arguments))},throw:function(e){var n=this.s.return;return void 0===n?Promise.reject(e):t(n.apply(this.s,arguments))}},new u(e)}const p=async(e,t,n=e.name,r)=>{const i=[],a=[];var o,s=!1,c=!1;try{for(var l,d=function(e){var t,n,r,i=2;for("undefined"!=typeof Symbol&&(n=Symbol.asyncIterator,r=Symbol.iterator);i--;){if(n&&null!=(t=e[n]))return t.call(e);if(r&&null!=(t=e[r]))return new u(t.call(e));n="@@asyncIterator",r="@@iterator"}throw new TypeError("Object is not async iterable")}(e.values());s=!(l=await d.next()).done;s=!1){const o=l.value,s=`${n}/${o.name}`;"file"===o.kind?a.push(o.getFile().then(t=>(t.directoryHandle=e,t.handle=o,Object.defineProperty(t,"webkitRelativePath",{configurable:!0,enumerable:!0,get:()=>s})))):"directory"!==o.kind||!t||r&&r(o)||i.push(p(o,t,s,r))}}catch(e){c=!0,o=e}finally{try{s&&null!=d.return&&await d.return()}finally{if(c)throw o}}return[...(await Promise.all(i)).flat(),...await Promise.all(a)]};var d=async(e={})=>{e.recursive=e.recursive||!1,e.mode=e.mode||"read";const t=await window.showDirectoryPicker({id:e.id,startIn:e.startIn,mode:e.mode});return p(t,e.recursive,void 0,e.skipDirectory)},y={__proto__:null,default:d},f=async(e,t=[{}],n=null,r=!1,i=null)=>{Array.isArray(t)||(t=[t]),t[0].fileName=t[0].fileName||"Untitled";const a=[];let o=null;if(e instanceof Blob&&e.type?o=e.type:e.headers&&e.headers.get("content-type")&&(o=e.headers.get("content-type")),t.forEach((e,t)=>{a[t]={description:e.description||"Files",accept:{}},e.mimeTypes?(0===t&&o&&e.mimeTypes.push(o),e.mimeTypes.map(n=>{a[t].accept[n]=e.extensions||[]})):o?a[t].accept[o]=e.extensions||[]:a[t].accept["*/*"]=e.extensions||[]}),n)try{await n.getFile()}catch(e){if(n=null,r)throw e}const s=n||await window.showSaveFilePicker({suggestedName:t[0].fileName,id:t[0].id,startIn:t[0].startIn,types:a,excludeAcceptAllOption:t[0].excludeAcceptAllOption||!1});!n&&i&&i(s);const c=await s.createWritable();if("stream"in e){const t=e.stream();return await t.pipeTo(c),s}return"body"in e?(await e.body.pipeTo(c),s):(await c.write(await e),await c.close(),s)},m={__proto__:null,default:f},w=async(e=[{}])=>(Array.isArray(e)||(e=[e]),new Promise((t,n)=>{const r=document.createElement("input");r.type="file";const i=[...e.map(e=>e.mimeTypes||[]),...e.map(e=>e.extensions||[])].join();r.multiple=e[0].multiple||!1,r.accept=i||"",r.style.display="none",document.body.append(r);const a=e=>{"function"==typeof o&&o(),t(e)},o=e[0].legacySetup&&e[0].legacySetup(a,()=>o(n),r),s=()=>{window.removeEventListener("focus",s),r.remove()};r.addEventListener("click",()=>{window.addEventListener("focus",s)}),r.addEventListener("change",()=>{window.removeEventListener("focus",s),r.remove(),a(r.multiple?Array.from(r.files):r.files[0])}),"showPicker"in HTMLInputElement.prototype?r.showPicker():r.click()})),h={__proto__:null,default:w},v=async(e=[{}])=>(Array.isArray(e)||(e=[e]),e[0].recursive=e[0].recursive||!1,new Promise((t,n)=>{const r=document.createElement("input");r.type="file",r.webkitdirectory=!0;const i=e=>{"function"==typeof a&&a(),t(e)},a=e[0].legacySetup&&e[0].legacySetup(i,()=>a(n),r);r.addEventListener("change",()=>{let t=Array.from(r.files);e[0].recursive?e[0].recursive&&e[0].skipDirectory&&(t=t.filter(t=>t.webkitRelativePath.split("/").every(t=>!e[0].skipDirectory({name:t,kind:"directory"})))):t=t.filter(e=>2===e.webkitRelativePath.split("/").length),i(t)}),"showPicker"in HTMLInputElement.prototype?r.showPicker():r.click()})),P={__proto__:null,default:v},b=async(e,t={})=>{Array.isArray(t)&&(t=t[0]);const n=document.createElement("a");let r=e;"body"in e&&(r=await async function(e,t){const n=e.getReader(),r=new ReadableStream({start:e=>async function t(){return n.read().then(({done:n,value:r})=>{if(!n)return e.enqueue(r),t();e.close()})}()}),i=new Response(r),a=await i.blob();return n.releaseLock(),new Blob([a],{type:t})}(e.body,e.headers.get("content-type"))),n.download=t.fileName||"Untitled",n.href=URL.createObjectURL(await r);const i=()=>{"function"==typeof a&&a()},a=t.legacySetup&&t.legacySetup(i,()=>a(),n);return n.addEventListener("click",()=>{setTimeout(()=>URL.revokeObjectURL(n.href),3e4),i()}),n.click(),null},k={__proto__:null,default:b};
@@ -23761,7 +25015,7 @@ function getMimeType({ ImageEnabled, VideoEnabled }) {
     if (VideoEnabled === "1")
         types.push(...enumerateSupportedVideoTypes(imagePicker_mimeTypes.video));
     if (types.length === 0) {
-        throw new Error("Unknown media type requested");
+        throw new Error("Unknown media type requested.");
     }
     return types;
 }
@@ -23781,7 +25035,7 @@ function getOrientation(data, lensCore) {
         return orientationMap[(_a = extractJpegOrientationTag(data)) !== null && _a !== void 0 ? _a : 1 /* Orientation.TopLeft */];
     }
     catch (error) {
-        imagePicker_logger.info("Error occured while reading EXIF orientation tag", error);
+        imagePicker_logger.info("Error occured while reading EXIF orientation tag.", error);
         return lensCore.ExternalMediaOrientation.CW0;
     }
 }
@@ -23855,13 +25109,14 @@ const registerLensClientInterfaceHandler = Injectable("registerLensClientInterfa
         if (interfaceControl === lensCore.InterfaceControl.ImagePicker &&
             interfaceAction === lensCore.InterfaceAction.Show) {
             yield pickClientImage(data, lensCore).catch((error) => {
-                lensClientInterface_logger.error(lensImagePickerError("Failed to pick an image.", error));
+                lensClientInterface_logger.error(lensImagePickerError("Error occurred while attempting to select an image file for the lens request.", error));
             });
         }
     }));
 });
 //# sourceMappingURL=lensClientInterface.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/CameraKit.js
+
 
 
 
@@ -23912,14 +25167,16 @@ class CameraKit {
     /**
      * Used to query for lenses and lens groups.
      */
-    lensRepository, lensCore, container, allMetrics) {
+    lensRepository, lensCore, pageVisibility, container, allMetrics) {
         this.lensRepository = lensRepository;
         this.lensCore = lensCore;
+        this.pageVisibility = pageVisibility;
         this.container = container;
         /**
          * Business metrics (e.g. each time a lens is viewed) are emitted here.
          */
         this.metrics = new TypedEventTarget();
+        this.sessions = [];
         this.lenses = { repository: this.lensRepository };
         // Proxy only a subset of all metrics events to the public-facing emitter -- applications don't need to
         // know about most events.
@@ -23947,7 +25204,8 @@ class CameraKit {
     createSession({ liveRenderTarget, renderWhileTabHidden, } = {}) {
         return tslib_es6_awaiter(this, void 0, void 0, function* () {
             // Any error happened during lens rendering can be processed by subscribing to sessionErrors
-            const exceptionHandler = (e) => CameraKit_logger.error(lensExecutionError("Lens execution error.", e));
+            const exceptionHandler = (error) => CameraKit_logger.error(lensExecutionError("Error occurred during lens execution. " +
+                "The lens cannot be rendered and will be removed from the CameraKitSession.", error));
             /**
              * If/when we add support for multiple concurrent sessions, we'll need to create a copy of the LensCore WASM
              * module. If we move managing web workers into JS, spawing a new worker thread with its own copy of LensCore
@@ -23994,7 +25252,20 @@ class CameraKit {
                 // UriHandlers may have dependencies on session-scoped services (e.g. LensState, LensKeyboard), so they'll
                 // be registered with LensCore here.
                 .run(registerUriHandlers);
-            return sessionContainer.get(cameraKitSessionFactory.token);
+            const session = sessionContainer.get(cameraKitSessionFactory.token);
+            this.sessions.push(session);
+            return session;
+        });
+    }
+    /**
+     * Destroys all sessions and frees all resources.
+     */
+    destroy() {
+        return tslib_es6_awaiter(this, void 0, void 0, function* () {
+            resetLogger();
+            this.pageVisibility.destroy();
+            yield Promise.all(this.sessions.map((session) => session.destroy()));
+            this.sessions = [];
         });
     }
 }
@@ -24004,18 +25275,41 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], CameraKit.prototype, "createSession", null);
+__decorate([
+    CameraKit_log,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], CameraKit.prototype, "destroy", null);
 /** @internal */
-const cameraKitFactory = Injectable("CameraKit", [lensRepositoryFactory.token, metricsEventTargetFactory.token, lensCoreFactory.token, CONTAINER], (lensRepository, metrics, lensCore, container) => new CameraKit(lensRepository, lensCore, container, metrics));
+const cameraKitFactory = Injectable("CameraKit", [
+    lensRepositoryFactory.token,
+    metricsEventTargetFactory.token,
+    lensCoreFactory.token,
+    pageVisibilityFactory.token,
+    CONTAINER,
+], (lensRepository, metrics, lensCore, pageVisibility, container) => new CameraKit(lensRepository, lensCore, pageVisibility, container, metrics));
 //# sourceMappingURL=CameraKit.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/assertPlatformSupported.js
 
 
+const minTextureSize = 1024;
 /**
- * Assert current platform is supported.
+ * Assert that the current platform supports the necessary WebGL features.
+ * Specifically, it checks for WebGL or WebGL2 support and ensures that
+ * the maximum texture size is at least 1024.
  */
 function assertPlatformSupported() {
     const canvas = document.createElement("canvas");
-    assert(!!canvas.getContext("webgl2") || !!canvas.getContext("webgl"), platformNotSupportedError("Cannot bootstrap the SDK because the browser does not support WebGL canvas rendering context."));
+    const webglContext = canvas.getContext("webgl2") || canvas.getContext("webgl");
+    const maxTextureSize = webglContext === null || webglContext === void 0 ? void 0 : webglContext.getParameter(webglContext.MAX_TEXTURE_SIZE);
+    assert(!!webglContext, platformNotSupportedError("Camera Kit cannot be bootstrapped because the browser does not support WebGL canvas rendering context."));
+    // Assert that the maximum texture size supported by WebGL is at least 1024.
+    // This is based on the information available at https://web3dsurvey.com/webgl/parameters/MAX_TEXTURE_SIZE
+    // and ensures that the application avoids future errors due to incompatibility with smaller texture sizes.
+    assert(maxTextureSize >= minTextureSize, platformNotSupportedError(
+    // eslint-disable-next-line max-len
+    `Camera Kit cannot be bootstrapped because this browser's WebGL MAX_TEXTURE_SIZE is ${maxTextureSize}, which is below the minimum requirement of ${minTextureSize}.`));
 }
 //# sourceMappingURL=assertPlatformSupported.js.map
 ;// CONCATENATED MODULE: ./node_modules/uuid/dist/esm-browser/native.js
@@ -24118,18 +25412,25 @@ function v4(options, buf, offset) {
 
 
 
+
+
 const businessEventsReporter_logger = getLogger("BusinessEventsReporter");
 // CameraKit's prod metrics endpoint.
 // See: https://github.sc-corp.net/Snapchat/pb_schema/blob/2a966db/proto/camera_kit/v3/service.proto#L133
-const BUSINESS_EVENTS_ENDPOINT = "https://api-kit.snapchat.com/com.snap.camerakit.v3.Metrics/metrics/business_events";
-// These values are (currently) arbitrarily selected.
-// TODO: Once we have gathered a sufficient quantity of metrics data, we should tune these numbers to ensure we're
-// operating with the right cost vs. staying under the `keepalive` request body limit of 64 kibibytes.
-const BUSINESS_EVENT_BATCH_MAX_SIZE = 100;
+const businessEventsReporter_relativePath = "/com.snap.camerakit.v3.Metrics/metrics/business_events";
+// It is rather cumbersome to check the actual final size of a batch, but we can easily limit the number of events we
+// include in each batch -- looking at historical data, typical events average ~1.3kb per event. But there are some
+// events (like CAMERA_KIT_EXCEPTION, which includes a stack trace) that can be much larger.
+//
+// To prevent us running over the 64kibibyte limit imposed by browsers on `keep-alive` requests, we'll set quite a low
+// limit to ensure we don't lose events which are larger in size than we expect.
+const BUSINESS_EVENT_BATCH_MAX_SIZE = 10;
 const BUSINESS_EVENT_BATCH_MAX_AGE_MS = 5000;
-function listenAndReport(metricsEventTarget, metricsHandler, eventHandlers) {
+function listenAndReport(metricsEventTarget, metricsHandler, pageVisibility, eventHandlers, apiHostname) {
     const sessionId = esm_browser_v4();
     businessEventsReporter_logger.log(`Session ID: ${sessionId}`);
+    // Blizzard convention is to start the sequenceId at 1.
+    let sequenceId = 1;
     const handler = new HandlerChainBuilder(metricsHandler)
         .map(createMappingHandler((events) => {
         const body = {
@@ -24138,16 +25439,16 @@ function listenAndReport(metricsEventTarget, metricsHandler, eventHandlers) {
                 serverEvents: events,
             },
         };
-        return new Request(BUSINESS_EVENTS_ENDPOINT, {
+        return new Request(`https://${apiHostname}${businessEventsReporter_relativePath}`, {
             method: "POST",
             body: JSON.stringify(body),
             credentials: "include",
-            // Setting this to true makes fetch behave like `Navigator.sendBeacon` – that is, the request
+            // When this is true it makes fetch behave like `Navigator.sendBeacon` – that is, the request
             // will still be made even if the page terminates.
             // https://developer.mozilla.org/en-US/docs/Web/API/fetch
-            keepalive: true,
+            keepalive: pageVisibility.isDuringVisibilityTransition("hidden"),
         });
-    }))
+    }, pageVisibility))
         .map(createBatchingHandler({
         batchReduce: (previousBundle, businessEvent) => {
             const bundle = previousBundle !== null && previousBundle !== void 0 ? previousBundle : [];
@@ -24156,6 +25457,7 @@ function listenAndReport(metricsEventTarget, metricsHandler, eventHandlers) {
         },
         isBatchComplete: (bundle) => bundle.length >= BUSINESS_EVENT_BATCH_MAX_SIZE,
         maxBatchAge: BUSINESS_EVENT_BATCH_MAX_AGE_MS,
+        pageVisibility,
     })).handler;
     const makeBlizzardEvent = (event) => {
         return Object.assign(Object.assign({}, event), { cameraKitEventBase: CameraKitEventBase.fromPartial({
@@ -24184,7 +25486,7 @@ function listenAndReport(metricsEventTarget, metricsHandler, eventHandlers) {
             osType: cameraKitUserAgent.osType,
             osVersion: cameraKitUserAgent.osVersion,
             maxSequenceIdOnInstance: 0,
-            sequenceId: 0,
+            sequenceId: sequenceId++,
             eventData,
         }));
     };
@@ -24202,7 +25504,12 @@ function listenAndReport(metricsEventTarget, metricsHandler, eventHandlers) {
         });
     });
 }
-const businessEventsReporterFactory = Injectable("businessEventsReporter", [metricsEventTargetFactory.token, metricsHandlerFactory.token], (metricsEventTarget, metricsHandler) => {
+const businessEventsReporterFactory = Injectable("businessEventsReporter", [
+    metricsEventTargetFactory.token,
+    metricsHandlerFactory.token,
+    pageVisibilityFactory.token,
+    configurationToken,
+], (metricsEventTarget, metricsHandler, pageVisibility, configuration) => {
     /**
      * This defines a mapping from a business event's external name (the name we document in public API docs), to
      * its internal representation as a Blizzard ServerEvent.
@@ -24221,7 +25528,7 @@ const businessEventsReporterFactory = Injectable("businessEventsReporter", [metr
      * https://github.sc-corp.net/Snapchat/snapchat/tree/master/blizzard/schema/blizzard-schema/
      *  codeGen/src/main/java/com/snapchat/analytics/schema/events/cameraKit
      */
-    listenAndReport(metricsEventTarget, metricsHandler, {
+    listenAndReport(metricsEventTarget, metricsHandler, pageVisibility, {
         assetDownload: (event) => [
             "CAMERA_KIT_ASSET_DOWNLOAD",
             { cameraKitAssetDownload: CameraKitAssetDownload.fromPartial(event) },
@@ -24264,7 +25571,7 @@ const businessEventsReporterFactory = Injectable("businessEventsReporter", [metr
             "CAMERA_KIT_SESSION",
             { cameraKitSession: cameraKitEvents_CameraKitSession.fromPartial(event) },
         ],
-    });
+    }, configuration.apiHostname);
 });
 //# sourceMappingURL=businessEventsReporter.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/logger/registerLogEntriesSubscriber.js
@@ -24292,6 +25599,9 @@ const registerLogEntriesSubscriber = Injectable("registerLogEntriesSubscriber", 
 });
 //# sourceMappingURL=registerLogEntriesSubscriber.js.map
 ;// CONCATENATED MODULE: ./node_modules/@snap/camera-kit/lib/bootstrapCameraKit.js
+
+
+
 
 
 
@@ -24386,10 +25696,11 @@ function bootstrapCameraKit(configuration, provide) {
     return tslib_es6_awaiter(this, void 0, void 0, function* () {
         try {
             const startTimeMs = performance.now();
-            assert(isSafeString(configuration.apiToken), configurationError("Unsafe apiToken"));
+            assert(isSafeString(configuration.apiToken), configurationError("Invalid or unsafe apiToken provided."));
             const configurationFactory = createCameraKitConfigurationFactory(configuration);
             // Public container holds services which applications can overwrite with their own implementations.
             const defaultPublicContainer = Container.provides(configurationFactory)
+                .provides(pageVisibilityFactory)
                 .provides(defaultFetchHandlerFactory)
                 .provides(remoteMediaAssetLoaderFactory)
                 .provides(lensSourcesFactory)
@@ -24403,13 +25714,14 @@ function bootstrapCameraKit(configuration, provide) {
             // Below is the minimum required container to report errors to Blizzard.
             const telemetryContainer = Container.provides(publicContainer)
                 .provides(logEntriesFactory)
+                .run(registerLogEntriesSubscriber)
                 .provides(cameraKitServiceFetchHandlerFactory)
+                .provides(requestStateEventTargetFactory)
                 .provides(metricsEventTargetFactory)
                 .provides(metricsHandlerFactory)
                 .provides(operationalMetricReporterFactory)
                 .provides(reportGlobalException)
-                .run(businessEventsReporterFactory)
-                .run(registerLogEntriesSubscriber);
+                .run(businessEventsReporterFactory);
             // Run the exception logger so that it can subscribe to log events -- we can't use `Container.run()` because
             // reportGlobalException is also used as a dependency by other Services (and run does not provide Services,
             // it just runs them once).
@@ -24423,6 +25735,7 @@ function bootstrapCameraKit(configuration, provide) {
             const lensCore = yield telemetryContainer.provides(lensCoreFactory).get(lensCoreFactory.token);
             const container = telemetryContainer
                 .provides(Injectable(lensCoreFactory.token, () => lensCore))
+                .provides(cofHandlerFactory)
                 .provides(remoteConfigurationFactory)
                 .provides(lensPersistenceStoreFactory)
                 .provides(deviceDependentAssetLoaderFactory)
@@ -24445,7 +25758,7 @@ function bootstrapCameraKit(configuration, provide) {
         }
         catch (error) {
             if (shouldWrapError(error)) {
-                error = bootstrapError("Failed to bootstrap Camera Kit.", error);
+                error = bootstrapError("Error occurred during Camera Kit bootstrapping.", error);
             }
             bootstrapCameraKit_logger.error(error);
             throw error;
@@ -24535,7 +25848,7 @@ const getImageBitmap = (imageData, format) => __awaiter(void 0, void 0, void 0, 
         case "nv12":
         case "yuv":
             if (!window.VideoFrame)
-                return Promise.reject(new Error(`Cannot process frame. ImageData in ${format} ` + `is not supported by this browser.`));
+                return Promise.reject(new Error(`Cannot process frame. ImageData in ${format} is not supported by this browser.`));
             const frame = new VideoFrame(imageData.data.buffer, {
                 format: "NV12",
                 codedWidth: imageData.width,
