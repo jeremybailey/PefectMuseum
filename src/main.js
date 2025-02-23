@@ -10,7 +10,7 @@ import {
     const session = await cameraKit.createSession()
     document.getElementById ('canvas').replaceWith (session.output.live)
 
-    const { lenses } = await cameraKit.lensRepository.loadLensGroups (['7dbc9fa1-1ecf-4946-8bf4-ca8f7eee30c5'])
+    const { lenses } = await cameraKit.lensRepository.loadLensGroups (['9cfe149b-dcf3-46c0-8bd4-cb3a98f43cc9'])
 
     session.applyLens (lenses[0])
     let mediaStream = await navigator. mediaDevices.getUserMedia ({ video: true });
