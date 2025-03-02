@@ -12,7 +12,7 @@ import {
 
     const { lenses } = await cameraKit.lensRepository.loadLensGroups (['9cfe149b-dcf3-46c0-8bd4-cb3a98f43cc9'])
 
-    session.applyLens (lenses[0])
+    session.applyLens (lenses[2])
     let mediaStream = await navigator. mediaDevices.getUserMedia ({ video: true });
 
     const source = createMediaStreamSource(mediaStream, {
